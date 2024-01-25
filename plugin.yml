@@ -1,0 +1,42 @@
+name: MCTdL
+author: SuperMaxime38
+version: 0.01.01
+main: mctdl.game.Main
+description: MCTdl 's plugins manager
+api-version: 1.13
+loadafter: [HungerGames]
+softdepend: [WorldEdit, Multiverse-Core]
+depend: [ProtocolLib]
+commands:
+  mctdl:
+    aliases: [tdl]
+    permission: mctdl.commands.main
+    description: Main command
+    
+  baltop:
+    description: Get the 10 richest players
+  npc:
+    permission: tdl.npc
+    description: npc command
+    
+  meltdown:
+    aliases: [md]
+    permission: mctdl.commands.meltdown
+    description: Meltdown game command
+  
+  deathswap:
+    aliases: [dswap]
+    permission: mctdl.commands.deathswap
+    description: DeathSwap game command
+  
+  jump:
+    description: Une commande pour le jump du lobby
+  dg:
+    description: Give les items customs du plugin
+    permission: tdl.give
+  poulezooka:
+    permission: tdl.lobby.poulezooka
+    description: Cot Cooottttt
+  dummy:
+    permission: tdl.dummy
+    description: Spawn un dummy avec 1000HP

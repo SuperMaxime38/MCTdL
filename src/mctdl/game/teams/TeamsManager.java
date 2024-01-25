@@ -1,0 +1,336 @@
+package mctdl.game.teams;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+
+import mctdl.game.Main;
+
+public class TeamsManager{
+	
+	static HashMap<String, String> teams = new HashMap<String, String>();
+	
+	/**
+	 * Check if the file teams.yml exists, if not, generated it and fill it with default values
+	 * 
+	 * @param Main instance
+	 * @return true if the file exists, false if not
+	 */
+	public static boolean fileCheck(Main main){
+    	
+	     File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "teams");
+	     File f = new File(userdata, File.separator + "teams.yml");
+	     FileConfiguration preset = YamlConfiguration.loadConfiguration(f);
+
+	     
+	     if (!f.exists()) { //CREER LES SECTIONS AVEC DES LISTES VIDES SI FICHIER N'EXISTE PAS
+	         try {
+	        	 List<String> username = new ArrayList<>();
+	        	 
+	        	 preset.createSection("teams");
+	        	 preset.set("teams.red", username);
+	        	
+	        	 username = new ArrayList<>();
+	        	 preset.set("teams.blue", username);
+	        	 
+	        	 username = new ArrayList<>();
+	        	 preset.set("teams.green", username);
+	        	 
+	        	 username = new ArrayList<>();
+	        	 preset.set("teams.yellow", username);
+	        	 
+	        	 username = new ArrayList<>();
+	        	 preset.set("teams.purple", username);
+	        	 
+	        	 username = new ArrayList<>();
+	        	 preset.set("teams.aqua", username);
+	        	 
+	        	 username = new ArrayList<>();
+	        	 preset.set("teams.black", username);
+	        	 
+	        	 username = new ArrayList<>();
+	        	 preset.set("teams.orange", username);
+	        	 
+	             preset.save(f);
+	             
+	         } catch (IOException exception) {
+
+	             exception.printStackTrace();
+	         }
+	         return false;
+	     } else {
+	    	 return false;
+	     }
+	     
+     }
+	
+	public static void loadHashMap(Main main) {
+		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "teams");
+	    File f = new File(userdata, File.separator + "teams.yml");
+	    fileCheck(main);
+	    FileConfiguration yaml = YamlConfiguration.loadConfiguration(f);
+		 for (String player : yaml.getStringList("teams.red")) {
+				teams.put(player, "red");
+			 }
+	    	 for (String player : yaml.getStringList("teams.blue")) {
+				teams.put(player, "blue");
+			 }
+	    	 for (String player : yaml.getStringList("teams.green")) {
+				teams.put(player, "green");
+			 }
+	    	 for (String player : yaml.getStringList("teams.yellow")) {
+				teams.put(player, "yellow");
+			 }
+	    	 for (String player : yaml.getStringList("teams.purple")) {
+				teams.put(player, "purple");
+			 }
+	    	 for (String player : yaml.getStringList("teams.aqua")) {
+				teams.put(player, "aqua");
+			 }
+	    	 for (String player : yaml.getStringList("teams.black")) {
+				teams.put(player, "black");
+			 }
+	    	 for (String player : yaml.getStringList("teams.orange")) {
+				teams.put(player, "orange");
+			 }
+	}
+	/**
+	 * Get the teams and tehir members
+	 * @return a HashMap<String, String> --> First string is the player name, Second is the team "id" (ex. red)
+	 */
+	public static HashMap<String, String> getTeams() {return teams;}
+	
+	public static void setPlayerTeam(String name, String team) {teams.put(name, team);}
+	
+	public static void removePlayerTeam(String name) {
+		if(teams.containsKey(name)) {
+			teams.remove(name);
+		}
+	}
+	
+	public static void clearTeams(Main main) {
+		teams.clear();
+		updateConfig(main);
+	}
+	
+	public static void updateConfig(Main main) {
+		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "teams");
+	    File f = new File(userdata, File.separator + "teams.yml");
+	    fileCheck(main);
+	    FileConfiguration yaml = YamlConfiguration.loadConfiguration(f);
+	    
+	    List<String> players = new ArrayList<>();
+	    yaml.set("teams.red", players);
+	    
+	    players = new ArrayList<>();
+	    yaml.set("teams.blue", players);
+	    
+	    players = new ArrayList<>();
+	    yaml.set("teams.green", players);
+	    
+	    players = new ArrayList<>();
+	    yaml.set("teams.yellow", players);
+	    
+	    players = new ArrayList<>();
+	    yaml.set("teams.purple", players);
+	    
+	    players = new ArrayList<>();
+	    yaml.set("teams.aqua", players);
+	    
+	    players = new ArrayList<>();
+	    yaml.set("teams.black", players);
+	    
+	    players = new ArrayList<>();
+	    yaml.set("teams.orange", players);
+	    
+	    try {
+			yaml.save(f);
+			for (String player : teams.keySet()) {
+				if(teams.get(player).equals("red")) {
+					players = yaml.getStringList("teams.red");
+					players.add(player);
+					yaml.set("teams.red", players);
+					yaml.save(f);
+				}
+				if(teams.get(player).equals("blue")) {
+					players = yaml.getStringList("teams.blue");
+					players.add(player);
+					yaml.set("teams.blue", players);
+					yaml.save(f);
+				}
+				if(teams.get(player).equals("green")) {
+					players = yaml.getStringList("teams.green");
+					players.add(player);
+					yaml.set("teams.green", players);
+					yaml.save(f);
+				}
+				if(teams.get(player).equals("yellow")) {
+					players = yaml.getStringList("teams.yellow");
+					players.add(player);
+					yaml.set("teams.yellow", players);
+					yaml.save(f);
+				}
+				if(teams.get(player).equals("purple")) {
+					players = yaml.getStringList("teams.purple");
+					players.add(player);
+					yaml.set("teams.purple", players);
+					yaml.save(f);
+				}
+				if(teams.get(player).equals("aqua")) {
+					players = yaml.getStringList("teams.aqua");
+					players.add(player);
+					yaml.set("teams.aqua", players);
+					yaml.save(f);
+				}
+				if(teams.get(player).equals("black")) {
+					players = yaml.getStringList("teams.black");
+					players.add(player);
+					yaml.set("teams.black", players);
+					yaml.save(f);
+				}
+				if(teams.get(player).equals("orange")) {
+					players = yaml.getStringList("teams.orange");
+					players.add(player);
+					yaml.set("teams.orange", players);
+					yaml.save(f);
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * Get the team of a certain player
+	 * <p>
+	 * Example if the player Roberto belongs to the red team, getPlayerTeam("Roberto") will return "red"
+	 * </p>
+	 * <p>
+	 * If Roberto doesn't belong to a team, it will return "none"
+	 * </p>
+	 * @param player's name
+	 * @return The team id (ex. red)
+	 */
+	public static String getPlayerTeam(String name) {
+		String team = teams.get(name);
+		if(team == null) return "none";
+		return team;
+	}
+	
+	public static ChatColor getTeamColor(String playername) {
+		String team = getPlayerTeam(playername);
+		switch (team) {
+		case "red": return ChatColor.RED;
+		case "blue": return ChatColor.BLUE;
+		case "green": return ChatColor.GREEN;
+		case "yellow": return ChatColor.YELLOW;
+		case "purple": return ChatColor.DARK_PURPLE;
+		case "aqua": return ChatColor.DARK_AQUA;
+		case "black": return ChatColor.DARK_GRAY;
+		case "orange": return ChatColor.GOLD;
+
+		default: return ChatColor.WHITE;
+		}
+	}
+	
+	public static ChatColor getTeamColorByTeam(String team) {
+		switch (team) {
+		case "red": return ChatColor.RED;
+		case "blue": return ChatColor.BLUE;
+		case "green": return ChatColor.GREEN;
+		case "yellow": return ChatColor.YELLOW;
+		case "purple": return ChatColor.DARK_PURPLE;
+		case "aqua": return ChatColor.DARK_AQUA;
+		case "black": return ChatColor.DARK_GRAY;
+		case "orange": return ChatColor.GOLD;
+
+		default: return ChatColor.WHITE;
+		}
+	}
+	
+	public static String getTeamName(String playername) {
+		String team = getPlayerTeam(playername);
+		switch (team) {
+		case "red": return "§4Red Rocket";
+		case "blue": return "§1Blue Whale";
+		case "green": return "§2Green Turtle";
+		case "yellow": return "§eYellow Stone";
+		case "purple": return "§5Purple Amethyst";
+		case "aqua": return "§3Aqua Dolphin";
+		case "black": return "§0Black Raven";
+		case "orange": return "§6Orange Mechanic";
+
+		default: return "none";
+		}
+	}
+	
+	public static String getTeamNameByTeam(String teamname) {
+		switch (teamname) {
+		case "red": return "§4Red Rocket";
+		case "blue": return "§1Blue Whale";
+		case "green": return "§2Green Turtle";
+		case "yellow": return "§eYellow Stone";
+		case "purple": return "§5Purple Amethyst";
+		case "aqua": return "§3Aqua Dolphin";
+		case "black": return "§0Black Raven";
+		case "orange": return "§6Orange Mechanic";
+
+		default: return "none";
+		}
+	}
+	/**
+	 * Get every online players that are in a team
+	 * @return Returns the same HashMap as getTeams() but this one contains only online players
+	 */
+	public static HashMap<String, String> getOnlinePlayers() {
+		HashMap<String, String> teams = getTeams();
+		HashMap<String, String> online = new HashMap<String, String>();
+		Player p;
+		for (String player : teams.keySet()) {
+			p = Bukkit.getPlayer(player);
+			if(p == null) { //Le != null est buggé des fois
+			} else {
+				online.put(player, teams.get(player));
+			}
+		}
+		return online;
+	}
+	
+	public static boolean isAllTeammatesOnline(String team) {
+		HashMap<String, String> teams = getTeams();
+		Player p;
+		boolean b = true;
+		
+		for (String player : teams.keySet()) { //NOT WORKING !!!
+			if(teams.get(player).equals(team)) {
+				p = Bukkit.getPlayer(player);
+				if(p == null) {
+					b = false;
+				}
+			}
+		}
+		return b;
+	}
+	/**
+	 * Get une liste de TOUS les membres de l'équipe indiquée
+	 * @param team
+	 * @return une liste des pseudos des membres, empty/null si équipe vide
+	 */
+	public static List<String> getTeamMembers(String team) {
+		List<String> members = new ArrayList<>();
+		for (String player : teams.keySet()) {
+			if(teams.get(player) == team) {
+				members.add(player);
+			}
+		}
+		return members;
+	}
+}

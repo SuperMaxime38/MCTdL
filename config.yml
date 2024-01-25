@@ -1,0 +1,55 @@
+###MDTdL Config File
+# Careful ! Change this can impact every game modes
+
+game: lobby
+
+edition: BETA
+
+enable-npc: false
+
+lobby:
+  vote:
+    text1:
+      X: 2
+      Y: 10
+      Z: -81
+    text2:
+      X: 8
+      Y: 10
+      Z: -87
+    text3:
+      X: 14
+      Y: 10
+      Z: -81
+
+games:
+  lobby:
+    poulezooka:
+      npc:
+        X: -52
+        Y: 9
+        Z: -29
+        
+        
+  meltdown:
+    map: meltdown
+    money:
+      block: 80
+      kills: 50
+      deaths: -10
+      final-kill: 100
+      eliminated: -30
+      assists: 10
+    cooldown:
+      heater: 20
+      pickaxe: 10
+  
+  deathswap:
+    map: deathswap
+    generated: false
+    delay: 300 #Delay in seconds
+    money:
+      round: 20
+      kill: 200
+      placems: 100
+      dmg: 10
