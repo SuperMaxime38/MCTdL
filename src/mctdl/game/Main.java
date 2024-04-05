@@ -2,6 +2,7 @@ package mctdl.game;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameRule;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -29,6 +30,8 @@ import mctdl.game.games.lobby.PouleZooka;
 import mctdl.game.games.meltdown.MDCommand;
 import mctdl.game.games.meltdown.Meltdown;
 import mctdl.game.games.meltdown.MeltdownFiles;
+import mctdl.game.games.nexus.Nexus;
+import mctdl.game.games.nexus.NexusCommand;
 import mctdl.game.listeners.Damage;
 import mctdl.game.listeners.Interact;
 import mctdl.game.listeners.Join;
@@ -58,6 +61,11 @@ public class Main extends JavaPlugin{
 		
 		//Perms
 		//new Permissions(this);
+		
+		//Gamerules
+		Bukkit.getWorlds().get(0).setGameRule(GameRule.KEEP_INVENTORY, false);
+		Bukkit.getWorlds().get(0).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+		
 		
 		//FileCheck
 		TeamsManager.fileCheck(this);
@@ -122,6 +130,9 @@ public class Main extends JavaPlugin{
 		//DeathSwap
 		getServer().getPluginManager().registerEvents(new DeathSwap(this), this);
 		
+		//Nexus
+		getServer().getPluginManager().registerEvents(new Nexus(this), this);
+		
 		//Register LISTENERS---------------------------------------------------------
 		getServer().getPluginManager().registerEvents(new Damage(this), this);
 		getServer().getPluginManager().registerEvents(new Join(this), this);
@@ -151,6 +162,9 @@ public class Main extends JavaPlugin{
 		
 		//deathswap
 		getCommand("deathswap").setExecutor(new DeathSwapCommand(this));
+		
+		//nexus
+		getCommand("nexus").setExecutor(new NexusCommand(this));
 		
 		//TabCompleter -->
 		getCommand("npc").setTabCompleter(new NPCCommandCompleter());

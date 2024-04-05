@@ -40,6 +40,7 @@ public class Spectate implements Listener{
 			System.out.println("[MCTdL] SpectateMode > Error, spectating targets are null (no teammates)");
 			return;
 		}
+		p.teleport(Bukkit.getPlayer(targets.get(0)));
 		p.setSpectatorTarget(Bukkit.getPlayer(targets.get(0)));
 		isSpectating.put(p, true);
 		spectateTargets.put(p, targets);
@@ -102,15 +103,11 @@ public class Spectate implements Listener{
 			return;
 		}
 
-		System.out.println("TAREGT CONTAINS");
 		int current = targets.indexOf(tgname);
 		if(current == targets.size() - 1) {
 			current = 0;
-			System.out.println("CURRENT=0");
 		} else {
 			current++;
-
-			System.out.println("CURRENT = " + current);
 		}
 		p.setSpectatorTarget(Bukkit.getPlayer(targets.get(current)));
 		isSpectating.put(p, true);

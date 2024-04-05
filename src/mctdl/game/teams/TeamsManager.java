@@ -295,13 +295,28 @@ public class TeamsManager{
 		HashMap<String, String> online = new HashMap<String, String>();
 		Player p;
 		for (String player : teams.keySet()) {
-			p = Bukkit.getPlayer(player);
+			p = Bukkit.getPlayerExact(player);
 			if(p == null) { //Le != null est buggé des fois
 			} else {
 				online.put(player, teams.get(player));
 			}
 		}
 		return online;
+	}
+	
+	/**
+	 * Get every player than are in a team as a list of players
+	 * @return Returns a List<Player> with all da players in a team that are online
+	 */
+	public static List<Player> getOnlinePlayersAsPlayers() {
+		HashMap<String, String> onlinePlayers = getOnlinePlayers();
+		List<Player> players = new ArrayList<>();
+		
+		for(String pl : onlinePlayers.keySet()) {
+			players.add(Bukkit.getPlayer(pl));
+		}
+		
+		return null;
 	}
 	
 	public static boolean isAllTeammatesOnline(String team) {
@@ -311,7 +326,7 @@ public class TeamsManager{
 		
 		for (String player : teams.keySet()) { //NOT WORKING !!!
 			if(teams.get(player).equals(team)) {
-				p = Bukkit.getPlayer(player);
+				p = Bukkit.getPlayerExact(player);
 				if(p == null) {
 					b = false;
 				}
@@ -332,5 +347,44 @@ public class TeamsManager{
 			}
 		}
 		return members;
+	}
+	
+	public static List<Player> getTeamMembersAsPlayer(String team) {
+		List<String> members = getTeamMembers(team);
+		List<Player> players = new ArrayList<>();
+		
+		for(String pl : members) {
+			players.add(Bukkit.getPlayer(pl));
+		}
+		
+		
+		return players;
+	}
+	
+	/**
+	 * Get une liste des teams qui ont des membres (qui sont pas vides)
+	 * @return List<String> des team (ex:red)
+	 */
+	public static List<String> getNonEmptyTeams() {
+		List<String> teams = new ArrayList<>();
+		for(String team : getTeams().values()) {
+			if(teams.contains(team)) teams.add(team);
+		}
+		return teams;
+	}
+	
+	public static boolean isTeamEmpty(String team) {
+		if(teams.values().contains(team)) {
+			return false;
+		}
+		return true;
+	}
+	
+	public static List<String> getPlayers() {
+		List<String> players = new ArrayList<>();
+		for(String pl : teams.keySet()) {
+			players.add(pl);
+		}
+		return players;
 	}
 }

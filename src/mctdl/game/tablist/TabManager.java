@@ -157,11 +157,10 @@ public class TabManager implements Listener{
 	public static List<String> getMembers(String team) {
 		List<String> members = new ArrayList<String>();
 		HashMap<String, String> teams = TeamsManager.getTeams();
-		Player p;
 		ChatColor c;
 		
 		for (String players : teams.keySet()) {
-			p = Bukkit.getPlayer(players);
+			Player p = Bukkit.getPlayerExact(players);
 			switch(team) {
 			case "red":
 				switch(teams.get(players)) {

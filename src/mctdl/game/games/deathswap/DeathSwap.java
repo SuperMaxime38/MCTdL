@@ -121,7 +121,9 @@ public class DeathSwap implements Listener{
 					@Override
 					public void run() {
 						p.setGameMode(GameMode.SPECTATOR);
-						Spectate.setSpectatingGroup(p, TeamsManager.getTeamMembers(TeamsManager.getPlayerTeam(player)));
+						//List<String> teamates = TeamsManager.getTeamMembers(TeamsManager.getPlayerTeam(player));
+						//Spectate.setSpectatingGroup(p, teamates); //Mets le joueur seul en spec
+						p.setSpectatorTarget(Bukkit.getPlayer("Maxime38-2"));
 					}
 					
 				}.runTaskLater(main, 20);
@@ -287,9 +289,15 @@ public class DeathSwap implements Listener{
 						
 						p1.teleport(loc2);
 						p2.teleport(loc1);
+
+						playerdata.get(p1.getName()).set(2, playerdata.get(p1.getName()).get(2)+ goldRound);
+						playerdata.get(p2.getName()).set(2, playerdata.get(p2.getName()).get(2)+ goldRound);
+						
+						playerdata.get(p1.getName()).set(1, playerdata.get(p1.getName()).get(1)+ 1);
+						playerdata.get(p2.getName()).set(1, playerdata.get(p2.getName()).get(1)+ 1);
 					}
+					counter = 0;
 				}
-				System.out.println(abandonne.getGameMode());
 				counter++;
 			}
 			

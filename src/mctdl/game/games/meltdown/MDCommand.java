@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import mctdl.game.Main;
+import mxlib.world.Physics;
 
 public class MDCommand implements CommandExecutor{
 	
@@ -80,7 +81,10 @@ public class MDCommand implements CommandExecutor{
 			}
 			if(args[0].equals("test")) {
 				p = (Player) s;
-				Meltdown.particleEffect(p.getLocation(), Material.AIR, p.getLocation().getBlock());
+				Physics phy = new Physics(main, p.getWorld().spawnEntity(p.getLocation().clone().add(0, 3, 0), EntityType.CAT),p.getLocation().getDirection().clone().multiply(10));
+				p.sendMessage(""+p.getLocation().getDirection().clone().multiply(10));
+				phy.setBouncy(false);
+				phy.setBouncing(0.5);
 			}
 			if((args[0].equals("genmap"))) {
 				MDMap.generateMap(main);

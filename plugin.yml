@@ -29,6 +29,11 @@ commands:
     permission: mctdl.commands.deathswap
     description: DeathSwap game command
   
+  nexus:
+    aliases: [nx]
+    permission: mctdl.commands.nexus
+    description: Nexus game command
+  
   jump:
     description: Une commande pour le jump du lobby
   dg:

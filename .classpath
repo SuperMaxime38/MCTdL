@@ -8,5 +8,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="C:/Users/Maxime/Documents/Profil/Minecraft/dev.eventsmc/spigot-1.16.5.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Maxime/Documents/Profil/Minecraft/dev.eventsmc/plugins/ProtocolLib.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Maxime/Documents/Profil/Minecraft/dev.eventsmc/plugins/[1.16.5]MXLib_V0#1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
