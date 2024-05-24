@@ -551,7 +551,7 @@ public class MeltdownFiles {
 		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "maps");
 		File f = new File(userdata, File.separator + map + ".yml");
 		if(!f.exists()) {
-			f = new File(userdata, File.separator + "meltdown.yml");
+			fileCheck(main);
 		}
 	    FileConfiguration datas = YamlConfiguration.loadConfiguration(f);
 	    return datas;

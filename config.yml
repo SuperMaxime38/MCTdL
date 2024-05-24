@@ -53,3 +53,5 @@ games:
       kill: 200
       placems: 100
       dmg: 10
+  nexus:
+    map: nexus

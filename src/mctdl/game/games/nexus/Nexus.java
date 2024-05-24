@@ -7,7 +7,9 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,6 +25,7 @@ import org.bukkit.util.Vector;
 import mctdl.game.Main;
 import mctdl.game.commands.BaltopCommand;
 import mctdl.game.teams.TeamsManager;
+import mctdl.game.utils.Map;
 import mctdl.game.utils.PlayerData;
 
 public class Nexus implements Listener{
@@ -32,7 +35,7 @@ public class Nexus implements Listener{
 	
 	static Main main;
 	static boolean enabled = false;
-	
+	static Map map;
 	public Nexus(Main main) {
 		Nexus.main = main;
 	}
@@ -46,6 +49,18 @@ public class Nexus implements Listener{
 		List<String> teams = new ArrayList<>();
 		
 		List<String> basicdatas = new ArrayList<>();
+		
+
+		FileConfiguration cfg = NexusFiles.checkMap(main);
+		
+		//Map variable stuff
+		map = new Map(main, cfg.getString("games.nexus.map"), new Location(Bukkit.getWorld("mapz"), 0, 0, 0), "mapz", null, null, 0, -1, "Nexus");
+		
+		if(!NexusFiles.isMapGenerated(main)) { //Génère la map
+			Bukkit.broadcastMessage("§6Generating §bNexus §6map... §cThis could cause some lag :)");
+			map.build();
+			NexusFiles.setMapGenerated(main, true);
+		}
 		
 		for(String team : bt) {
 			System.out.println(team);

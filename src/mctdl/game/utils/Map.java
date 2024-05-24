@@ -22,8 +22,12 @@ public class Map {
 	private int radius;
 	private String name = "MAP";
 	
+	public static Map current;
+	
 	public Map(Main main) {
 		this.main = main;
+
+		current = this;
 	}
 	
 	public Map(Main main, String schem, Location center, String world) {
@@ -33,13 +37,13 @@ public class Map {
 		this.center = center;
 		this.world = world;
 		
-		
+		current = this;
 	}
 	/**
 	 * 
 	 * @param main
-	 * @param schem
-	 * @param center
+	 * @param schem (the schem name no need for extension)
+	 * @param center (apply point of schem)
 	 * @param spawns
 	 * @param doors
 	 * @param lowestPoint
@@ -57,6 +61,17 @@ public class Map {
 		this.lowestPoint = lowestPoint;
 		this.radius = radius;
 		this.name = name;
+		
+
+		current = this;
+	}
+	
+	public static Map getCurrentMap() {
+		return current;
+	}
+	
+	public static void deleteCurrent() {
+		current.deleteTerrain();
 	}
 	
 	public void build() {
@@ -106,5 +121,40 @@ public class Map {
 	
 	public void deleteDoors() {
 		
+	}
+	
+	
+	//Getters
+	
+	public String getSchem() {
+		return schem;
+	}
+	
+	public Location getCenter() {
+		return center;
+	}
+	
+	public String getWorldname() {
+		return world;
+	}
+	
+	public HashMap<Location, String> getSpawns() {
+		return spawns;
+	}
+	
+	public List<Cuboid> getDoors() {
+		return doors;
+	}
+	
+	public int getLowestPoint() {
+		return lowestPoint;
+	}
+	
+	public int getRadius() {
+		return radius;
+	}
+	
+	public String getMapName() {
+		return name;
 	}
 }

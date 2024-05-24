@@ -21,6 +21,7 @@ import mctdl.game.commands.NPCCommand;
 import mctdl.game.commands.PouleZookaCMD;
 import mctdl.game.commands.TdLCommand;
 import mctdl.game.commands.TdLTabCompleter;
+import mctdl.game.commands.TestCommand;
 import mctdl.game.dev.ItemGiver;
 import mctdl.game.dev.ItemGiverCompleter;
 import mctdl.game.games.deathswap.DeathSwap;
@@ -156,6 +157,7 @@ public class Main extends JavaPlugin{
 		getCommand("dg").setExecutor(new ItemGiver());
 		getCommand("poulezooka").setExecutor(new PouleZookaCMD());
 		getCommand("dummy").setExecutor(new DummyCommand(this));
+		getCommand("testcmd").setExecutor(new TestCommand(this));
 		
 		//meltdown
 		getCommand("meltdown").setExecutor(new MDCommand(this));

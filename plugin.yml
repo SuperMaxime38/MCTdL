@@ -2,7 +2,7 @@ name: MCTdL
 author: SuperMaxime38
 version: 0.01.01
 main: mctdl.game.Main
-description: MCTdl 's plugins manager
+description: MCTdL games and stuff
 api-version: 1.13
 loadafter: [HungerGames]
 softdepend: [WorldEdit, Multiverse-Core]
@@ -45,3 +45,6 @@ commands:
   dummy:
     permission: tdl.dummy
     description: Spawn un dummy avec 1000HP
+  testcmd:
+    permission: tdl.commands.test
+    description: This command is used to test stuff
