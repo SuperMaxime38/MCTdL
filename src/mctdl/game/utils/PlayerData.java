@@ -113,6 +113,10 @@ public class PlayerData {
 		stats.put(playerUUID, statistics);
 	}
 	
+	/**
+	 * Quand joueur se connecte ou sors d'un minijeu (charge ses cosmétiques)
+	 * 
+	 */
 	public static void registerPlayer(Player p) { //Quand joueur se connecte ou sors d'un minijeu (charge ses cosmétiques)
 		String uuid = p.getUniqueId().toString();
 		String type = "";

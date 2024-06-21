@@ -1,12 +1,11 @@
 name: MCTdL
 author: SuperMaxime38
-version: 0.01.01
+version: 0.02.1
 main: mctdl.game.Main
 description: MCTdL games and stuff
 api-version: 1.13
-loadafter: [HungerGames]
-softdepend: [WorldEdit, Multiverse-Core]
-depend: [ProtocolLib]
+loadafter: [HungerGames, Multiverse-Core]
+depend: [ProtocolLib, WorldEdit, Multiverse-Core]
 commands:
   mctdl:
     aliases: [tdl]

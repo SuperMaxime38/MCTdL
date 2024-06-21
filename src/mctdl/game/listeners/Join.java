@@ -3,11 +3,14 @@ package mctdl.game.listeners;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+
 import mctdl.game.Main;
 import mctdl.game.money.MoneyManager;
 import mctdl.game.npc.NPCManager;
@@ -25,6 +28,7 @@ public class Join implements Listener{
 	public static void onJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
 		p.setFoodLevel(20);
+		p.setGameMode(GameMode.ADVENTURE);
 		String game = main.getConfig().getString("game");
 		
 		HashMap<String, Integer> balances = MoneyManager.getRegsPlayer();
@@ -42,7 +46,7 @@ public class Join implements Listener{
 			MoneyManager.setPlayerPoutres(p.getName(), 0);
 		}
 		if(game.equals("lobby")) {
-			p.teleport(new Location(p.getWorld(), 8, 6, 8));
+			p.teleport(new Location(Bukkit.getWorlds().get(0), 8, 6, 8));
 			PlayerData.registerPlayer(p);
 		}
 		

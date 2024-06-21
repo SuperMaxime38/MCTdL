@@ -94,7 +94,7 @@ public class RainbowSheep {
 		//MAP -->
 		this.map = new Map(main, "rs-"+map, new Location(Bukkit.getWorld(world), 0, 0, 0), world, null, null, 0, 50, "RainbowSheep");
 		Bukkit.broadcastMessage("[§6RainbowSheep§f] > §aGénération de la map... §cca va lag :(");
-		this.map.build();
+		this.map.build(true);
 		
 	}
 	

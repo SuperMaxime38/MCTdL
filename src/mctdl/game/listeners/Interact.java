@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -58,23 +59,32 @@ public class Interact implements Listener{
 		}
 	}
 	
-	@EventHandler (priority = EventPriority.LOW)
+	@EventHandler (priority = EventPriority.HIGH)
 	public static void onEntityInteractAtEntity(PlayerInteractAtEntityEvent e) {
 		
 		if(main.getConfig().getString("game").equals("lobby")) {
-			if(e.getPlayer().getGameMode().equals(GameMode.CREATIVE)) return;
+			if(e.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+				return;
+			}
+			e.setCancelled(true);
+			return;
+		}
+	}
+	
+	@EventHandler (priority = EventPriority.HIGH)
+	public static void onEntityInteract(PlayerInteractEntityEvent e) {
+		if(main.getConfig().getString("game").equals("lobby")) {
+			if(e.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+				return;
+			}
 			e.setCancelled(true);
 			return;
 		}
 	}
 	
 	@EventHandler
-	public static void onEntityInteract(PlayerInteractEntityEvent e) {
-		if(main.getConfig().getString("game").equals("lobby")) {
-			if(e.getPlayer().getGameMode().equals(GameMode.CREATIVE)) return;
-			e.setCancelled(true);
-			return;
-		}
+	public static void avoidItemFrameToBeDestroyed(HangingBreakEvent e) {
+		e.setCancelled(true);
 	}
 
 }

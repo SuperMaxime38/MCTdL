@@ -1221,6 +1221,7 @@ public class Meltdown implements Listener {
 		if(!isEnabled()) return;
 		Player p = e.getPlayer();
 		String name = p.getName();
+		System.out.println(name + "reconnected to meltdown");
 		if(!playerdata.containsKey(name)) {
 			if(TeamsManager.getPlayerTeam(name) != "none") { //Si le joueur estenregistré dans une équipe et qu'il a pas e playerdata (= crash avant d'en avoir)
 				

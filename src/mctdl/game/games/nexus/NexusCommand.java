@@ -23,7 +23,6 @@ public class NexusCommand implements CommandExecutor{
 			switch(args[0]) {
 			case "start":
 				Nexus.start(false);
-				s.sendMessage("Nexus started");
 				return true;
 			case "stop":
 				if(Nexus.enabled == false) {
@@ -32,6 +31,9 @@ public class NexusCommand implements CommandExecutor{
 					Nexus.stop();
 					s.sendMessage("Nexus stopped");
 				}
+				return true;
+			case "getdatas":
+				s.sendMessage(Nexus.getDatas().toString());
 				return true;
 			}
 		} else {

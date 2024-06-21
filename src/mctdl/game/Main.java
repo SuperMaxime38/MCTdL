@@ -33,6 +33,7 @@ import mctdl.game.games.meltdown.Meltdown;
 import mctdl.game.games.meltdown.MeltdownFiles;
 import mctdl.game.games.nexus.Nexus;
 import mctdl.game.games.nexus.NexusCommand;
+import mctdl.game.games.nexus.NexusFiles;
 import mctdl.game.listeners.Damage;
 import mctdl.game.listeners.Interact;
 import mctdl.game.listeners.Join;
@@ -66,6 +67,9 @@ public class Main extends JavaPlugin{
 		//Gamerules
 		Bukkit.getWorlds().get(0).setGameRule(GameRule.KEEP_INVENTORY, false);
 		Bukkit.getWorlds().get(0).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+		Bukkit.getWorlds().get(0).setGameRule(GameRule.DO_MOB_LOOT, false);
+		Bukkit.getWorld("mapz").setGameRule(GameRule.DO_MOB_LOOT, false);
+		Bukkit.getWorld("mapz").setGameRule(GameRule.FALL_DAMAGE, true);
 		
 		
 		//FileCheck
@@ -73,10 +77,11 @@ public class Main extends JavaPlugin{
 		MoneyManager.fileCheck(this);
 		MeltdownFiles.fileCheck(this);
 		PlayerData.fileCheck(this);
+		NexusFiles.fileCheck(this);
 		
 		//Load HashMap
 		TeamsManager.loadHashMap(this);
-		MoneyManager.loadHashMap(this);
+		//MoneyManager.loadHashMap(this);
 		PlayerData.loadHashMap(this);
 		
 		//Load TAB & NPCs (if server reload) || + Perms
@@ -181,7 +186,9 @@ public class Main extends JavaPlugin{
 		
 		disableExternalGamesFeatures(this);
 		
-		
+		//SHOWS Nametags -->
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "hidenametags disable");
+		//------------------
 		
 		System.out.println(h + "MCTdL MAIN PLUGIN started !");
 	}

@@ -322,17 +322,14 @@ public class TeamsManager{
 	public static boolean isAllTeammatesOnline(String team) {
 		HashMap<String, String> teams = getTeams();
 		Player p;
-		boolean b = true;
 		
 		for (String player : teams.keySet()) { //NOT WORKING !!!
-			if(teams.get(player).equals(team)) {
-				p = Bukkit.getPlayerExact(player);
-				if(p == null) {
-					b = false;
-				}
+			p = Bukkit.getPlayerExact(player);
+			if(p == null) {
+				return false;
 			}
 		}
-		return b;
+		return true;
 	}
 	/**
 	 * Get une liste de TOUS les membres de l'équipe indiquée
@@ -378,6 +375,13 @@ public class TeamsManager{
 			return false;
 		}
 		return true;
+	}
+	
+	public static boolean hasATeammateOnline(String team) {
+		for(String p : getTeamMembers(team)) {
+			if(Bukkit.getPlayerExact(p) != null) return true;
+		}
+		return false;
 	}
 	
 	public static List<String> getPlayers() {

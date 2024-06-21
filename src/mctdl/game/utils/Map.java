@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import mctdl.game.Main;
@@ -16,7 +17,7 @@ public class Map {
 	private String schem;
 	private Location center;
 	private String world;
-	private HashMap<Location, String> spawns;
+	private HashMap<String, Location> spawns;
 	private List<Cuboid> doors;
 	private int lowestPoint;
 	private int radius;
@@ -44,13 +45,14 @@ public class Map {
 	 * @param main
 	 * @param schem (the schem name no need for extension)
 	 * @param center (apply point of schem)
+	 * @param world
 	 * @param spawns
 	 * @param doors
 	 * @param lowestPoint
 	 * @param radius
 	 * @param name
 	 */
-	public Map(Main main, String schem, Location center, String world, HashMap<Location, String> spawns, List<Cuboid> doors, int lowestPoint, int radius, String name) {
+	public Map(Main main, String schem, Location center, String world, HashMap<String, Location> spawns, List<Cuboid> doors, int lowestPoint, int radius, String name) {
 		this.main = main;
 		
 		this.schem = schem;
@@ -74,9 +76,9 @@ public class Map {
 		current.deleteTerrain();
 	}
 	
-	public void build() {
+	public void build(boolean withAir) {
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/world " + world);
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/schem load " + schem);
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "schem load " + schem);
 
 		int X = center.getBlockX();
 		int Y = center.getBlockY();
@@ -89,7 +91,11 @@ public class Map {
 				System.out.println("[" + name +"] > Schemati loaded");
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/pos1 " + X + "," + Y + "," + Z);
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/pos2 " + X + "," + Y + "," + Z);
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/paste");
+				if(withAir) {
+					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/paste");
+				} else {
+					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/paste -a");
+				}
 				System.out.println("[" + name+ "] > Schematic pasted");
 			}
 		}.runTaskLater(main, 40);
@@ -138,7 +144,11 @@ public class Map {
 		return world;
 	}
 	
-	public HashMap<Location, String> getSpawns() {
+	public World getWorld() {
+		return Bukkit.getWorld(world);
+	}
+	
+	public HashMap<String, Location> getSpawns() {
 		return spawns;
 	}
 	
@@ -156,5 +166,10 @@ public class Map {
 	
 	public String getMapName() {
 		return name;
+	}
+	
+	//Setters
+	public void setSpawns(HashMap<String, Location> spawns) {
+		this.spawns = spawns;
 	}
 }

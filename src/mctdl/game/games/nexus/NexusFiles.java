@@ -19,8 +19,11 @@ public class NexusFiles {
 	    if (!f.exists()) { //CREER SI FICHIER N'EXISTE PAS
 	        try {
 	        	datas.set("isMapGenerated", false);
-	        	
-	        	
+	        	datas.set("map", "nexus");
+	        	//set les spawns
+
+	        	datas.set("respawn_cooldown", 5);
+	        	datas.set("invulnerability", 3);
 	        	datas.save(f);
 	        }  catch (IOException exception) {
 
@@ -56,6 +59,10 @@ public class NexusFiles {
 		FileConfiguration datas = checkMap(main);
 		datas.set("isMapGenerated", isGenerated);
 		saveDatas(datas, main);
+	}
+	
+	public static void getSpawns() {
+		
 	}
 	
 	public static void saveDatas(FileConfiguration datas, Main main) {
