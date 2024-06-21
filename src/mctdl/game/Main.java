@@ -81,7 +81,7 @@ public class Main extends JavaPlugin{
 		
 		//Load HashMap
 		TeamsManager.loadHashMap(this);
-		//MoneyManager.loadHashMap(this);
+		MoneyManager.loadHashMap(this);
 		PlayerData.loadHashMap(this);
 		
 		//Load TAB & NPCs (if server reload) || + Perms
