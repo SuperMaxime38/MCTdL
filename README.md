@@ -1,5 +1,5 @@
-Someday I'll write something here just for you ma big mattis
-
+Un jour ce README sera correct.
+Mais puisque ce projet n'est pas terminé ce n'est pour l'instant pas necessaire
 
 
 Developper's Note:
