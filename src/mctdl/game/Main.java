@@ -2,6 +2,7 @@ package mctdl.game;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -82,6 +83,8 @@ public class Main extends JavaPlugin{
 			NPCManager.loadHashMap(this);
 		}
 		
+		
+		//DOESN'TT WORK
 		ProtocolManager manager = ProtocolLibrary.getProtocolManager();
 		manager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Client.ENTITY_ACTION) {
 			@Override
@@ -90,8 +93,28 @@ public class Main extends JavaPlugin{
 				Player p = e.getPlayer();
 				
 				//Extract Info
+				if(e.getPacket().getType() == PacketType.Play.Server.NAMED_SOUND_EFFECT) {
+					if(packet.getStrings().read(0).equals("block.lava.ambient") || e.getPacket().getStrings().read(0).equals("block.lava.pop") || e.getPacket().getStrings().read(0).equals("block.beacon.ambient")) {
+						e.setCancelled(true);
+					}
+				}
 				
 				
+			}
+			
+			@Override
+			public void onPacketSending(PacketEvent e) {
+				PacketContainer packet = e.getPacket();
+				Player p = e.getPlayer();
+				p.stopSound(Sound.BLOCK_LAVA_AMBIENT);
+				p.stopSound(Sound.BLOCK_LAVA_POP);
+				
+				if(e.getPacket().getType() == PacketType.Play.Server.NAMED_SOUND_EFFECT) {
+					
+					if(packet.getStrings().read(0).equals("block.lava.ambient") || e.getPacket().getStrings().read(0).equals("block.lava.pop") || e.getPacket().getStrings().read(0).equals("block.beacon.ambient")) {
+						e.setCancelled(true);
+					}
+				}
 			}
 		});
 		

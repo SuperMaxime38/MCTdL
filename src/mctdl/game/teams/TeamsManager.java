@@ -217,19 +217,20 @@ public class TeamsManager{
 	/**
 	 * Get the team of a certain player
 	 * <p>
-	 * Exmple if the player Roberto belongs to the red team, getPlayerTeam("Roberto") will return "red"
+	 * Exmple if the player Roberto belongs to the red team, getPlayerTeam() will return "red"
+	 * WATCH OUT, UUID required
 	 * </p>
 	 * @param player's name
 	 * @return The team id (ex. red)
 	 */
-	public static String getPlayerTeam(String name) {
-		String team = teams.get(name);
+	public static String getPlayerTeam(String uuid) {
+		String team = teams.get(uuid);
 		if(team == null) return "none";
 		return team;
 	}
 	
-	public static ChatColor getTeamColor(String playername) {
-		String team = getPlayerTeam(playername);
+	public static ChatColor getTeamColor(String uuid) {
+		String team = getPlayerTeam(uuid);
 		switch (team) {
 		case "red": return ChatColor.RED;
 		case "blue": return ChatColor.BLUE;
@@ -259,8 +260,8 @@ public class TeamsManager{
 		}
 	}
 	
-	public static String getTeamName(String playername) {
-		String team = getPlayerTeam(playername);
+	public static String getTeamName(String uuid) {
+		String team = getPlayerTeam(uuid);
 		switch (team) {
 		case "red": return "§4Red Rocket";
 		case "blue": return "§1Blue Whale";
