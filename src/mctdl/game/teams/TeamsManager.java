@@ -3,8 +3,10 @@ package mctdl.game.teams;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -296,7 +298,7 @@ public class TeamsManager{
 		HashMap<String, String> online = new HashMap<String, String>();
 		Player p;
 		for (String uuid : teams.keySet()) {
-			p = Bukkit.getPlayer(uuid);
+			p = Bukkit.getPlayer(UUID.fromString(uuid));
 			if(p == null) { //Le != null est buggé des fois
 			} else {
 				online.put(uuid, teams.get(uuid));
@@ -308,17 +310,31 @@ public class TeamsManager{
 	public static boolean isAllTeammatesOnline(String team) {
 		HashMap<String, String> teams = getTeams();
 		Player p;
-		boolean b = true;
 		
 		for (String uuid : teams.keySet()) { //NOT WORKING !!!
 			if(teams.get(uuid).equals(team)) {
-				p = Bukkit.getPlayer(uuid);
+				p = Bukkit.getPlayer(UUID.fromString(uuid));
 				if(p == null) {
-					b = false;
+					return false;
 				}
 			}
 		}
-		return b;
+		return true;
+	}
+	
+	public static List<String> getOnlineTeams() {
+		List<String> teams = new ArrayList<>();
+		List<String> teams_name = Arrays.asList("red", "blue", "green", "yellow", "purple", "aqua", "black", "orange");
+		
+		for(String team : teams_name) {
+			for(String uuid : TeamsManager.getTeamMembers(team)) {
+				if(Bukkit.getPlayer(UUID.fromString(uuid)) != null) {
+					teams.add(team);
+					break;
+				}
+			}
+		}
+		return teams;
 	}
 	
 	public static List<String> getTeamMembers(String team) {
@@ -336,16 +352,24 @@ public class TeamsManager{
 	}
 	
 	public static String getPseudo(String uuid) {
-		System.out.println(uuidToPseudo);
 		
 		if(!uuidToPseudo.containsKey(uuid)) {
-			if(Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(uuid))) {
-				return Bukkit.getPlayer(uuid).getName();
+			if(Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(UUID.fromString(uuid)))) {
+				return Bukkit.getPlayer(UUID.fromString(uuid)).getName();
 			} else {
 				return uuid;
 			}
 		}
 		
 		return uuidToPseudo.get(uuid);
+	}
+	
+	public static UUID getUUIDByPseudo(String pseudo) {
+		for(String uuid : uuidToPseudo.keySet()) {
+			if(uuidToPseudo.get(uuid).equals(pseudo)) {
+				return UUID.fromString(uuid);
+			}
+		}
+		return null;
 	}
 }

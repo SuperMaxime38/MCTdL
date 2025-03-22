@@ -1,5 +1,7 @@
 package mctdl.game.commands;
 
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -153,9 +155,17 @@ public class TdLCommand implements CommandExecutor{
 					playername = args[2];
 					teamname = args[3];
 					
-					if(!isLogged(s, playername)) return true;
-					
-					TeamsManager.setPlayerTeam(Bukkit.getPlayer(playername).getUniqueId().toString(), teamname);
+					if(!isLogged(s, playername)) {
+						UUID uid = TeamsManager.getUUIDByPseudo(playername);
+						if(uid != null) {
+							s.sendMessage("L'UUID du joueur a été trouvée, le joueur a donc pu rejoindre l'équipe");
+							TeamsManager.setPlayerTeam(uid.toString(), teamname);
+						} else {
+							return true;
+						}
+					} else {
+						TeamsManager.setPlayerTeam(Bukkit.getPlayer(playername).getUniqueId().toString(), teamname);
+					}
 					TeamsManager.updateConfig(main);
 					
 					s.sendMessage(h + "Le joueur §a" + playername + " §fa été transferé dans l'équipe §6" + teamname);

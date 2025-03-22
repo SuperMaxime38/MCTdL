@@ -1,8 +1,10 @@
 package mctdl.game.tablist;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -41,38 +43,38 @@ public class TabManager implements Listener{
 				String format = "\n§f---------- Equipes ----------";
 				
 				String red = "";
-				for (String members : getMembers("red")) {
-					red = red + TeamsManager.getPseudo(members) + "\n";
+				for (List<String> member : getMembers("red")) {
+					red = red + member.get(0) + member.get(1) + "\n";
 				}
 				String blue = "";
-				for (String members : getMembers("blue")) {
-					blue = blue + TeamsManager.getPseudo(members) + "\n";
+				for (List<String> member : getMembers("blue")) {
+					blue = blue + member.get(0) + member.get(1) + "\n";
 				}
 				String green = "";
-				for (String members : getMembers("green")) {
-					green = green + TeamsManager.getPseudo(members) + "\n";
+				for (List<String> member : getMembers("green")) {
+					green = green + member.get(0) + member.get(1) + "\n";
 				}
 				String yellow = "";
-				for (String members : getMembers("yellow")) {
-					yellow = yellow + TeamsManager.getPseudo(members) + "\n";
+				for (List<String> member : getMembers("yellow")) {
+					yellow = yellow + member.get(0) + member.get(1) + "\n";
 				}
 				String purple = "";
-				for (String members : getMembers("purple")) {
-					purple = purple + TeamsManager.getPseudo(members) + "\n";
+				for (List<String> member : getMembers("purple")) {
+					purple = purple + member.get(0) + member.get(1) + "\n";
 				}
 				String aqua = "";
-				for (String members : getMembers("aqua")) {
-					aqua = aqua + TeamsManager.getPseudo(members) + "\n";
+				for (List<String> member : getMembers("aqua")) {
+					aqua = aqua + member.get(0) + member.get(1) + "\n";
 				}
 				String black = "";
-				for (String members : getMembers("black")) {
-					black = black + TeamsManager.getPseudo(members) + "\n";
+				for (List<String> member : getMembers("black")) {
+					black = black + member.get(0) + member.get(1) + "\n";
 				}
 				String orange = "";
-				for (String members : getMembers("orange")) {
-					orange = orange + TeamsManager.getPseudo(members) + "\n";
+				for (List<String> member : getMembers("orange")) {
+					orange = orange + member.get(0) + member.get(1) + "\n";
 				}
-				List<String> members = new ArrayList<String>();
+				List<List<String>> members = new ArrayList<>();
 				for(int i = 0; i < BaltopCommand.getTeamClassement().size(); i++) {
 					switch(BaltopCommand.getTeamClassement().get(i)) {
 					case "red":
@@ -154,108 +156,100 @@ public class TabManager implements Listener{
 	}
 	
 	
-	public static List<String> getMembers(String team) {
-		List<String> members = new ArrayList<String>();
+	public static List<List<String>> getMembers(String team) {
+		List<List<String>> members = new ArrayList<>();
 		HashMap<String, String> teams = TeamsManager.getTeams();
 		Player p;
 		ChatColor c;
 		
-		for (String players : teams.keySet()) {
-			p = Bukkit.getPlayer(players);
+		for (String uuid : teams.keySet()) {
+			p = Bukkit.getPlayer(UUID.fromString(uuid));
 			switch(team) {
 			case "red":
-				switch(teams.get(players)) {
+				switch(teams.get(uuid)) {
 				case "red":
 					c = ChatColor.RED;
 					if(p == null) {
 						c = ChatColor.GRAY;
 					}
-					players = c + players;
-					members.add(players);
+					members.add(Arrays.asList(c.toString(), TeamsManager.getPseudo(uuid)));
 					break;
 				}
 			break;
 			case "blue":
-				switch(teams.get(players)) {
+				switch(teams.get(uuid)) {
 				case "blue":
 					c = ChatColor.BLUE;
 					if(p == null) {
 						c = ChatColor.GRAY;
 					}
-					players = c + players;
-					members.add(players);
+					members.add(Arrays.asList(c.toString(), TeamsManager.getPseudo(uuid)));
 					break;
 				}
 			break;
 			case "green":
-				switch(teams.get(players)) {
+				switch(teams.get(uuid)) {
 				case "green":
 					c = ChatColor.GREEN;
 					if(p == null) {
 						c = ChatColor.GRAY;
 					}
-					players = c + players;
-					members.add(players);
+					members.add(Arrays.asList(c.toString(), TeamsManager.getPseudo(uuid)));
 					break;
 				}
 			break;
 			case "yellow":
-				switch(teams.get(players)) {
+				switch(teams.get(uuid)) {
 				case "yellow":
 					c = ChatColor.YELLOW;
 					if(p == null) {
 						c = ChatColor.GRAY;
 					}
-					players = c + players;
-					members.add(players);
+					members.add(Arrays.asList(c.toString(), TeamsManager.getPseudo(uuid)));
 					break;
 				}
 			break;
 			case "purple":
-				switch(teams.get(players)) {
+				switch(teams.get(uuid)) {
 				case "purple":
 					c = ChatColor.LIGHT_PURPLE;
 					if(p == null) {
 						c = ChatColor.GRAY;
 					}
-					players = c + players;
-					members.add(players);
+					members.add(Arrays.asList(c.toString(), TeamsManager.getPseudo(uuid)));
 					break;
 				}
 			break;
 			case "aqua":
-				switch(teams.get(players)) {
+				switch(teams.get(uuid)) {
 				case "aqua":
 					c = ChatColor.AQUA;
 					if(p == null) {
 						c = ChatColor.GRAY;
 					}
-					players = c + players;
-					members.add(players);
+					members.add(Arrays.asList(c.toString(), TeamsManager.getPseudo(uuid)));
 					break;
 				}
 			break;
 			case "black":
-				switch(teams.get(players)) {
+				switch(teams.get(uuid)) {
 				case "black":
 					c = ChatColor.DARK_GRAY;
 					if(p == null) {
 						c = ChatColor.GRAY;
 					}
-					players = c + players;
-					members.add(players);
+					members.add(Arrays.asList(c.toString(), TeamsManager.getPseudo(uuid)));
 					break;
 				}
 			break;
 			case "orange":
-				switch(teams.get(players)) {
+				switch(teams.get(uuid)) {
 				case "orange":
 					c = ChatColor.GOLD;
 					if(p == null) {
 						c = ChatColor.GRAY;
 					}
-					players = c + players;
-					members.add(players);
+					members.add(Arrays.asList(c.toString(), TeamsManager.getPseudo(uuid)));
 					break;
 				}
 			break;
