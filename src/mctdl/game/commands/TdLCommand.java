@@ -13,13 +13,14 @@ import mctdl.game.npc.NPCManager;
 import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.GameVoting;
 import mctdl.game.utils.PlayerData;
-import mctdl.game.utils.Time;
 
 public class TdLCommand implements CommandExecutor{
 
 	static Main main;
+	String h;
 	public TdLCommand(Main main) {
 		TdLCommand.main = main;
+		h = Main.header();
 	}
 	
 	
@@ -29,7 +30,6 @@ public class TdLCommand implements CommandExecutor{
 		String playername; //Variables pouvant etre utilisés dans le code
 		String teamname;
 		int amount;
-		String h = Main.header();
 		Player p;
 		
 		if(args.length == 0) {
@@ -110,10 +110,6 @@ public class TdLCommand implements CommandExecutor{
 				p = (Player) s;
 				p.setSpectatorTarget(p.getNearbyEntities(3, 3, 3).get(0));
 			}
-			if(args[0].equals("uptime")) {
-				s.sendMessage("Uptime : " + Time.getUptime());
-				s.sendMessage("CurrentTick : " + Time.getCurrentTick());
-			}
 		} else if(args.length == 2) {
 			if(args[0].equals("teams")) {
 				if(args[1].equals("clear")) {
@@ -131,19 +127,22 @@ public class TdLCommand implements CommandExecutor{
 			if(args[0].equals("money")) {
 				if(args[1].equals("get")) {
 					playername = args[2];
-					s.sendMessage(h + playername + " a " + MoneyManager.getPlayerMoney(playername) + " Coins");
+					if(!isLogged(s, playername)) return true;
+					s.sendMessage(h + playername + " a " + MoneyManager.getPlayerMoney(Bukkit.getPlayer(playername).getUniqueId().toString()) + " Coins");
 					return true;
 				}
 			}
 			if(args[0].equals("team")) {
 				if(args[1].equals("get")) {
 					playername = args[2];
-					s.sendMessage(h + playername + " est dans l'équipe " + TeamsManager.getPlayerTeam(playername));
+					if(!isLogged(s, playername)) return true;
+					s.sendMessage(h + playername + " est dans l'équipe " + TeamsManager.getPlayerTeam(Bukkit.getPlayer(playername).getUniqueId().toString()));
 					return true;
 				}
 				if(args[1].equals("remove")) {
 					playername = args[2];
-					TeamsManager.removePlayerTeam(playername);
+					if(!isLogged(s, playername)) return true;
+					TeamsManager.removePlayerTeam(Bukkit.getPlayer(playername).getUniqueId().toString());
 					s.sendMessage(h + playername  + " a été retiré de son équipe");
 					return true;
 				}
@@ -154,7 +153,9 @@ public class TdLCommand implements CommandExecutor{
 					playername = args[2];
 					teamname = args[3];
 					
-					TeamsManager.setPlayerTeam(playername, teamname);
+					if(!isLogged(s, playername)) return true;
+					
+					TeamsManager.setPlayerTeam(Bukkit.getPlayer(playername).getUniqueId().toString(), teamname);
 					TeamsManager.updateConfig(main);
 					
 					s.sendMessage(h + "Le joueur §a" + playername + " §fa été transferé dans l'équipe §6" + teamname);
@@ -166,15 +167,21 @@ public class TdLCommand implements CommandExecutor{
 					playername = args[2];
 					amount = Integer.parseInt(args[3]);
 					
-					MoneyManager.setPlayerMoney(playername, amount);
+
+					if(!isLogged(s, playername)) return true;
+					
+					MoneyManager.setPlayerMoney(Bukkit.getPlayer(playername).getUniqueId().toString(), amount);
 					s.sendMessage(h + "L'argent de " + playername  + " est de " + amount);
 					return true;
 				}
 				if(args[1].equals("remove")) {
 					playername = args[2];
 					amount = Integer.parseInt(args[3]);
+
+
+					if(!isLogged(s, playername)) return true;
 					
-					MoneyManager.removePlayerMoney(playername, amount);
+					MoneyManager.removePlayerMoney(Bukkit.getPlayer(playername).getUniqueId().toString(), amount);
 					s.sendMessage(h + "L'argent de " + playername  + " est de " + MoneyManager.getPlayerMoney(playername));
 					return true;
 				}
@@ -182,7 +189,11 @@ public class TdLCommand implements CommandExecutor{
 					playername = args[2];
 					amount = Integer.parseInt(args[3]);
 					
-					MoneyManager.addPlayerMoney(playername, amount);
+
+					if(!isLogged(s, playername)) return true;
+					
+					
+					MoneyManager.addPlayerMoney(Bukkit.getPlayer(playername).getUniqueId().toString(), amount);
 					s.sendMessage(h + "L'argent de " + playername  + " est de " + MoneyManager.getPlayerMoney(playername));
 					return true;
 				}
@@ -192,21 +203,28 @@ public class TdLCommand implements CommandExecutor{
 					playername = args[2];
 					amount = Integer.parseInt(args[3]);
 					
-					MoneyManager.setPlayerPoutres(playername, amount);
+
+					if(!isLogged(s, playername)) return true;
+					
+					MoneyManager.setPlayerPoutres(Bukkit.getPlayer(playername).getUniqueId().toString(), amount);
 					return true;
 				}
 				if(args[1].equals("remove")) {
 					playername = args[2];
 					amount = Integer.parseInt(args[3]);
+
+					if(!isLogged(s, playername)) return true;
 					
-					MoneyManager.removePlayerPoutre(playername, amount);
+					MoneyManager.removePlayerPoutre(Bukkit.getPlayer(playername).getUniqueId().toString(), amount);
 					return true;
 				}
 				if(args[1].equals("add")) {
 					playername = args[2];
 					amount = Integer.parseInt(args[3]);
+
+					if(!isLogged(s, playername)) return true;
 					
-					MoneyManager.addPlayerPoutre(playername, amount);
+					MoneyManager.addPlayerPoutre(Bukkit.getPlayer(playername).getUniqueId().toString(), amount);
 					return true;
 				}
 			}
@@ -215,6 +233,13 @@ public class TdLCommand implements CommandExecutor{
 			
 		}
 		
+		return false;
+	}
+	
+	private boolean isLogged(CommandSender s,String playername) {
+		if(Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(playername))) return true;
+
+		s.sendMessage(h + "Le joueur §a" + playername + " §fne semble pas connecté");
 		return false;
 	}
 

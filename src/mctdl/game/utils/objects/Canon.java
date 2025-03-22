@@ -23,15 +23,12 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 import mctdl.game.Main;
 import mctdl.game.utils.LobbyData;
@@ -96,64 +93,69 @@ public class Canon implements Listener{
 		double xA = x, zA = z;
 		double xB = x, zB = z;
 		double xC = x, zC = z;
-		float north = 180;
+		float chairyaw = 0;
 		
+		if(yaw < -135 || yaw > 135) { //CA VEUT DIRE NORTH
 			stair.setFacing(BlockFace.SOUTH);
 			zA -= 0.62;
 			zB -= 1.15;
 			zC += 1;
-			
+			chairyaw = 180;
+			p.sendMessage("N");
+		}
+		if(yaw > 45 && yaw < 136) { //WEST
+			stair.setFacing(BlockFace.EAST);
+			xA -= 0.62;
+			xB -= 1.15;
+			xC += 1;
+			chairyaw = 90;
+			p.sendMessage("W");
+		}
+		if(yaw > -45 && yaw < 45) { //SOUTH
+			stair.setFacing(BlockFace.NORTH);
+			zA += 0.62;
+			zB += 1.15;
+			zC -= 1;
+			p.sendMessage("S");
+		}
+		if(yaw > -136 && yaw < -46) { //EAST
+			stair.setFacing(BlockFace.WEST);
+			xA += 0.62;
+			xB += 1.15;
+			xC -= 1;
+			chairyaw = -90;
+			p.sendMessage("E");
+		}
 		b.setBlockData(stair);
 		b.getState().update();
 		//---------
-		
 		Location O = new Location(loc.getWorld(), x, loc.getY() - 0.7, z, yaw, 0);
 		
-		
-		float dAngle = yaw - north;
-		
-		double angle = Math.toRadians(dAngle);
-		
-		double xA2 = ((xA - x)*Math.cos(angle) - (zA-z) * Math.sin(angle)) + x;
-		double zA2 = ((xA-x)*Math.sin(angle) + (zA-z) * Math.cos(angle)) + z;
-		
-		double xB2 = ((xB - x)*Math.cos(angle) - (zB-z) * Math.sin(angle)) + x;
-		double zB2 = ((xB-x)*Math.sin(angle) + (zB-z) * Math.cos(angle)) + z;
-		
-		double xC2 = ((xC - x)*Math.cos(angle) - (zC-z) * Math.sin(angle)) + x;
-		double zC2 = ((xC-x)*Math.sin(angle) + (zC-z) * Math.cos(angle)) + z;
-		
-		Location b1loc = O.clone();
-		b1loc.setYaw(0);
-		ArmorStand bouche1 = (ArmorStand) O.getWorld().spawnEntity(b1loc, EntityType.ARMOR_STAND);
+		ArmorStand bouche1 = (ArmorStand) O.getWorld().spawnEntity(O, EntityType.ARMOR_STAND);
 		bouche1.getEquipment().setHelmet(new ItemStack(Material.COAL_BLOCK));
 		bouche1.setGravity(false);
 		bouche1.setInvisible(true);
-		bouche1.setInvulnerable(true);
 		
 		
-		Location A = new Location(loc.getWorld(), xA2, loc.getY() -0.7, zA2, yaw, 0);
+		Location A = new Location(loc.getWorld(), xA, loc.getY() -0.7, zA, yaw, 0);
 		ArmorStand bouche2 = (ArmorStand) A.getWorld().spawnEntity(A, EntityType.ARMOR_STAND);
 		bouche2.getEquipment().setHelmet(new ItemStack(Material.COAL_BLOCK));
 		bouche2.setGravity(false);
 		bouche2.setInvisible(true);
-		bouche2.setInvulnerable(true);
 
-		Location B = new Location(loc.getWorld(), xB2, loc.getY() +0.05, zB2, yaw, 0);
+		Location B = new Location(loc.getWorld(), xB, loc.getY() +0.05, zB, yaw, 0);
 		ArmorStand bouche3 = (ArmorStand) B.getWorld().spawnEntity(B, EntityType.ARMOR_STAND);
 		bouche3.getEquipment().setHelmet(new ItemStack(Material.COAL_BLOCK));
 		bouche3.setSmall(true);
 		bouche3.setGravity(false);
 		bouche3.setInvisible(true);
-		bouche3.setInvulnerable(true);
 		
 
-		Location Chair = new Location(loc.getWorld(), xC2, loc.getY() -1.3, zC2, yaw, 0);
+		Location Chair = new Location(loc.getWorld(), xC, loc.getY() -1.3, zC, chairyaw, 0);
 		ArmorStand chairsd = (ArmorStand) Chair.getWorld().spawnEntity(Chair, EntityType.ARMOR_STAND);
 		chairsd.getEquipment().setHelmet(new ItemStack(Material.OAK_STAIRS));
 		chairsd.setGravity(false);
 		chairsd.setInvisible(true);
-		chairsd.setInvulnerable(true);
 		
 		chairs.add(chairsd);
 		List<String> ids = new ArrayList<>();
@@ -222,7 +224,7 @@ public class Canon implements Listener{
 			double xC =chairsd.getLocation().getX();
 			double zC = chairsd.getLocation().getZ();
 			
-			float b1yaw = bouche2.getLocation().getYaw();
+			float b1yaw = bouche1.getLocation().getYaw();
 			
 			@Override
 			public void run() {
@@ -244,14 +246,14 @@ public class Canon implements Listener{
 				
 					double angle = Math.toRadians(dAngle);
 					
-					double xA2 = ((xA - x)*Math.cos(angle) - (zA-z) * Math.sin(angle)) + x;
-					double zA2 = ((xA-x)*Math.sin(angle) + (zA-z) * Math.cos(angle)) + z;
+					double xA2 = (xA - x)*Math.cos(angle) - (zA-z) * Math.cos(angle) + x;
+					double zA2 = (xA-x)*Math.sin(angle) + (zA-z) * Math.cos(angle) + z;
 					
-					double xB2 = ((xB - x)*Math.cos(angle) - (zB-z) * Math.sin(angle)) + x;
-					double zB2 = ((xB-x)*Math.sin(angle) + (zB-z) * Math.cos(angle)) + z;
+					double xB2 = (xB - x)*Math.cos(angle) - (zB-z) * Math.cos(angle) + x;
+					double zB2 = (xB-x)*Math.sin(angle) + (zB-z) * Math.cos(angle) + z;
 					
-					double xC2 = ((xC - x)*Math.cos(angle) - (zC-z) * Math.sin(angle)) + x;
-					double zC2 = ((xC-x)*Math.sin(angle) + (zC-z) * Math.cos(angle)) + z;
+					double xC2 = (xC - x)*Math.cos(angle) - (zC-z) * Math.cos(angle) + x;
+					double zC2 = (xC-x)*Math.sin(angle) + (zC-z) * Math.cos(angle) + z;
 					
 					Location A2 = bouche2.getLocation().clone();
 					A2.setX(xA2);
@@ -274,69 +276,6 @@ public class Canon implements Listener{
 			}
 		}.runTaskTimer(main, 0, 1);
 		
-	}
-	
-	@EventHandler
-	public static void onShoot(PlayerInteractEvent e) {
-		Player p = e.getPlayer();
-		if(!sat.contains(p)) return;
-		
-		if(e.getAction() == Action.LEFT_CLICK_AIR) {
-			List<String> data = LobbyData.getCanonDatas().get(p.getVehicle().getUniqueId().toString());
-			ArmorStand bouche3 = (ArmorStand) Bukkit.getEntity(UUID.fromString(data.get(2)));
-			
-			ArmorStand bullet = (ArmorStand) p.getWorld().spawnEntity(bouche3.getLocation(), EntityType.ARMOR_STAND);
-			bullet.getEquipment().setHelmet(new ItemStack(Material.COAL_BLOCK));
-			bullet.setSmall(true);
-			bullet.setGravity(true);
-			bullet.setInvisible(true);
-			
-			
-			new BukkitRunnable() {
-				
-				Vector dir = p.getLocation().getDirection();
-				int t = 0;
-				double gravity = 0;
-				double acceleration = 0.004;
-
-				@Override
-				public void run() {
-					if(t==0) {
-						dir = dir.multiply(0.1);
-						p.sendMessage(dir.toString());
-						t++;
-					}
-					if(!bullet.getNearbyEntities(0.5, 0.5, 0.5).isEmpty() || bullet.getLocation().getBlock().getType() != Material.AIR) { //si ya contact alors boom
-						if(!bullet.getNearbyEntities(0.5, 0.5, 0.5).isEmpty()) {
-							if(!bullet.getNearbyEntities(0.5, 0.5, 0.5).contains(bouche3)) {
-								//boom
-								
-								bullet.remove();
-								p.sendMessage("obstacle");
-								
-								cancel();
-								return;
-								
-							} else {
-								
-							}
-						} else {
-							//boom
-							
-							bullet.remove();
-							p.sendMessage("obstacle");
-							
-							cancel();
-							return;
-						}
-					}
-					gravity += acceleration;
-					dir.setY(dir.getY() - gravity);
-					bullet.setVelocity(dir);
-				}
-				
-			}.runTaskTimer(main, 0, 1);
-		}
 	}
 	
 	

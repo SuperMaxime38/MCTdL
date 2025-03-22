@@ -25,9 +25,6 @@ public class ScoreboardManager implements Listener{
 	public ScoreboardManager(Main main) {
 		ScoreboardManager.main = main;
 	}
-	
-	static int order;
-	static Score score;
  	
 	@EventHandler
 	public static void onJoin(PlayerJoinEvent e) {
@@ -39,53 +36,60 @@ public class ScoreboardManager implements Listener{
 		Scoreboard board = mng.getNewScoreboard();
 		Objective obj = board.registerNewObjective("title", "dummy", "§l§3Tournoi des Légendes");
 		obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-		
-		order = BaltopCommand.getClassement().indexOf(p.getName()) +1; // 0
-		score = obj.getScore("§3Personnal Rank : §6#" + order);
-		score.setScore(0);
-		old.add(0, "§3Personnal Rank : §6#" + order);
-		
-		order = BaltopCommand.getTeamClassement().indexOf(TeamsManager.getPlayerTeam(p.getName())) +1; // 1
-		score = obj.getScore("§bTeam Rank : §6#" + order);
-		score.setScore(1);
-		old.add(1, "§bTeam Rank : §6#" + order);
-		
-		score = obj.getScore("§6Coins §f: " + MoneyManager.getPlayerMoney(p.getName())); // 2
-		score.setScore(2);
-		old.add(2, "§6Coins §f: " + MoneyManager.getPlayerMoney(p.getName()));
-		
-		score = obj.getScore("§aTeam : " + TeamsManager.getTeamName(p.getName())); //3
-		score.setScore(3);
-		old.add(3, "§aTeam : " + TeamsManager.getTeamName(p.getName()));
-		
 		new BukkitRunnable() {
+			int i = -1;
+			int order;
+			Score score;
 			
 			@Override
 			public void run() {
-
-				board.resetScores(old.get(0));
-				order = BaltopCommand.getClassement().indexOf(p.getName()) +1; // 0
-				old.set(0, "§3Personnal Rank : §6#" + order);
-				score = obj.getScore(old.get(0)); //0
-				score.setScore(0);
-
-				board.resetScores(old.get(1));
-				order = BaltopCommand.getTeamClassement().indexOf(TeamsManager.getPlayerTeam(p.getName())) +1;  // 1
-				old.set(1, "§bTeam Rank : §6#" + order);
-				score = obj.getScore(old.get(1)); //0
-				score.setScore(1);
-
-				board.resetScores(old.get(2));
-				old.set(2, "§6Coins §f: " + MoneyManager.getPlayerMoney(p.getName())); //2
-				score = obj.getScore(old.get(2)); //0
-				score.setScore(2);
-
+				if(i == -1) {
+					order = BaltopCommand.getClassement().indexOf(p.getName()) +1; // 0
+					score = obj.getScore("§3Personnal Rank : §6#" + order);
+					score.setScore(0);
+					old.add(0, "§3Personnal Rank : §6#" + order);
+					
+					order = BaltopCommand.getTeamClassement().indexOf(TeamsManager.getPlayerTeam(p.getName())) +1; // 1
+					score = obj.getScore("§bTeam Rank : §6#" + order);
+					score.setScore(1);
+					old.add(1, "§bTeam Rank : §6#" + order);
+					
+					score = obj.getScore("§6Coins §f: " + MoneyManager.getPlayerMoney(p.getName())); // 2
+					score.setScore(2);
+					old.add(2, "§6Coins §f: " + MoneyManager.getPlayerMoney(p.getName()));
+					
+					score = obj.getScore("§aTeam : " + TeamsManager.getTeamName(p.getName())); //3
+					score.setScore(3);
+					old.add(3, "§aTeam : " + TeamsManager.getTeamName(p.getName()));
+					
+				}
+				if(i > 0) i = 0;
 				board.resetScores(old.get(3));
-				old.set(3, "§aTeam : " + TeamsManager.getTeamName(p.getName())); //3
-				score = obj.getScore(old.get(3)); //0
+				score = obj.getScore("§aTeam : " + TeamsManager.getTeamName(p.getName())); //3
 				score.setScore(3);
+				old.set(3, "§aTeam : " + TeamsManager.getTeamName(p.getName()));
+				
+				board.resetScores(old.get(2));
+				score = obj.getScore("§6Coins §f: " + MoneyManager.getPlayerMoney(p.getName())); // 2
+				score.setScore(2);
+				old.set(2, "§6Coins §f: " + MoneyManager.getPlayerMoney(p.getName()));
+
+				order = BaltopCommand.getTeamClassement().indexOf(TeamsManager.getPlayerTeam(p.getName())) +1;  // 1
+				board.resetScores(old.get(1));
+				score = obj.getScore("§bTeam Rank : §6#" + order);
+				score.setScore(1);
+				old.set(1, "§bTeam Rank : §6#" + order);
+				
+				
+				order = BaltopCommand.getClassement().indexOf(p.getName()) +1; // 0
+				board.resetScores(old.get(0));
+				score = obj.getScore("§3Personnal Rank : §6#" + order);
+				score.setScore(0);
+				old.set(0, "§3Personnal Rank : §6#" + order);
+				
+				i++;
 			}
-		}.runTaskTimerAsynchronously(main, 0, 20);
+		}.runTaskTimer(main, 0, 20);
 		
 		new BukkitRunnable() {
 			int i = 0;
@@ -120,6 +124,7 @@ public class ScoreboardManager implements Listener{
 		
 		p.setScoreboard(board);
 		
+		//p.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§4TEstttttt"));
 	}
 
 }

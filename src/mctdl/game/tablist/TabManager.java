@@ -42,35 +42,35 @@ public class TabManager implements Listener{
 				
 				String red = "";
 				for (String members : getMembers("red")) {
-					red = red + members + "\n";
+					red = red + TeamsManager.getPseudo(members) + "\n";
 				}
 				String blue = "";
 				for (String members : getMembers("blue")) {
-					blue = blue + members + "\n";
+					blue = blue + TeamsManager.getPseudo(members) + "\n";
 				}
 				String green = "";
 				for (String members : getMembers("green")) {
-					green = green + members + "\n";
+					green = green + TeamsManager.getPseudo(members) + "\n";
 				}
 				String yellow = "";
 				for (String members : getMembers("yellow")) {
-					yellow = yellow + members + "\n";
+					yellow = yellow + TeamsManager.getPseudo(members) + "\n";
 				}
 				String purple = "";
 				for (String members : getMembers("purple")) {
-					purple = purple + members + "\n";
+					purple = purple + TeamsManager.getPseudo(members) + "\n";
 				}
 				String aqua = "";
 				for (String members : getMembers("aqua")) {
-					aqua = aqua + members + "\n";
+					aqua = aqua + TeamsManager.getPseudo(members) + "\n";
 				}
 				String black = "";
 				for (String members : getMembers("black")) {
-					black = black + members + "\n";
+					black = black + TeamsManager.getPseudo(members) + "\n";
 				}
 				String orange = "";
 				for (String members : getMembers("orange")) {
-					orange = orange + members + "\n";
+					orange = orange + TeamsManager.getPseudo(members) + "\n";
 				}
 				List<String> members = new ArrayList<String>();
 				for(int i = 0; i < BaltopCommand.getTeamClassement().size(); i++) {
@@ -157,10 +157,11 @@ public class TabManager implements Listener{
 	public static List<String> getMembers(String team) {
 		List<String> members = new ArrayList<String>();
 		HashMap<String, String> teams = TeamsManager.getTeams();
+		Player p;
 		ChatColor c;
 		
 		for (String players : teams.keySet()) {
-			Player p = Bukkit.getPlayerExact(players);
+			p = Bukkit.getPlayer(players);
 			switch(team) {
 			case "red":
 				switch(teams.get(players)) {

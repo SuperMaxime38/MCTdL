@@ -11,7 +11,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.TrapDoor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -40,7 +39,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import mctdl.game.Main;
 import mctdl.game.money.MoneyManager;
 import mctdl.game.teams.TeamsManager;
-import mctdl.game.utils.Cuboid;
 import mctdl.game.utils.PlayerData;
 import mctdl.game.utils.Spectate;
 import mctdl.game.utils.TimeFormater;
@@ -85,7 +83,6 @@ public class Meltdown implements Listener {
 						Bukkit.broadcastMessage("§6The game will start...");
 						playerBegin();
 						MDMap.doorTrigger(MeltdownFiles.getDoorCoords(main, 0));
-						alarmSound();
 						cancel();
 						return;
 						}
@@ -96,21 +93,20 @@ public class Meltdown implements Listener {
 		} else {
 			playerTeleport();
 			playerBegin();
-			alarmSound();
 		}
 	}
 	
 	public static void playerTeleport() {
 		HashMap<String, String> teams = TeamsManager.getOnlinePlayers();
-		for (String player : teams.keySet()) {
-			Player p = Bukkit.getPlayerExact(player);
-			List<Integer> tp = MeltdownFiles.getSpawnCoords(main, TeamsManager.getPlayerTeam(player));
+		for (String uuid : teams.keySet()) {
+			Player p = Bukkit.getPlayer(uuid);
+			List<Integer> tp = MeltdownFiles.getSpawnCoords(main, TeamsManager.getPlayerTeam(uuid));
 			p.teleport(new Location(Bukkit.getWorlds().get(0), tp.get(0), tp.get(1), tp.get(2), tp.get(3), 0));
 			
 			//Anti bug -- supposé useless
 			//-->
 			List<Integer> truc = new ArrayList<>();
-			playerdata.put(player, truc);
+			playerdata.put(uuid, truc);
 			
 			// Items
 			PlayerData.saveItems(p);
@@ -121,22 +117,22 @@ public class Meltdown implements Listener {
 	public static void playerBegin() {
 		HashMap<String, String> teams = TeamsManager.getOnlinePlayers();
 		for (String player : teams.keySet()) {
-			Player p = Bukkit.getPlayerExact(player);
+			Player p = Bukkit.getPlayer(player);
 			p.setGameMode(GameMode.SURVIVAL);
 			p.setInvisible(false);
-				
+			
 			p.getActivePotionEffects().clear();
 
 			p.getInventory().setItem(0, getBow());
 
 			p.getInventory().setItem(1, getCooldownPickaxe());
-				
+			
 			p.getInventory().setItem(2, getHeater(TeamsManager.getPlayerTeam(player)));
 
 			p.getInventory().setItem(27, new ItemStack(Material.ARROW));
 
 			p.getActivePotionEffects().clear();
-				
+			
 			regPlayer(p);
 
 		}
@@ -150,41 +146,6 @@ public class Meltdown implements Listener {
 
 		victoryChecker();
 	}
-	
-	public static void alarmSound() {
-		//Toutes les 2 secondes récupère les salles qui melt et joue un son aux joueurs dedans
-		
-		new BukkitRunnable() {
-
-			@Override
-			public void run() {
-				if(!enable) {
-					cancel();
-					return;
-				}
-				
-				List<Cuboid> rooms = MDMap.getMeltingRooms();
-				for(String player : TeamsManager.getOnlinePlayers().keySet()) {
-					Player p = Bukkit.getPlayerExact(player);
-					for(Cuboid cube : rooms) {
-						if(cube.contains(p.getLocation())) {
-							List<Location> alarms = MDMap.getAlarmsLocs();
-							Location loc = new Location(p.getWorld(), 0, 1000000, 0);
-							for(Location l : alarms) {
-								if(l.distance(p.getLocation()) <= loc.distance(p.getLocation())) {
-									loc = l;
-								}
-							}
-							p.playSound(loc, Sound.BLOCK_HONEY_BLOCK_BREAK, 0.02f, 0);
-						}
-					}
-				}
-				
-			}
-			
-		}.runTaskTimer(main, 0, 140);
-		
-	}
 
 	// End game
 	public static void disable(Main main) {
@@ -194,7 +155,7 @@ public class Meltdown implements Listener {
 			public void run() {
 				HashMap<String, String> teams = TeamsManager.getOnlinePlayers();
 				for (String player : teams.keySet()) {
-					Player p = Bukkit.getPlayerExact(player);
+					Player p = Bukkit.getPlayer(player);
 					p.setGameMode(GameMode.ADVENTURE);
 					p.setInvisible(false);
 
@@ -223,13 +184,13 @@ public class Meltdown implements Listener {
 	public static void applyMoneyWon() {
 		HashMap<String, Integer> balances = MoneyManager.getRegsPlayer();
 		List<String> compensation = new ArrayList<String>();
-		for (String player : playerdata.keySet()) {
+		for (String uuid : playerdata.keySet()) {
 
-			int gold = balances.get(player);
-			int meltdown_gold = playerdata.get(player).get(2);
+			int gold = balances.get(uuid);
+			int meltdown_gold = playerdata.get(uuid).get(2);
 
 			// Check is player can get compensation from offline teammate
-			String team = TeamsManager.getPlayerTeam(player);
+			String team = TeamsManager.getPlayerTeam(uuid);
 			boolean b = TeamsManager.isAllTeammatesOnline(team);
 			if (!b) {
 				if(meltdown_gold > 0) {
@@ -242,11 +203,11 @@ public class Meltdown implements Listener {
 			}
 
 			gold = gold + meltdown_gold;
-			MoneyManager.setPlayerMoney(player, gold);
+			MoneyManager.setPlayerMoney(uuid, gold);
 			
-			if(Bukkit.getPlayerExact(player) != null) {
-				Bukkit.getPlayerExact(player).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§6+" + meltdown_gold + " Coins"));
-				Bukkit.getPlayerExact(player).sendMessage("§aYou got " + "§6+" + meltdown_gold + " Coins");
+			if(Bukkit.getPlayer(uuid) != null) {
+				Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§6+" + meltdown_gold + " Coins"));
+				Bukkit.getPlayer(uuid).sendMessage("§aYou got " + "§6+" + meltdown_gold + " Coins");
 			}
 		}
 
@@ -300,8 +261,8 @@ public class Meltdown implements Listener {
 		playerdata.put(p.getName(), datas);
 	}
 
-	public static List<Integer> getRawPlayerDatas(String name) {
-		return playerdata.get(name);
+	public static List<Integer> getRawPlayerDatas(String uuid) {
+		return playerdata.get(uuid);
 	}
 	
 	public static void doesPlayerJoined(String playername) {
@@ -373,7 +334,7 @@ public class Meltdown implements Listener {
 							if (team == TeamsManager.getPlayerTeam(player)) { // Si le joueur appartient à la team qui a
 																				// claim la pioche alors mettre un
 																				// cooldown
-								pl = Bukkit.getPlayerExact(player);
+								pl = Bukkit.getPlayer(player);
 								playerdata.get(player).set(13,main.getConfig().getInt("games.meltdown.cooldown.pickaxe"));
 								pickaxeCooldown(pl);
 								if (pl != p) {
@@ -396,10 +357,6 @@ public class Meltdown implements Listener {
 
 			@Override
 			public void run() {
-				if(!enable) {
-					cancel();
-					return;
-				}
 				if (cd == 0) {
 					playerdata.get(p.getName()).set(13, 0);
 					cancel();
@@ -452,8 +409,7 @@ public class Meltdown implements Listener {
 				e.setCancelled(true);
 				return;
 			}
-			p.playSound(e.getBlock().getLocation(), Sound.BLOCK_HONEY_BLOCK_STEP, 1, 2);
-			List<Integer> data = playerdata.get(e.getPlayer().getName());
+			List<Integer> data = playerdata.get(e.getPlayer().getUniqueId().toString());
 			int bal = data.get(2);
 			int amount = main.getConfig().getInt("games.meltdown.money.block");
 			bal = bal + amount;
@@ -474,7 +430,7 @@ public class Meltdown implements Listener {
 		for (String player : playerdata.keySet()) {
 			if(playerdata.get(player).get(8) != null) { //Si la valeur Heater X n'est pas nulle <=> ce joueur a placé un heater
 				if(playerdata.get(player).get(8) == loc.getX() && playerdata.get(player).get(9) == loc.getY() && playerdata.get(player).get(10) == loc.getZ()){ //Si heater cassé est celui du joueur qui l'a cassé
-					Player p = Bukkit.getPlayerExact(player);
+					Player p = Bukkit.getPlayer(player);
 					p.getInventory().addItem(getHeater(TeamsManager.getPlayerTeam(player)));
 					playerdata.get(player).set(12, main.getConfig().getInt("games.meltdown.cooldown.heater"));
 					playerdata.get(player).set(8, null);
@@ -554,10 +510,6 @@ public class Meltdown implements Listener {
 					cancel();
 					return;
 				}
-				if(playerdata.get(p.getName()).get(0) == 0) {
-					cancel();
-					return;
-				}
 				playerdata.get(p.getName()).set(12, cd);
 				cd--;
 			}
@@ -597,11 +549,6 @@ public class Meltdown implements Listener {
 		} else { // SI LE HEATER PEUT ETRE PLACE ALORS
 			Block b = e.getBlock();
 			Location loc = b.getLocation();
-			if(loc.getY() < 11) { //Placé dans la lave
-				p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§cYou cannot place your heater on lava ! >:("));
-				e.setCancelled(true);
-				return;
-			}
 			
 			//Check si pas placé dans zone melted
 			List<Location> banned = MDMap.getBannedLocs();
@@ -629,8 +576,8 @@ public class Meltdown implements Listener {
 						cancel();
 					}
 					for (String player : playerdata.keySet()) {
-						if (Bukkit.getPlayerExact(player) != null) { // Empeche les bugs
-							Player pl = Bukkit.getPlayerExact(player);
+						if (Bukkit.getPlayer(player) != null) { // Empeche les bugs
+							Player pl = Bukkit.getPlayer(player);
 							if (loc.distance(pl.getLocation()) <= 3) { // Rayon du heater
 								if (playerdata.get(player).get(14) < 100) { // Si joueur freeze
 									playerdata.get(player).set(14, playerdata.get(player).get(14) + 1);
@@ -800,7 +747,7 @@ public class Meltdown implements Listener {
 		pData.set(4, pdeaths);
 		pData.set(1, 1);
 
-		iceCube(p.getName());
+		iceCube(p.getUniqueId().toString());
 		Bukkit.broadcastMessage(TeamsManager.getTeamColor(p.getName()) + p.getName() + " §fwas frozen by "
 				+ TeamsManager.getTeamColor(shooter.getName()) + shooter.getName());
 
@@ -827,8 +774,8 @@ public class Meltdown implements Listener {
 			for (String mates : dead_mates) {
 				playerdata.get(mates).set(0, 0);
 				playerdata.get(mates).set(1, 1);
-				// Bukkit.getPlayerExact(mates).setGameMode(GameMode.SPECTATOR);
-				Bukkit.getPlayerExact(mates).setInvisible(true);
+				// Bukkit.getPlayer(mates).setGameMode(GameMode.SPECTATOR);
+				Bukkit.getPlayer(mates).setInvisible(true);
 			}
 
 			sgold = sgold + 100;
@@ -858,7 +805,7 @@ public class Meltdown implements Listener {
 				boolean anotherTeam = false;
 				for (String pl : playerdata.keySet()) {
 					List<Integer> pData = playerdata.get(pl);
-					Player pla = Bukkit.getPlayerExact(pl);
+					Player pla = Bukkit.getPlayer(pl);
 					if(pla == null) break;
 					if(pla.getLocation().getY() <= fall_height && pData.get(0) != 0) {
 						int pgold = pData.get(2);
@@ -872,19 +819,24 @@ public class Meltdown implements Listener {
 						pData.set(16, 1);
 							
 						//Unset on fire
-						Bukkit.getPlayerExact(pl).setFireTicks(0);
+						Bukkit.getPlayer(pl).setFireTicks(0);
 						
 						playerdata.put(pl, pData);
 						Bukkit.broadcastMessage(TeamsManager.getTeamColor(pl) + " " + pl + " §ffell in §clava");
 							
-						//Bukkit.getPlayerExact(pl).setGameMode(GameMode.SPECTATOR);
-						List<String> teamates = TeamsManager.getTeamMembers(TeamsManager.getPlayerTeam(Bukkit.getPlayerExact(pl).getName()));
+						//Bukkit.getPlayer(pl).setGameMode(GameMode.SPECTATOR);
+						List<String> teamates = TeamsManager.getTeamMembers(TeamsManager.getPlayerTeam(Bukkit.getPlayer(pl).getName()));
+						/*if(teamates.get(0) == pl) { //Si le premier qui ressort de la liste est le joueur lui meme (bah on va pas le faire s'auto spectate c logique)
+							Bukkit.getPlayer(pl).setSpectatorTarget(Bukkit.getPlayer(teamates.get(1)));
+						} else {
+							Bukkit.getPlayer(pl).setSpectatorTarget(Bukkit.getPlayer(teamates.get(0)));
+						}*/
 						
-						Spectate.setSpectatingGroup(Bukkit.getPlayerExact(pl), teamates);
+						Spectate.setSpectatingGroup(Bukkit.getPlayer(pl), teamates);
 						
-						infiniteDeathMessage(Bukkit.getPlayerExact(pl));
+						infiniteDeathMessage(Bukkit.getPlayer(pl));
 					}
-					if (pData.get(1).equals(0) || pData.get(0).equals(1)) {
+					if (playerdata.get(pl).get(1).equals(0) || playerdata.get(pl).get(0).equals(1)) {
 						teams.add(TeamsManager.getPlayerTeam(pl));
 					}
 				}
@@ -920,18 +872,18 @@ public class Meltdown implements Listener {
 			} else { //Spectate team members
 				if(playerdata.get(pl).get(16).equals(0)) { //Si il est gelé mais ne spectate pas
 					
-					//Bukkit.getPlayerExact(pl).setGameMode(GameMode.SPECTATOR);
+					//Bukkit.getPlayer(pl).setGameMode(GameMode.SPECTATOR);
 					
-					List<String> teamates = TeamsManager.getTeamMembers(TeamsManager.getPlayerTeam(Bukkit.getPlayerExact(pl).getName()));
-					/*if(teamates.get(0) == Bukkit.getPlayerExact(pl).getName()) { //Si le premier qui ressort de la liste est le joueur lui meme (bah on va pas le faire s'auto spectate c logique)
-						Bukkit.getPlayerExact(pl).setSpectatorTarget(Bukkit.getPlayerExact(teamates.get(1)));
+					List<String> teamates = TeamsManager.getTeamMembers(TeamsManager.getPlayerTeam(Bukkit.getPlayer(pl).getName()));
+					/*if(teamates.get(0) == Bukkit.getPlayer(pl).getName()) { //Si le premier qui ressort de la liste est le joueur lui meme (bah on va pas le faire s'auto spectate c logique)
+						Bukkit.getPlayer(pl).setSpectatorTarget(Bukkit.getPlayer(teamates.get(1)));
 					} else {
-						Bukkit.getPlayerExact(pl).setSpectatorTarget(Bukkit.getPlayerExact(teamates.get(0)));
+						Bukkit.getPlayer(pl).setSpectatorTarget(Bukkit.getPlayer(teamates.get(0)));
 					}
 					*/
-					Spectate.setSpectatingGroup(Bukkit.getPlayerExact(pl), teamates);
+					Spectate.setSpectatingGroup(Bukkit.getPlayer(pl), teamates);
 					
-					infiniteDeathMessage(Bukkit.getPlayerExact(pl));
+					infiniteDeathMessage(Bukkit.getPlayer(pl));
 				}
 			}
 		}
@@ -959,10 +911,6 @@ public class Meltdown implements Listener {
 					cancel();
 					return;
 				}
-				if(p.getSpectatorTarget() == null) {
-					cancel();
-					return;
-				}
 				
 				//Execute
 				name = p.getSpectatorTarget().getName();
@@ -975,25 +923,25 @@ public class Meltdown implements Listener {
 
 	
 	// Animation (frozen dudes)
-	public static void iceCube(String playername) {
-		Player p = Bukkit.getPlayerExact(playername);
+	public static void iceCube(String uuid) {
+		Player p = Bukkit.getPlayer(uuid);
 		Location loc = p.getLocation();
 		p.setGameMode(GameMode.SPECTATOR);
 
-		List<Integer> ls = playerdata.get(playername);
+		List<Integer> ls = playerdata.get(uuid);
 		ls.set(1, 1);
 		ls.set(5, loc.getBlockX());
 		ls.set(6, loc.getBlockY());
 		ls.set(7, loc.getBlockZ());
 		ls.set(14, 0);
-		playerdata.put(playername, ls);
+		playerdata.put(uuid, ls);
 
 		loc.getBlock().setType(Material.PACKED_ICE);
 		loc.add(0, 1, 0);
 		loc.getBlock().setType(Material.PACKED_ICE);
 		p.spigot().sendMessage(ChatMessageType.ACTION_BAR,
-				new TextComponent("§3Vous êtes dégelés à §b" + playerdata.get(playername).get(14) + " §3%"));
-		unfreezeProcess(main, playername);
+				new TextComponent("§3Vous êtes dégelés à §b" + playerdata.get(uuid).get(14) + " §3%"));
+		unfreezeProcess(main, uuid);
 	}
 	
 	public static void unfreezeProcess(Main main, String playername) {
@@ -1034,7 +982,7 @@ public class Meltdown implements Listener {
 							if(Hloc.distance(loc) <= 3) {
 								state++;
 								ls.set(14, state);
-								Bukkit.getPlayerExact(playername).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§3Vous êtes dégelés à §b" + state + " §3%"));
+								Bukkit.getPlayer(playername).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§3Vous êtes dégelés à §b" + state + " §3%"));
 							}
 						}
 					}
@@ -1043,10 +991,10 @@ public class Meltdown implements Listener {
 		}.runTaskTimer(main, 20, 4);
 	}
 
-	public static void unFreeze(String playername) {
-		Player p = Bukkit.getPlayerExact(playername);
+	public static void unFreeze(String uuid) {
+		Player p = Bukkit.getPlayer(uuid);
 
-		List<Integer> ls = playerdata.get(playername);
+		List<Integer> ls = playerdata.get(uuid);
 		int X = ls.get(5);
 		int Y = ls.get(6);
 		int Z = ls.get(7);
@@ -1065,7 +1013,7 @@ public class Meltdown implements Listener {
 		ls.set(6, null);
 		ls.set(7, null);
 		ls.set(16, 0);
-		playerdata.put(playername, ls);
+		playerdata.put(uuid, ls);
 	}
 	
 	//Change de personne à spectate
@@ -1091,7 +1039,7 @@ public class Meltdown implements Listener {
 		} else {
 			current = mates.get(mates.indexOf(current) + 1);
 		}
-		p.setSpectatorTarget(Bukkit.getPlayerExact(current));
+		p.setSpectatorTarget(Bukkit.getPlayer(current));
 	}*/
 
 	public static void gameTimer() { //Time counter --> Trigger l'ouverture des portes par exemples
@@ -1185,7 +1133,7 @@ public class Meltdown implements Listener {
 		
 		String team = TeamsManager.getPlayerTeam(name);
 		for (String member : TeamsManager.getTeamMembers(team)) {
-			Player mb = Bukkit.getPlayerExact(member);
+			Player mb = Bukkit.getPlayer(member);
 			if(mb != null) {
 				mb.sendMessage(TeamsManager.getTeamColorByTeam(team) + name + " s'est déconnecté, il a 3 minutes pour revenir avant d'être éliminé");
 			}
@@ -1220,20 +1168,19 @@ public class Meltdown implements Listener {
 	public static void onJoin(PlayerJoinEvent e) {
 		if(!isEnabled()) return;
 		Player p = e.getPlayer();
-		String name = p.getName();
-		System.out.println(name + "reconnected to meltdown");
-		if(!playerdata.containsKey(name)) {
-			if(TeamsManager.getPlayerTeam(name) != "none") { //Si le joueur estenregistré dans une équipe et qu'il a pas e playerdata (= crash avant d'en avoir)
+		String uuid = p.getUniqueId().toString();
+		if(!playerdata.containsKey(uuid)) {
+			if(TeamsManager.getPlayerTeam(uuid) != "none") { //Si le joueur estenregistré dans une équipe et qu'il a pas e playerdata (= crash avant d'en avoir)
 				
 				//PlayerBegin() et PlayerTeleport()
 				
-				List<Integer> tp = MeltdownFiles.getSpawnCoords(main, TeamsManager.getPlayerTeam(name));
+				List<Integer> tp = MeltdownFiles.getSpawnCoords(main, TeamsManager.getPlayerTeam(uuid));
 				p.teleport(new Location(Bukkit.getWorlds().get(0), tp.get(0), tp.get(1), tp.get(2), tp.get(3), 0));
 				
 				//Anti bug -- supposé useless
 				//-->
 				List<Integer> truc = new ArrayList<>();
-				playerdata.put(name, truc);
+				playerdata.put(uuid, truc);
 				
 				p.setGameMode(GameMode.SURVIVAL);
 				p.setInvisible(false);
@@ -1248,7 +1195,7 @@ public class Meltdown implements Listener {
 
 				p.getInventory().setItem(1, getCooldownPickaxe());
 				
-				p.getInventory().setItem(2, getHeater(TeamsManager.getPlayerTeam(name)));
+				p.getInventory().setItem(2, getHeater(TeamsManager.getPlayerTeam(uuid)));
 
 				p.getInventory().setItem(27, new ItemStack(Material.ARROW));
 
@@ -1257,7 +1204,7 @@ public class Meltdown implements Listener {
 				regPlayer(p);
 			}
 		} else {
-			playerdata.get(name).set(15, 1); //Enregistrer le joueur comme reconnecté
+			playerdata.get(uuid).set(15, 1); //Enregistrer le joueur comme reconnecté
 		}
 	}
 }

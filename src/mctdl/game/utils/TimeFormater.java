@@ -2,13 +2,13 @@ package mctdl.game.utils;
 
 public class TimeFormater {
 	
-public static String getFormatedTime(long left) {
+public static String getFormatedTime(int left) {
 		
 		String format = "";
 		
-		long dividend = left, divisor = 60;
-        long quotient = dividend / divisor;
-        long remainder = dividend % divisor;
+		int dividend = left, divisor = 60;
+        int quotient = dividend / divisor;
+        int remainder = dividend % divisor;
         
         String hour, min, secs;
         

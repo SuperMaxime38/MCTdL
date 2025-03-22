@@ -17,6 +17,7 @@ import mctdl.game.Main;
 public class TeamsManager{
 	
 	static HashMap<String, String> teams = new HashMap<String, String>();
+	static HashMap<String, String> uuidToPseudo = new HashMap<String, String>();
 	
 	/**
 	 * Check if the file teams.yml exists, if not, generated it and fill it with default values
@@ -59,6 +60,9 @@ public class TeamsManager{
 	        	 username = new ArrayList<>();
 	        	 preset.set("teams.orange", username);
 	        	 
+	        	 // Bind UUID x Pseudo
+	        	 preset.createSection("pseudo");
+	        	 
 	             preset.save(f);
 	             
 	         } catch (IOException exception) {
@@ -77,30 +81,34 @@ public class TeamsManager{
 	    File f = new File(userdata, File.separator + "teams.yml");
 	    fileCheck(main);
 	    FileConfiguration yaml = YamlConfiguration.loadConfiguration(f);
-		 for (String player : yaml.getStringList("teams.red")) {
-				teams.put(player, "red");
-			 }
-	    	 for (String player : yaml.getStringList("teams.blue")) {
-				teams.put(player, "blue");
-			 }
-	    	 for (String player : yaml.getStringList("teams.green")) {
-				teams.put(player, "green");
-			 }
-	    	 for (String player : yaml.getStringList("teams.yellow")) {
-				teams.put(player, "yellow");
-			 }
-	    	 for (String player : yaml.getStringList("teams.purple")) {
-				teams.put(player, "purple");
-			 }
-	    	 for (String player : yaml.getStringList("teams.aqua")) {
-				teams.put(player, "aqua");
-			 }
-	    	 for (String player : yaml.getStringList("teams.black")) {
-				teams.put(player, "black");
-			 }
-	    	 for (String player : yaml.getStringList("teams.orange")) {
-				teams.put(player, "orange");
-			 }
+		for (String uuid : yaml.getStringList("teams.red")) {
+			teams.put(uuid, "red");
+		}
+		for (String uuid : yaml.getStringList("teams.blue")) {
+			teams.put(uuid, "blue");
+		}
+		for (String uuid : yaml.getStringList("teams.green")) {
+			teams.put(uuid, "green");
+		}
+		for (String uuid : yaml.getStringList("teams.yellow")) {
+			teams.put(uuid, "yellow");
+		}
+		for (String uuid : yaml.getStringList("teams.purple")) {
+			teams.put(uuid, "purple");
+		}
+		for (String uuid : yaml.getStringList("teams.aqua")) {
+			teams.put(uuid, "aqua");
+		}
+		for (String uuid : yaml.getStringList("teams.black")) {
+			teams.put(uuid, "black");
+		}
+		for (String uuid : yaml.getStringList("teams.orange")) {
+			teams.put(uuid, "orange");
+		}
+		
+		for(String s : yaml.getConfigurationSection("pseudo").getKeys(false)) {
+			uuidToPseudo.put(s, yaml.getString("pseudo." + s));
+		}
 	}
 	/**
 	 * Get the teams and tehir members
@@ -153,56 +161,52 @@ public class TeamsManager{
 	    
 	    try {
 			yaml.save(f);
-			for (String player : teams.keySet()) {
-				if(teams.get(player).equals("red")) {
+			for (String uuid : teams.keySet()) {
+				if(teams.get(uuid).equals("red")) {
 					players = yaml.getStringList("teams.red");
-					players.add(player);
+					players.add(uuid);
 					yaml.set("teams.red", players);
-					yaml.save(f);
 				}
-				if(teams.get(player).equals("blue")) {
+				if(teams.get(uuid).equals("blue")) {
 					players = yaml.getStringList("teams.blue");
-					players.add(player);
+					players.add(uuid);
 					yaml.set("teams.blue", players);
-					yaml.save(f);
 				}
-				if(teams.get(player).equals("green")) {
+				if(teams.get(uuid).equals("green")) {
 					players = yaml.getStringList("teams.green");
-					players.add(player);
+					players.add(uuid);
 					yaml.set("teams.green", players);
-					yaml.save(f);
 				}
-				if(teams.get(player).equals("yellow")) {
+				if(teams.get(uuid).equals("yellow")) {
 					players = yaml.getStringList("teams.yellow");
-					players.add(player);
+					players.add(uuid);
 					yaml.set("teams.yellow", players);
-					yaml.save(f);
 				}
-				if(teams.get(player).equals("purple")) {
+				if(teams.get(uuid).equals("purple")) {
 					players = yaml.getStringList("teams.purple");
-					players.add(player);
+					players.add(uuid);
 					yaml.set("teams.purple", players);
-					yaml.save(f);
 				}
-				if(teams.get(player).equals("aqua")) {
+				if(teams.get(uuid).equals("aqua")) {
 					players = yaml.getStringList("teams.aqua");
-					players.add(player);
+					players.add(uuid);
 					yaml.set("teams.aqua", players);
-					yaml.save(f);
 				}
-				if(teams.get(player).equals("black")) {
+				if(teams.get(uuid).equals("black")) {
 					players = yaml.getStringList("teams.black");
-					players.add(player);
+					players.add(uuid);
 					yaml.set("teams.black", players);
-					yaml.save(f);
 				}
-				if(teams.get(player).equals("orange")) {
+				if(teams.get(uuid).equals("orange")) {
 					players = yaml.getStringList("teams.orange");
-					players.add(player);
+					players.add(uuid);
 					yaml.set("teams.orange", players);
-					yaml.save(f);
 				}
 			}
+			for(String s : uuidToPseudo.keySet()) {
+				yaml.set("pseudo." + s, uuidToPseudo.get(s));
+			}
+			yaml.save(f);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -211,10 +215,7 @@ public class TeamsManager{
 	/**
 	 * Get the team of a certain player
 	 * <p>
-	 * Example if the player Roberto belongs to the red team, getPlayerTeam("Roberto") will return "red"
-	 * </p>
-	 * <p>
-	 * If Roberto doesn't belong to a team, it will return "none"
+	 * Exmple if the player Roberto belongs to the red team, getPlayerTeam("Roberto") will return "red"
 	 * </p>
 	 * @param player's name
 	 * @return The team id (ex. red)
@@ -294,101 +295,57 @@ public class TeamsManager{
 		HashMap<String, String> teams = getTeams();
 		HashMap<String, String> online = new HashMap<String, String>();
 		Player p;
-		for (String player : teams.keySet()) {
-			p = Bukkit.getPlayerExact(player);
+		for (String uuid : teams.keySet()) {
+			p = Bukkit.getPlayer(uuid);
 			if(p == null) { //Le != null est buggé des fois
 			} else {
-				online.put(player, teams.get(player));
+				online.put(uuid, teams.get(uuid));
 			}
 		}
 		return online;
 	}
 	
-	/**
-	 * Get every player than are in a team as a list of players
-	 * @return Returns a List<Player> with all da players in a team that are online
-	 */
-	public static List<Player> getOnlinePlayersAsPlayers() {
-		HashMap<String, String> onlinePlayers = getOnlinePlayers();
-		List<Player> players = new ArrayList<>();
-		
-		for(String pl : onlinePlayers.keySet()) {
-			players.add(Bukkit.getPlayer(pl));
-		}
-		
-		return null;
-	}
-	
 	public static boolean isAllTeammatesOnline(String team) {
 		HashMap<String, String> teams = getTeams();
 		Player p;
+		boolean b = true;
 		
-		for (String player : teams.keySet()) { //NOT WORKING !!!
-			p = Bukkit.getPlayerExact(player);
-			if(p == null) {
-				return false;
+		for (String uuid : teams.keySet()) { //NOT WORKING !!!
+			if(teams.get(uuid).equals(team)) {
+				p = Bukkit.getPlayer(uuid);
+				if(p == null) {
+					b = false;
+				}
 			}
 		}
-		return true;
+		return b;
 	}
-	/**
-	 * Get une liste de TOUS les membres de l'équipe indiquée
-	 * @param team
-	 * @return une liste des pseudos des membres, empty/null si équipe vide
-	 */
+	
 	public static List<String> getTeamMembers(String team) {
 		List<String> members = new ArrayList<>();
-		for (String player : teams.keySet()) {
-			if(teams.get(player) == team) {
-				members.add(player);
+		for (String uuid : teams.keySet()) {
+			if(teams.get(uuid) == team) {
+				members.add(uuid);
 			}
 		}
 		return members;
 	}
 	
-	public static List<Player> getTeamMembersAsPlayer(String team) {
-		List<String> members = getTeamMembers(team);
-		List<Player> players = new ArrayList<>();
+	public static void updatePseudo(String uuid, String pseudo) {
+		uuidToPseudo.put(uuid, pseudo);
+	}
+	
+	public static String getPseudo(String uuid) {
+		System.out.println(uuidToPseudo);
 		
-		for(String pl : members) {
-			players.add(Bukkit.getPlayer(pl));
+		if(!uuidToPseudo.containsKey(uuid)) {
+			if(Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(uuid))) {
+				return Bukkit.getPlayer(uuid).getName();
+			} else {
+				return uuid;
+			}
 		}
 		
-		
-		return players;
-	}
-	
-	/**
-	 * Get une liste des teams qui ont des membres (qui sont pas vides)
-	 * @return List<String> des team (ex:red)
-	 */
-	public static List<String> getNonEmptyTeams() {
-		List<String> teams = new ArrayList<>();
-		for(String team : getTeams().values()) {
-			if(teams.contains(team)) teams.add(team);
-		}
-		return teams;
-	}
-	
-	public static boolean isTeamEmpty(String team) {
-		if(teams.values().contains(team)) {
-			return false;
-		}
-		return true;
-	}
-	
-	public static boolean hasATeammateOnline(String team) {
-		for(String p : getTeamMembers(team)) {
-			if(Bukkit.getPlayerExact(p) != null) return true;
-		}
-		return false;
-	}
-	
-	public static List<String> getPlayers() {
-		List<String> players = new ArrayList<>();
-		for(String pl : teams.keySet()) {
-			players.add(pl);
-		}
-		return players;
+		return uuidToPseudo.get(uuid);
 	}
 }

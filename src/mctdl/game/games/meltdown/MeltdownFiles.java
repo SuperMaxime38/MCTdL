@@ -95,19 +95,19 @@ public class MeltdownFiles {
 	        	//Times
 	        	
 	        	//room
-	        	datas.set("times.room.A", 180);
-	        	datas.set("times.room.B", 240);
-	        	datas.set("times.room.C", 380);
-	        	datas.set("times.room.D", 520);
-	        	datas.set("times.room.E", 600);
-	        	datas.set("times.room.M", 720);
+	        	datas.set("times.room.A", 120);
+	        	datas.set("times.room.B", 200);
+	        	datas.set("times.room.C", 310);
+	        	datas.set("times.room.D", 430);
+	        	datas.set("times.room.E", 520);
+	        	datas.set("times.room.M", 660);
 	        	
 	        	//door
 	        	datas.set("times.door.1", 30);
-	        	datas.set("times.door.2", 75);
-	        	datas.set("times.door.3", 120);
-	        	datas.set("times.door.4", 220);
-	        	datas.set("times.door.5", 280);
+	        	datas.set("times.door.2", 90);
+	        	datas.set("times.door.3", 150);
+	        	datas.set("times.door.4", 240);
+	        	datas.set("times.door.5", 300);
 	        	
 	        	
 	        	//Coords
@@ -551,7 +551,7 @@ public class MeltdownFiles {
 		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "maps");
 		File f = new File(userdata, File.separator + map + ".yml");
 		if(!f.exists()) {
-			fileCheck(main);
+			f = new File(userdata, File.separator + "meltdown.yml");
 		}
 	    FileConfiguration datas = YamlConfiguration.loadConfiguration(f);
 	    return datas;

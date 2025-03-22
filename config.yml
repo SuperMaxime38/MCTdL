@@ -47,11 +47,3 @@ games:
   deathswap:
     map: deathswap
     generated: false
-    delay: 300 #Delay in seconds
-    money:
-      round: 20
-      kill: 200
-      placems: 100
-      dmg: 10
-  nexus:
-    map: nexus

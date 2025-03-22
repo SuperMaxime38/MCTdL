@@ -57,9 +57,6 @@ public class Damage implements Listener{
 		case "meltdown":
 			e.setCancelled(true);
 			return;
-		case "nexus":
-			e.setCancelled(true);
-			return;
 		}
 	}
 }

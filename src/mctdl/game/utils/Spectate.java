@@ -40,15 +40,15 @@ public class Spectate implements Listener{
 			System.out.println("[MCTdL] SpectateMode > Error, spectating targets are null (no teammates)");
 			return;
 		}
-		p.teleport(Bukkit.getPlayer(targets.get(0)));
 		p.setSpectatorTarget(Bukkit.getPlayer(targets.get(0)));
 		isSpectating.put(p, true);
 		spectateTargets.put(p, targets);
-	}
-	
-	public static void setWanderingSpectator(Player p) {
-		if(p.getGameMode() != GameMode.SPECTATOR) p.setGameMode(GameMode.SPECTATOR);
-		
+		List<Player> truc = spectated.get(targets.get(0));
+		if(truc == null) {
+			truc = new ArrayList<>();
+		}
+		truc.add(p);
+		spectated.put(targets.get(0),truc);
 	}
 	
 	public static void isSpectatedValid() {
@@ -76,20 +76,10 @@ public class Spectate implements Listener{
 	
 	@EventHandler
 	public static void changeView(PlayerToggleSneakEvent e) {
-		if(main.getConfig().getString("game")== "lobby") return;
-		if(!e.isSneaking()) return;
 		Player p = e.getPlayer();
-		
-		if(TeamsManager.getPlayerTeam(p.getName()) == "none") return;
-		
-		if(p.getSpectatorTarget() == null) {
-			return;
-		}
+		if(!isSpectating.containsKey(p)) return;
 		
 		List<String> members = spectateTargets.get(p);
-		
-		if(members == null) return;
-		
 		List<String> targets = getValidTargets(members);
 		
 		String tgname = p.getSpectatorTarget().getName();
@@ -99,19 +89,29 @@ public class Spectate implements Listener{
 			p.setSpectatorTarget(Bukkit.getPlayer(targets.get(0)));
 			isSpectating.put(p, true);
 			spectateTargets.put(p, targets);
+			List<Player> truc = spectated.get(targets.get(0));
+			truc.add(p);
+			spectated.put(targets.get(0),truc);
 			e.setCancelled(true);
 			return;
 		}
 
+		System.out.println("TAREGT CONTAINS");
 		int current = targets.indexOf(tgname);
 		if(current == targets.size() - 1) {
 			current = 0;
+			System.out.println("CURRENT=0");
 		} else {
 			current++;
+
+			System.out.println("CURRENT = " + current);
 		}
 		p.setSpectatorTarget(Bukkit.getPlayer(targets.get(current)));
 		isSpectating.put(p, true);
 		spectateTargets.put(p, targets);
+		List<Player> truc = spectated.get(targets.get(current));
+		truc.add(p);
+		spectated.put(targets.get(current),truc);
 		e.setCancelled(true);
 		return;
 		

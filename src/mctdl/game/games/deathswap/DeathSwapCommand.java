@@ -21,17 +21,19 @@ public class DeathSwapCommand implements CommandExecutor{
 			s.sendMessage("Command help will come soon");
 		} else if(args.length == 1) {
 			if(args[0].equals("start")) {
+				new DeathSwap(main);
 				DeathSwap.enable();
 				s.sendMessage("Enabled DeathSwap");
 			}
 			if(args[0].equals("stop")) {
+				new DeathSwap(main);
 				DeathSwap.disable();
 				s.sendMessage("Disabled DeathSwap");		
 			}
 		} else if(args.length == 2) {
 
 			if(args[0].equals("getdata")) {
-				s.sendMessage(DeathSwap.getPayerDatas(args[1]));
+				System.out.println(DeathSwap.getDataOf(args[1]));
 			}
 		}
 		

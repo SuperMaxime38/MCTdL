@@ -45,44 +45,44 @@ static HashMap<String, Integer> poutres_owners = new HashMap<String, Integer>();
 	public static HashMap<String, Integer> getLifeTimeCoins() {return lifetime;}
 	public static HashMap<String, Integer> getWhoHasPoutres() {return poutres_owners;} //POUTRE
 	
-	public static void setPlayerMoney(String name, int amount) {balances.put(name, amount);}
-	public static void setPlayerLifeTimeCoins(String name, int amount) {lifetime.put(name, amount);}
-	public static void setPlayerPoutres(String name, int amount) {poutres_owners.put(name, amount);} //POUTRE
+	public static void setPlayerMoney(String uuid, int amount) {balances.put(uuid, amount);}
+	public static void setPlayerLifeTimeCoins(String uuid, int amount) {lifetime.put(uuid, amount);}
+	public static void setPlayerPoutres(String uuid, int amount) {poutres_owners.put(uuid, amount);} //POUTRE
 	
-	public static void removePlayerMoney(String name, int amount) {
-		if(balances.containsKey(name)) {
-			int money = balances.get(name);
+	public static void removePlayerMoney(String uuid, int amount) {
+		if(balances.containsKey(uuid)) {
+			int money = balances.get(uuid);
 			money = money - amount;
-			balances.put(name, money);
+			balances.put(uuid, money);
 		}
 	}
-	public static void removePlayerPoutre(String name, int amount) { //POUTRE
-		if(poutres_owners.containsKey(name)) {
-			int money = poutres_owners.get(name);
+	public static void removePlayerPoutre(String uuid, int amount) { //POUTRE
+		if(poutres_owners.containsKey(uuid)) {
+			int money = poutres_owners.get(uuid);
 			money = money - amount;
-			poutres_owners.put(name, money);
+			poutres_owners.put(uuid, money);
 		}
 	}
 	
-	public static void addPlayerMoney(String name, int amount) {
-		if(balances.containsKey(name)) {
-			int money = balances.get(name);
+	public static void addPlayerMoney(String uuid, int amount) {
+		if(balances.containsKey(uuid)) {
+			int money = balances.get(uuid);
 			money = money + amount;
-			balances.put(name, money);
+			balances.put(uuid, money);
 		}
 	}
-	public static void addPlayerLifeTimeCoins(String name, int amount) {
-		if(lifetime.containsKey(name)) {
-			int money = lifetime.get(name);
+	public static void addPlayerLifeTimeCoins(String uuid, int amount) {
+		if(lifetime.containsKey(uuid)) {
+			int money = lifetime.get(uuid);
 			money = money + amount;
-			lifetime.put(name, money);
+			lifetime.put(uuid, money);
 		}
 	}
-	public static void addPlayerPoutre(String name, int amount) { //POUTRE
-		if(poutres_owners.containsKey(name)) {
-			int money = poutres_owners.get(name);
+	public static void addPlayerPoutre(String uuid, int amount) { //POUTRE
+		if(poutres_owners.containsKey(uuid)) {
+			int money = poutres_owners.get(uuid);
 			money = money + amount;
-			poutres_owners.put(name, money);
+			poutres_owners.put(uuid, money);
 		}
 	}
 	
@@ -95,14 +95,14 @@ static HashMap<String, Integer> poutres_owners = new HashMap<String, Integer>();
 	    balances.clear();
 	    lifetime.clear();
 	    poutres_owners.clear();
-	    for (String player : config.getConfigurationSection("balances").getKeys(false)) {
-			balances.put(player, config.getInt("balances." + player));
+	    for (String uuid : config.getConfigurationSection("balances").getKeys(false)) {
+			balances.put(uuid, config.getInt("balances." + uuid));
 		}
-	    for (String player : config.getConfigurationSection("lifetime").getKeys(false)) {
-			lifetime.put(player, config.getInt("lifetime." + player));
+	    for (String uuid : config.getConfigurationSection("lifetime").getKeys(false)) {
+			lifetime.put(uuid, config.getInt("lifetime." + uuid));
 		}
-	    for (String player : config.getConfigurationSection("poutres").getKeys(false)) { //Poutre
-			poutres_owners.put(player, config.getInt("poutres." + player));
+	    for (String uuid : config.getConfigurationSection("poutres").getKeys(false)) { //Poutre
+			poutres_owners.put(uuid, config.getInt("poutres." + uuid));
 		}
 	}
 	
@@ -113,18 +113,18 @@ static HashMap<String, Integer> poutres_owners = new HashMap<String, Integer>();
 	    FileConfiguration yaml = YamlConfiguration.loadConfiguration(f);
 	    
 	    yaml.set("balances", null);
-	    for (String player : balances.keySet()) {
-			yaml.set("balances." + player, balances.get(player));
+	    for (String uuid : balances.keySet()) {
+			yaml.set("balances." + uuid, balances.get(uuid));
 		}
 
 	    yaml.set("lifetime", null);
-	    for (String player : lifetime.keySet()) {
-			yaml.set("lifetime." + player, lifetime.get(player));
+	    for (String uuid : lifetime.keySet()) {
+			yaml.set("lifetime." + uuid, lifetime.get(uuid));
 		}
 	    
 	    yaml.set("poutres", null); //POUTRE
-	    for (String player : poutres_owners.keySet()) {
-			yaml.set("poutres." + player, poutres_owners.get(player));
+	    for (String uuid : poutres_owners.keySet()) {
+			yaml.set("poutres." + uuid, poutres_owners.get(uuid));
 		}
 	    
 	    try {
@@ -136,18 +136,18 @@ static HashMap<String, Integer> poutres_owners = new HashMap<String, Integer>();
 		}
 	}
 	
-	public static Integer getPlayerMoney(String name) {
-		Integer money = balances.get(name);
+	public static Integer getPlayerMoney(String uuid) {
+		Integer money = balances.get(uuid);
 		if(money == null) return 0;
 		return money;
 	}
-	public static Integer getPlayerLifeTimeCoins(String name) {
-		Integer money = lifetime.get(name);
+	public static Integer getPlayerLifeTimeCoins(String uuid) {
+		Integer money = lifetime.get(uuid);
 		if(money == null) return 0;
 		return money;
 	}
-	public static Integer getPlayerPoutres(String name) { //POUTRE
-		Integer money = poutres_owners.get(name);
+	public static Integer getPlayerPoutres(String uuid) { //POUTRE
+		Integer money = poutres_owners.get(uuid);
 		if(money == null) return 0;
 		return money;
 	}

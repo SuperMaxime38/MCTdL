@@ -113,10 +113,6 @@ public class PlayerData {
 		stats.put(playerUUID, statistics);
 	}
 	
-	/**
-	 * Quand joueur se connecte ou sors d'un minijeu (charge ses cosmétiques)
-	 * 
-	 */
 	public static void registerPlayer(Player p) { //Quand joueur se connecte ou sors d'un minijeu (charge ses cosmétiques)
 		String uuid = p.getUniqueId().toString();
 		String type = "";
@@ -301,12 +297,6 @@ public class PlayerData {
 	
 	public static void addItem(Player p, int slot, String item) {
 		//A FAIRE
-	}
-	
-	public static void setInventory(Player p, HashMap<Integer, ItemStack> items) {
-		for(int slot : items.keySet()) {
-			p.getInventory().setItem(slot, items.get(slot));
-		}
 	}
 	
 	public static ItemStack helicoHat() {

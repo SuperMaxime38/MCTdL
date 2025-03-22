@@ -66,34 +66,7 @@ public class BaltopCommand implements CommandExecutor{
 			output = output + "\n§6----------------------------------------------";
 			s.sendMessage(output);
 		} else if(args.length == 1) {
-			if(args[0].equals("teams")) {
-				List<String> classement = getTeamClassement();
-				String output = "§6----------------------------------------------\n"
-						 +"§aVoici le classement des meilleures Teams :§f";
-				
-				for(int i = 0; i<5; i++) {
-					int order = i+1;
-					output += "\n§f " +order + "- " + TeamsManager.getTeamColorByTeam(classement.get(i)) + TeamsManager.getTeamNameByTeam(classement.get(i)) + " §f: " + getTeamBal(classement.get(i)) +" §6Coins";
-				}
-				
-				if(s instanceof Player) {
-					p = (Player) s;
-					output += "\n \n§f" + (classement.indexOf(TeamsManager.getPlayerTeam(p.getName())) + 1) + "- " + TeamsManager.getTeamColor(p.getName()) + TeamsManager.getTeamName(p.getName()) + " §f: " + getTeamBal(TeamsManager.getPlayerTeam(p.getName())) + " §6Coins";
-				}
-				
-				output += "\n§6----------------------------------------------";
-				
-				s.sendMessage(output);
-			}
-			if(args[0].equals("nonemptyteams")) {
-				List<String> topteams = new ArrayList<>();
-				for(String team : getTeamClassement()) {
-					if(!TeamsManager.getTeamMembers(team).isEmpty()) { //ENLEVE TOUTES LES TEAMS VIDES
-						topteams.add(team);
-					}
-				}
-				s.sendMessage("Non empty top teams : " + topteams);
-			}
+		//PLUS TARD PR LE CLASSEMENT DES TEAM ETC...
 		} else {
 			
 		}

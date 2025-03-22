@@ -2,7 +2,6 @@ package mctdl.game;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameRule;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -16,24 +15,18 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 
 import mctdl.game.commands.BaltopCommand;
-import mctdl.game.commands.DummyCommand;
 import mctdl.game.commands.NPCCommand;
 import mctdl.game.commands.PouleZookaCMD;
 import mctdl.game.commands.TdLCommand;
 import mctdl.game.commands.TdLTabCompleter;
-import mctdl.game.commands.TestCommand;
 import mctdl.game.dev.ItemGiver;
 import mctdl.game.dev.ItemGiverCompleter;
-import mctdl.game.games.deathswap.DeathSwap;
 import mctdl.game.games.deathswap.DeathSwapCommand;
 import mctdl.game.games.lobby.LobbyJump;
 import mctdl.game.games.lobby.PouleZooka;
 import mctdl.game.games.meltdown.MDCommand;
 import mctdl.game.games.meltdown.Meltdown;
 import mctdl.game.games.meltdown.MeltdownFiles;
-import mctdl.game.games.nexus.Nexus;
-import mctdl.game.games.nexus.NexusCommand;
-import mctdl.game.games.nexus.NexusFiles;
 import mctdl.game.listeners.Damage;
 import mctdl.game.listeners.Interact;
 import mctdl.game.listeners.Join;
@@ -47,9 +40,7 @@ import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.GameVoting;
 import mctdl.game.utils.PlayerData;
 import mctdl.game.utils.Spectate;
-import mctdl.game.utils.Time;
 import mctdl.game.utils.objects.Canon;
-import mctdl.game.utils.objects.riffles.AssaultRiffle;
 
 public class Main extends JavaPlugin{
 
@@ -58,33 +49,19 @@ public class Main extends JavaPlugin{
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();
-		//Time
-		new Time(this);
-		
-		//Perms
-		//new Permissions(this);
-		
-		//Gamerules
-		Bukkit.getWorlds().get(0).setGameRule(GameRule.KEEP_INVENTORY, false);
-		Bukkit.getWorlds().get(0).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
-		Bukkit.getWorlds().get(0).setGameRule(GameRule.DO_MOB_LOOT, false);
-		Bukkit.getWorld("mapz").setGameRule(GameRule.DO_MOB_LOOT, false);
-		Bukkit.getWorld("mapz").setGameRule(GameRule.FALL_DAMAGE, true);
-		
 		
 		//FileCheck
 		TeamsManager.fileCheck(this);
 		MoneyManager.fileCheck(this);
 		MeltdownFiles.fileCheck(this);
 		PlayerData.fileCheck(this);
-		NexusFiles.fileCheck(this);
 		
 		//Load HashMap
 		TeamsManager.loadHashMap(this);
 		MoneyManager.loadHashMap(this);
 		PlayerData.loadHashMap(this);
 		
-		//Load TAB & NPCs (if server reload) || + Perms
+		//Load TAB & NPCs (if server reload)
 		if(!Bukkit.getOnlinePlayers().isEmpty()) {
 			
 			new BukkitRunnable() {
@@ -94,8 +71,6 @@ public class Main extends JavaPlugin{
 					for (Player pl : Bukkit.getOnlinePlayers()) {
 						TabManager.tabClock(pl);
 						NPCManager.onPlayerJoin(pl, main, 60);
-						
-						//Permissions.regPlayer(pl);
 					}
 				}
 			}.runTaskLater(this, 40);
@@ -134,10 +109,7 @@ public class Main extends JavaPlugin{
 		getServer().getPluginManager().registerEvents(new Meltdown(this), this);
 		
 		//DeathSwap
-		getServer().getPluginManager().registerEvents(new DeathSwap(this), this);
-		
-		//Nexus
-		getServer().getPluginManager().registerEvents(new Nexus(this), this);
+		//Nothing for now
 		
 		//Register LISTENERS---------------------------------------------------------
 		getServer().getPluginManager().registerEvents(new Damage(this), this);
@@ -161,8 +133,6 @@ public class Main extends JavaPlugin{
 		getCommand("npc").setExecutor(new NPCCommand(this));
 		getCommand("dg").setExecutor(new ItemGiver());
 		getCommand("poulezooka").setExecutor(new PouleZookaCMD());
-		getCommand("dummy").setExecutor(new DummyCommand(this));
-		getCommand("testcmd").setExecutor(new TestCommand(this));
 		
 		//meltdown
 		getCommand("meltdown").setExecutor(new MDCommand(this));
@@ -170,25 +140,16 @@ public class Main extends JavaPlugin{
 		//deathswap
 		getCommand("deathswap").setExecutor(new DeathSwapCommand(this));
 		
-		//nexus
-		getCommand("nexus").setExecutor(new NexusCommand(this));
-		
 		//TabCompleter -->
 		getCommand("npc").setTabCompleter(new NPCCommandCompleter());
 		getCommand("mctdl").setTabCompleter(new TdLTabCompleter());
 		getCommand("dg").setTabCompleter(new ItemGiverCompleter());
 		
-		//Objects---------------------------------------------------------------------
-		//Listeners (again)-->
-		getServer().getPluginManager().registerEvents(new AssaultRiffle(this), this);
-		
 		String h = header();
 		
 		disableExternalGamesFeatures(this);
 		
-		//SHOWS Nametags -->
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "hidenametags disable");
-		//------------------
+		
 		
 		System.out.println(h + "MCTdL MAIN PLUGIN started !");
 	}

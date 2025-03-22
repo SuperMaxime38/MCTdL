@@ -13,7 +13,6 @@ import mctdl.game.games.lobby.PouleZooka;
 import mctdl.game.games.meltdown.Meltdown;
 import mctdl.game.utils.PlayerData;
 import mctdl.game.utils.objects.Canon;
-import mctdl.game.utils.objects.riffles.AssaultRiffle;
 
 public class ItemGiver implements CommandExecutor{
 
@@ -108,33 +107,6 @@ public class ItemGiver implements CommandExecutor{
 		case CANON:
 			it = Canon.getItem();
 			break;
-		case ASSAULT_RIFFLE:
-			it = AssaultRiffle.getAssaultRiffle();
-			break;
-		case ASSAULT_RIFFLE_TARGET:
-			it = AssaultRiffle.getAssaultRiffle();
-			meta = it.getItemMeta();
-			meta.setDisplayName(meta.getDisplayName() + " Target");
-			it.setItemMeta(meta);
-			break;
-		case SHOTGUN:
-			it = AssaultRiffle.getShotGun();
-			break;
-		case SHOTGUN_TARGET:
-			it = AssaultRiffle.getShotGun();
-			meta = it.getItemMeta();
-			meta.setDisplayName(meta.getDisplayName() + " Target");
-			it.setItemMeta(meta);
-			break;
-		case SNIPER_RIFFLE:
-			it = AssaultRiffle.getSniper();
-			break;
-		case SNIPER_RIFFLE_TARGET:
-			it = AssaultRiffle.getSniper();
-			meta = it.getItemMeta();
-			meta.setDisplayName(meta.getDisplayName() + " Target");
-			it.setItemMeta(meta);
-			break;
 		
 		//DECORATION
 		case COLT:
@@ -203,7 +175,7 @@ public class ItemGiver implements CommandExecutor{
 			meta.setDisplayName("§fmp40");
 			it.setItemMeta(meta);
 			break;
-		case DECO_SHOTGUN:
+		case SHOTGUN:
 			it = new ItemStack(Material.WOODEN_HOE);
 			meta = it.getItemMeta();
 			meta.setDisplayName("§fshotgun");
@@ -255,13 +227,6 @@ public class ItemGiver implements CommandExecutor{
 		
 		//Objects
 		CANON,
-		ASSAULT_RIFFLE,
-		ASSAULT_RIFFLE_TARGET,
-		SHOTGUN,
-		SHOTGUN_TARGET,
-		SNIPER_RIFFLE,
-		SNIPER_RIFFLE_TARGET,
-		
 		
 		//Decoration items
 		COLT,
@@ -275,7 +240,7 @@ public class ItemGiver implements CommandExecutor{
 		M4,
 		MP5K,
 		MP40,
-		DECO_SHOTGUN,
+		SHOTGUN,
 		SPRINGFIELDS,
 		THOMPSON,
 		SNIPER;

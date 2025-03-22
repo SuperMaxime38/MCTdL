@@ -18,8 +18,6 @@ import mctdl.game.utils.Cuboid;
 public class MDMap {
 	
 	static List<Location> banned = new ArrayList<>();
-	static List<Cuboid> melting = new ArrayList<>();
-	static List<Location> alarms = new ArrayList<>();
 	
 	public static void generateMap(Main main) {
 		
@@ -56,7 +54,6 @@ public class MDMap {
 			Location pos1 = new Location(Bukkit.getWorlds().get(0), X1, 11, Y1);
 			Location pos2 = new Location(Bukkit.getWorlds().get(0), X2, 26, Y2);
 			Cuboid cube = new Cuboid(pos1, pos2);
-			melting.add(cube);
 			
 			for (Block block : cube) {
 				if(block.getType() == Material.CRIMSON_TRAPDOOR) {
@@ -64,8 +61,6 @@ public class MDMap {
 					o.setOpen(true);
 					block.setBlockData(o);
 					block.getState().update();
-					
-					alarms.add(block.getLocation());
 				}
 			}
 		}
@@ -187,13 +182,5 @@ public class MDMap {
 	public static List<Location> getBannedLocs() {
 		banned.add(new Location(Bukkit.getWorlds().get(0), 0, 0, 0));
 		return banned;
-	}
-	
-	public static List<Cuboid> getMeltingRooms() {
-		return melting;
-	}
-	
-	public static List<Location> getAlarmsLocs() {
-		return alarms;
 	}
  }

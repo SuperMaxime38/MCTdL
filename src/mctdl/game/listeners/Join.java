@@ -3,17 +3,15 @@ package mctdl.game.listeners;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-
 import mctdl.game.Main;
 import mctdl.game.money.MoneyManager;
 import mctdl.game.npc.NPCManager;
+import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.GameVoting;
 import mctdl.game.utils.PlayerData;
 
@@ -28,7 +26,6 @@ public class Join implements Listener{
 	public static void onJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
 		p.setFoodLevel(20);
-		p.setGameMode(GameMode.ADVENTURE);
 		String game = main.getConfig().getString("game");
 		
 		HashMap<String, Integer> balances = MoneyManager.getRegsPlayer();
@@ -36,23 +33,26 @@ public class Join implements Listener{
 		HashMap<String, Integer> poutres = MoneyManager.getWhoHasPoutres();
 		
 		HashMap<String, Boolean> hasVoted = GameVoting.hasVoted();
-		if(!balances.containsKey(p.getName())) {
-			MoneyManager.setPlayerMoney(p.getName(), 0);
+		
+		if(!balances.containsKey(p.getUniqueId().toString())) {
+			MoneyManager.setPlayerMoney(p.getUniqueId().toString(), 0);
 		}
-		if(!lifetime.containsKey(p.getName())) {
-			MoneyManager.setPlayerLifeTimeCoins(p.getName(), 0);
+		if(!lifetime.containsKey(p.getUniqueId().toString())) {
+			MoneyManager.setPlayerLifeTimeCoins(p.getUniqueId().toString(), 0);
 		}
-		if(!poutres.containsKey(p.getName())) {
-			MoneyManager.setPlayerPoutres(p.getName(), 0);
+		if(!poutres.containsKey(p.getUniqueId().toString())) {
+			MoneyManager.setPlayerPoutres(p.getUniqueId().toString(), 0);
 		}
 		if(game.equals("lobby")) {
-			p.teleport(new Location(Bukkit.getWorlds().get(0), 8, 6, 8));
+			p.teleport(new Location(p.getWorld(), 8, 6, 8));
 			PlayerData.registerPlayer(p);
 		}
 		
-		if(!hasVoted.containsKey(p.getName())) {
-			GameVoting.setHasVoted(p.getName(), false);
+		if(!hasVoted.containsKey(p.getUniqueId().toString())) {
+			GameVoting.setHasVoted(p.getUniqueId().toString(), false);
 		}
+		
+		TeamsManager.updatePseudo(p.getUniqueId().toString(), p.getName());
 		
 		//--IMPORTANT ---------> Meltown.java is handling connexion/disconnexion during md game
 		
