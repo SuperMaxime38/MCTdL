@@ -338,6 +338,28 @@ public class TeamsManager{
 		return teams;
 	}
 	
+	/**
+	 * Get every player than are in a team as a list of players
+	 * @return Returns a List<Player> with all da players in a team that are online
+	 */
+	public static List<Player> getOnlinePlayersAsPlayers() {
+		HashMap<String, String> onlinePlayers = getOnlinePlayers();
+		List<Player> players = new ArrayList<>();
+		
+		for(String pl : onlinePlayers.keySet()) {
+			players.add(Bukkit.getPlayer(pl));
+		}
+		
+		return null;
+	}
+	
+	public static boolean hasATeammateOnline(String team) {
+		for(String p : getTeamMembers(team)) {
+			if(Bukkit.getPlayerExact(p) != null) return true;
+		}
+		return false;
+	}
+	
 	public static List<String> getTeamMembers(String team) {
 		List<String> members = new ArrayList<>();
 		for (String uuid : teams.keySet()) {
@@ -346,6 +368,30 @@ public class TeamsManager{
 			}
 		}
 		return members;
+	}
+	
+	public static List<Player> getTeamMembersAsPlayer(String team) {
+		List<String> members = getTeamMembers(team);
+		List<Player> players = new ArrayList<>();
+		
+		for(String pl : members) {
+			players.add(Bukkit.getPlayer(pl));
+		}
+		
+		
+		return players;
+	}
+	
+	/**
+	 * Get une liste des teams qui ont des membres (qui sont pas vides)
+	 * @return List<String> des team (ex:red)
+	 */
+	public static List<String> getNonEmptyTeams() {
+		List<String> teams = new ArrayList<>();
+		for(String team : getTeams().values()) {
+			if(teams.contains(team)) teams.add(team);
+		}
+		return teams;
 	}
 	
 	public static void updatePseudo(String uuid, String pseudo) {

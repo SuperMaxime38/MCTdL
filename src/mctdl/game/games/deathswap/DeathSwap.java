@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -87,7 +88,7 @@ public class DeathSwap {
 			//Add players to playerdata
 			playerdata.put(player, datas);
 			
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv tp " + player + " " + worldname);
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv tp " + TeamsManager.getPseudo(player) + " " + worldname);
 			//Teleport script to make them distant one from another
 		}
 	}
@@ -95,8 +96,8 @@ public class DeathSwap {
 	public static void disable() {
 		for (String player : TeamsManager.getOnlinePlayers().keySet()) {
 			
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv tp " + player + " " + Bukkit.getWorlds().get(0).getName());
-			Player p = Bukkit.getPlayer(player);
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv tp " + TeamsManager.getPseudo(player) + " " + Bukkit.getWorlds().get(0).getName());
+			Player p = Bukkit.getPlayer(UUID.fromString(player));
 			p.setGameMode(GameMode.ADVENTURE);
 			p.setInvisible(false);
 

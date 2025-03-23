@@ -299,6 +299,12 @@ public class PlayerData {
 		//A FAIRE
 	}
 	
+	public static void setInventory(Player p, HashMap<Integer, ItemStack> items) {
+		for(int slot : items.keySet()) {
+			p.getInventory().setItem(slot, items.get(slot));
+		}
+	}
+	
 	public static ItemStack helicoHat() {
 		ItemStack item = new ItemStack(Material.WHITE_CARPET);
 		ItemMeta meta;

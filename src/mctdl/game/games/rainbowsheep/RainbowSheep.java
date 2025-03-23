@@ -109,7 +109,7 @@ public class RainbowSheep {
 		} else if(!spawns.isEmpty()){ //TP randomly parmis la liste des spawns (spawns)
 			
 			Random rdm = new Random();
-			int spawn = rdm.nextInt(0, spawns.size());
+			int spawn = rdm.nextInt(spawns.size());
 			loc = spawns.get(spawn);
 			p.teleport(loc);
 			
