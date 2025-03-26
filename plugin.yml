@@ -1,10 +1,11 @@
 name: MCTdL
 author: SuperMaxime38
-version: 0.01.01
+version: 0.02.2
 main: mctdl.game.Main
 description: MCTdl 's plugins manager
 api-version: 1.13
-loadafter: [HungerGames]
+loadafter: [HungerGames, Multiverse-Core]
+depend: [ProtocolLib, WorldEdit, Multiverse-Core]
 softdepend: [WorldEdit, Multiverse-Core]
 depend: [ProtocolLib]
 commands:
@@ -20,12 +21,12 @@ commands:
     description: npc command
     
   meltdown:
-    aliases: md
+    aliases: [md]
     permission: mctdl.commands.meltdown
     description: Meltdown game command
   
   deathswap:
-    aliases: dswap
+    aliases: [dswap]
     permission: mctdl.commands.deathswap
     description: DeathSwap game command
   
@@ -37,3 +38,13 @@ commands:
   poulezooka:
     permission: tdl.lobby.poulezooka
     description: Cot Cooottttt
+  nexus:
+    aliases: [nx]
+    permission: mctdl.commands.nexus
+    description: Nexus game command
+  dummy:
+    permission: tdl.dummy
+    description: Spawn un dummy avec 1000HP
+  testcmd:
+    permission: tdl.commands.test
+    description: This command is used to test stuff

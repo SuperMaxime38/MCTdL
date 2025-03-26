@@ -282,9 +282,9 @@ public class Nexus implements Listener{
 					p.setPlayerListFooter(
 							 "§f----------------------------\n"
 							+ "§3Mode de jeu §f: §4Meltdown\n"
-							+ "§6Coins : " + playerdatas.get(p.getName()).get(3) + "\n"
-							+ "§aKills : " + playerdatas.get(p.getName()).get(4) + "\n"
-							+ "§cDeaths : " + playerdatas.get(p.getName()).get(5) + "\n"
+							+ "§6Coins : " + playerdatas.get(p.getUniqueId().toString()).get(3) + "\n"
+							+ "§aKills : " + playerdatas.get(p.getUniqueId().toString()).get(4) + "\n"
+							+ "§cDeaths : " + playerdatas.get(p.getUniqueId().toString()).get(5) + "\n"
 							+ "§bTemps passé §f: " + time); //Affiche depuis cb de temps la partie à commencée
 				}
 			}
@@ -301,12 +301,12 @@ public class Nexus implements Listener{
 		double z = b.getLocation().getZ();
 		
 		if(b.getType() == Material.LIGHT_BLUE_CONCRETE) {
-			String cooldown = playerdatas.get(p.getName()).get(6);
+			String cooldown = playerdatas.get(p.getUniqueId().toString()).get(6);
 			if(!cooldown.equals("0")) {
 				p.sendMessage("§cVous pourrez réapparaître dans " + cooldown + " seconds");
 				return;
 			}
-			if(playerdatas.get(p.getName()).get(1) == "defender") {
+			if(playerdatas.get(p.getUniqueId().toString()).get(1) == "defender") {
 				if(-4<=z && z<= -3) { //=> spawn 1 defenseur
 					p.teleport(new Location(map.getWorld(), map.getSpawns().get(TeamsManager.getPlayerTeam(p.getName())).getX() + 41, 35, -44, -90, 0));
 				}
@@ -347,7 +347,7 @@ public class Nexus implements Listener{
 	public static void onJump(PlayerMoveEvent e) { //JUMP DES DEFENSEURS
 		if(enabled == false) return;
 		Entity p = (Entity) e.getPlayer();
-		if(!playerdatas.get(p.getName()).get(1).equals("defender")) return;
+		if(!playerdatas.get(p.getUniqueId().toString()).get(1).equals("defender")) return;
 		if(p.getVelocity().getY() > 0 && !p.isOnGround()) { //Est en l'air ¿
 
 			if(p.getLocation().add(0, -1, 0).getBlock().getType() == Material.MAGENTA_GLAZED_TERRACOTTA) { //Saute sur les boost
@@ -386,27 +386,29 @@ public class Nexus implements Listener{
 		if(!playerdatas.containsKey(e.getEntity().getName())) return;
 		
 		Player p = e.getEntity();
+		String uuid = p.getUniqueId().toString();
 		if(lastdamager.containsKey(p)) { //DONNE COINS AU TUEUR
 			Player dmg = lastdamager.get(p);
-			int coins = Integer.parseInt(playerdatas.get(dmg.getName()).get(3));
+			String dmgUUID = dmg.getUniqueId().toString();
+			int coins = Integer.parseInt(playerdatas.get(dmgUUID).get(3));
 			coins+= COINS_PER_KILL;
-			playerdatas.get(dmg.getName()).set(3, String.valueOf(coins));
+			playerdatas.get(dmgUUID).set(3, String.valueOf(coins));
 			
 			//AJOUTE 1 KILL AU BOUG
-			int kills = Integer.parseInt(playerdatas.get(dmg.getName()).get(4)) + 1;
-			playerdatas.get(dmg.getName()).set(4, String.valueOf(kills));
+			int kills = Integer.parseInt(playerdatas.get(dmgUUID).get(4)) + 1;
+			playerdatas.get(dmgUUID).set(4, String.valueOf(kills));
 		}
 		//RETIRE COINS AU GENS QUI EST MORT
-		int coins = Integer.parseInt(playerdatas.get(p.getName()).get(3));
+		int coins = Integer.parseInt(playerdatas.get(uuid).get(3));
 		coins += COINS_PER_DEATH;
-		playerdatas.get(p.getName()).set(3, String.valueOf(coins));
+		playerdatas.get(uuid).set(3, String.valueOf(coins));
 		
 		//AJOUTE 1 DEATH AU BOUG QUI EST MORT
-		int deaths = Integer.parseInt(playerdatas.get(p.getName()).get(5)) + 1;
-		playerdatas.get(p.getName()).set(5, String.valueOf(deaths));
+		int deaths = Integer.parseInt(playerdatas.get(uuid).get(5)) + 1;
+		playerdatas.get(uuid).set(5, String.valueOf(deaths));
 		
 		//SET SA LAST DEATH
-		playerdatas.get(p.getName()).set(7, "0");
+		playerdatas.get(uuid).set(7, "0");
 	}
 	
 	@EventHandler
@@ -414,7 +416,7 @@ public class Nexus implements Listener{
 		System.out.println("respawn event triggered");
 		if(!enabled) return;
 		Player p = e.getPlayer();
-		if(!playerdatas.containsKey(p.getName())) return;
+		if(!playerdatas.containsKey(p.getUniqueId().toString())) return;
 		
 		p.getInventory().clear();
 		setPlayerInv(p);
@@ -425,8 +427,8 @@ public class Nexus implements Listener{
 			
 			@Override
 			public void run() {
-				p.teleport(map.getSpawns().get(TeamsManager.getPlayerTeam(p.getName())));
-				System.out.println(map.getSpawns().get(TeamsManager.getPlayerTeam(p.getName())));
+				p.teleport(map.getSpawns().get(TeamsManager.getPlayerTeam(p.getUniqueId().toString())));
+				System.out.println(map.getSpawns().get(TeamsManager.getPlayerTeam(p.getUniqueId().toString())));
 			}
 		}.runTaskLater(main, 5);
 		
@@ -435,7 +437,7 @@ public class Nexus implements Listener{
 			
 			@Override
 			public void run() {
-				playerdatas.get(p.getName()).set(6, String.valueOf(cooldown));
+				playerdatas.get(p.getUniqueId().toString()).set(6, String.valueOf(cooldown));
 				if(cooldown == 0) {
 					cancel();
 				}
@@ -514,7 +516,7 @@ public class Nexus implements Listener{
 	}
 	
 	public static void setPlayerInv(Player p) {
-		if(playerdatas.get(p.getName()).get(1) == "defender") {
+		if(playerdatas.get(p.getUniqueId().toString()).get(1) == "defender") {
 			p.getInventory().setItem(0, getMatraque());
 			p.getInventory().setItem(1, getTazer());
 			p.getInventory().setItem(2, getPinger());
