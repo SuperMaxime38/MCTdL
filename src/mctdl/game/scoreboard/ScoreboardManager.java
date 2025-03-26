@@ -41,47 +41,49 @@ public class ScoreboardManager implements Listener{
 			int order;
 			Score score;
 			
+			String uuid = p.getUniqueId().toString();
+			
 			@Override
 			public void run() {
 				if(i == -1) {
-					order = BaltopCommand.getClassement().indexOf(p.getName()) +1; // 0
+					order = BaltopCommand.getClassement().indexOf(uuid) +1; // 0
 					score = obj.getScore("§3Personnal Rank : §6#" + order);
 					score.setScore(0);
 					old.add(0, "§3Personnal Rank : §6#" + order);
 					
-					order = BaltopCommand.getTeamClassement().indexOf(TeamsManager.getPlayerTeam(p.getName())) +1; // 1
+					order = BaltopCommand.getTeamClassement().indexOf(TeamsManager.getPlayerTeam(uuid)) +1; // 1
 					score = obj.getScore("§bTeam Rank : §6#" + order);
 					score.setScore(1);
 					old.add(1, "§bTeam Rank : §6#" + order);
 					
-					score = obj.getScore("§6Coins §f: " + MoneyManager.getPlayerMoney(p.getName())); // 2
+					score = obj.getScore("§6Coins §f: " + MoneyManager.getPlayerMoney(uuid)); // 2
 					score.setScore(2);
-					old.add(2, "§6Coins §f: " + MoneyManager.getPlayerMoney(p.getName()));
+					old.add(2, "§6Coins §f: " + MoneyManager.getPlayerMoney(uuid));
 					
-					score = obj.getScore("§aTeam : " + TeamsManager.getTeamName(p.getName())); //3
+					score = obj.getScore("§aTeam : " + TeamsManager.getTeamName(uuid)); //3
 					score.setScore(3);
-					old.add(3, "§aTeam : " + TeamsManager.getTeamName(p.getName()));
+					old.add(3, "§aTeam : " + TeamsManager.getTeamName(uuid));
 					
 				}
 				if(i > 0) i = 0;
 				board.resetScores(old.get(3));
-				score = obj.getScore("§aTeam : " + TeamsManager.getTeamName(p.getName())); //3
+				score = obj.getScore("§aTeam : " + TeamsManager.getTeamName(uuid)); //3
 				score.setScore(3);
-				old.set(3, "§aTeam : " + TeamsManager.getTeamName(p.getName()));
+				old.set(3, "§aTeam : " + TeamsManager.getTeamName(uuid));
 				
 				board.resetScores(old.get(2));
-				score = obj.getScore("§6Coins §f: " + MoneyManager.getPlayerMoney(p.getName())); // 2
+				score = obj.getScore("§6Coins §f: " + MoneyManager.getPlayerMoney(uuid)); // 2
 				score.setScore(2);
-				old.set(2, "§6Coins §f: " + MoneyManager.getPlayerMoney(p.getName()));
+				old.set(2, "§6Coins §f: " + MoneyManager.getPlayerMoney(uuid));
 
-				order = BaltopCommand.getTeamClassement().indexOf(TeamsManager.getPlayerTeam(p.getName())) +1;  // 1
+				order = BaltopCommand.getTeamClassement().indexOf(TeamsManager.getPlayerTeam(uuid)) +1;  // 1
 				board.resetScores(old.get(1));
 				score = obj.getScore("§bTeam Rank : §6#" + order);
 				score.setScore(1);
 				old.set(1, "§bTeam Rank : §6#" + order);
 				
 				
-				order = BaltopCommand.getClassement().indexOf(p.getName()) +1; // 0
+				order = BaltopCommand.getClassement().indexOf(uuid) +1; // 0
 				board.resetScores(old.get(0));
 				score = obj.getScore("§3Personnal Rank : §6#" + order);
 				score.setScore(0);
