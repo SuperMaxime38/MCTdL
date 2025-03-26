@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -75,6 +76,11 @@ public class Interact implements Listener{
 			e.setCancelled(true);
 			return;
 		}
+	}
+	
+	@EventHandler
+	public static void avoidItemFrameToBeDestroyed(HangingBreakEvent e) {
+		e.setCancelled(true);
 	}
 
 }

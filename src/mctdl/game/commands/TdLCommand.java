@@ -15,6 +15,7 @@ import mctdl.game.npc.NPCManager;
 import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.GameVoting;
 import mctdl.game.utils.PlayerData;
+import mctdl.game.utils.Time;
 
 public class TdLCommand implements CommandExecutor{
 
@@ -111,6 +112,10 @@ public class TdLCommand implements CommandExecutor{
 			if(args[0].equals("spectate-looking")) {
 				p = (Player) s;
 				p.setSpectatorTarget(p.getNearbyEntities(3, 3, 3).get(0));
+			}
+			if(args[0].equals("uptime")) {
+				s.sendMessage("Uptime : " + Time.getUptime());
+				s.sendMessage("Current Tick : " + Time.getCurrentTick());
 			}
 		} else if(args.length == 2) {
 			if(args[0].equals("teams")) {

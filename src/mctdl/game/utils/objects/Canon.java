@@ -23,12 +23,15 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import mctdl.game.Main;
 import mctdl.game.utils.LobbyData;
@@ -276,6 +279,69 @@ public class Canon implements Listener{
 			}
 		}.runTaskTimer(main, 0, 1);
 		
+	}
+	
+	@EventHandler
+	public static void onShoot(PlayerInteractEvent e) {
+		Player p = e.getPlayer();
+		if(!sat.contains(p)) return;
+		
+		if(e.getAction() == Action.LEFT_CLICK_AIR) {
+			List<String> data = LobbyData.getCanonDatas().get(p.getVehicle().getUniqueId().toString());
+			ArmorStand bouche3 = (ArmorStand) Bukkit.getEntity(UUID.fromString(data.get(2)));
+			
+			ArmorStand bullet = (ArmorStand) p.getWorld().spawnEntity(bouche3.getLocation(), EntityType.ARMOR_STAND);
+			bullet.getEquipment().setHelmet(new ItemStack(Material.COAL_BLOCK));
+			bullet.setSmall(true);
+			bullet.setGravity(true);
+			bullet.setInvisible(true);
+			
+			
+			new BukkitRunnable() {
+				
+				Vector dir = p.getLocation().getDirection();
+				int t = 0;
+				double gravity = 0;
+				double acceleration = 0.004;
+
+				@Override
+				public void run() {
+					if(t==0) {
+						dir = dir.multiply(0.1);
+						p.sendMessage(dir.toString());
+						t++;
+					}
+					if(!bullet.getNearbyEntities(0.5, 0.5, 0.5).isEmpty() || bullet.getLocation().getBlock().getType() != Material.AIR) { //si ya contact alors boom
+						if(!bullet.getNearbyEntities(0.5, 0.5, 0.5).isEmpty()) {
+							if(!bullet.getNearbyEntities(0.5, 0.5, 0.5).contains(bouche3)) {
+								//boom
+								
+								bullet.remove();
+								p.sendMessage("obstacle");
+								
+								cancel();
+								return;
+								
+							} else {
+								
+							}
+						} else {
+							//boom
+							
+							bullet.remove();
+							p.sendMessage("obstacle");
+							
+							cancel();
+							return;
+						}
+					}
+					gravity += acceleration;
+					dir.setY(dir.getY() - gravity);
+					bullet.setVelocity(dir);
+				}
+				
+			}.runTaskTimer(main, 0, 1);
+		}
 	}
 	
 	

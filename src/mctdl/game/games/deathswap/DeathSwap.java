@@ -11,12 +11,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 
 import mctdl.game.Main;
 import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.PlayerData;
 
-public class DeathSwap {
+public class DeathSwap implements Listener {
 	
 	static Main main;
 	static boolean enable = false;
@@ -29,7 +30,7 @@ public class DeathSwap {
 	static String abandonne = "";
 	
 	
-	public DeathSwap(Main main) {
+	public DeathSwap(Main main){
 		DeathSwap.main = main;
 		
 		isGenerated = DeathSwap.main.getConfig().getBoolean("games.deathswap.generated");

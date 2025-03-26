@@ -136,6 +136,7 @@ public class LobbyJump implements CommandExecutor, Listener{
 	
 	@EventHandler
 	public static void Interact(PlayerInteractEvent e) { //QUAND CLIC SUR BOUTON DE FIN
+		if(!main.getConfig().getString("game").equals("lobby")) return;
 		if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
 			if(e.getClickedBlock().getType() == Material.OAK_BUTTON) {
 				Location loc = new Location(Bukkit.getWorlds().get(0), 72, 49, 17);
