@@ -1,6 +1,6 @@
 name: MCTdL
 author: SuperMaxime38
-version: 0.02.2
+version: 0.02.3
 main: mctdl.game.Main
 description: MCTdl 's plugins manager
 api-version: 1.13

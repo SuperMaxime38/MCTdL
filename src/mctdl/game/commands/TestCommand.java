@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import mctdl.game.Main;
+import mctdl.game.games.meltdown.npc.MeltdownNPC;
 import mctdl.game.utils.objects.Canon;
 
 public class TestCommand implements CommandExecutor{
@@ -28,6 +29,13 @@ public class TestCommand implements CommandExecutor{
 					Player p = (Player) s;
 					Canon.placeCanon(p, p.getLocation(), main);
 				}
+				return true;
+			case "npc":
+				if(s instanceof Player) {
+					Player p = (Player) s;
+					MeltdownNPC npc = new MeltdownNPC(main, p, "red");
+				}
+				
 				return true;
 			}
 		}

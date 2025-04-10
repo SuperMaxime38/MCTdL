@@ -16,7 +16,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import mctdl.game.Main;
 import mctdl.game.commands.BaltopCommand;
+import mctdl.game.npc.NPCManager;
 import mctdl.game.teams.TeamsManager;
+import net.minecraft.server.v1_16_R3.EntityPlayer;
 
 public class TabManager implements Listener{
 	
@@ -163,7 +165,9 @@ public class TabManager implements Listener{
 		ChatColor c;
 		
 		for (String uuid : teams.keySet()) {
-			p = Bukkit.getPlayer(UUID.fromString(uuid));
+			p = NPCManager.getNpcPlayerIfItIs(uuid);
+			if(p == null) p = Bukkit.getPlayer(UUID.fromString(uuid));
+			
 			switch(team) {
 			case "red":
 				switch(teams.get(uuid)) {

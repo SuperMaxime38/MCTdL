@@ -151,4 +151,10 @@ static HashMap<String, Integer> poutres_owners = new HashMap<String, Integer>();
 		if(money == null) return 0;
 		return money;
 	}
+	
+	public static void deleteFromExistence(String uuid) {
+		balances.remove(uuid);
+		lifetime.remove(uuid);
+		poutres_owners.remove(uuid);
+	}
 }
