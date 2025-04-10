@@ -6,9 +6,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import mctdl.game.Main;
-import mctdl.game.npc.NPCManager;
+import mctdl.game.games.meltdown.npc.MeltdownNPC;
 import mctdl.game.utils.objects.Canon;
-import net.minecraft.server.v1_16_R3.EntityPlayer;
 
 public class TestCommand implements CommandExecutor{
 	
@@ -34,8 +33,7 @@ public class TestCommand implements CommandExecutor{
 			case "npc":
 				if(s instanceof Player) {
 					Player p = (Player) s;
-					EntityPlayer npc = NPCManager.npcBuilder("Test", "PoutreCosmique", p.getLocation(), p, main);
-					NPCManager.showNpcWithoutTabFor(main, npc, p, null);
+					MeltdownNPC npc = new MeltdownNPC(main, p, "red");
 				}
 				
 				return true;

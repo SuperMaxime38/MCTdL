@@ -15,6 +15,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import mctdl.game.Main;
+import mctdl.game.npc.NPCManager;
 
 public class TeamsManager{
 	
@@ -120,9 +121,9 @@ public class TeamsManager{
 	
 	public static void setPlayerTeam(String uuid, String team) {teams.put(uuid, team);}
 	
-	public static void removePlayerTeam(String name) {
-		if(teams.containsKey(name)) {
-			teams.remove(name);
+	public static void removePlayerTeam(String uuid) {
+		if(teams.containsKey(uuid)) {
+			teams.remove(uuid);
 		}
 	}
 	
@@ -333,6 +334,11 @@ public class TeamsManager{
 					teams.add(team);
 					break;
 				}
+				if(NPCManager.getNpcPlayerIfItIs(uuid) != null) {
+					System.out.println("NPC: " + NPCManager.getNpcPlayerIfItIs(uuid).getName());
+					teams.add(team);
+					break;
+				}
 			}
 		}
 		return teams;
@@ -418,5 +424,9 @@ public class TeamsManager{
 			}
 		}
 		return null;
+	}
+	
+	public static void removeUUIDToPseudo(String uuid) {
+		uuidToPseudo.remove(uuid);
 	}
 }

@@ -390,4 +390,9 @@ public class PlayerData {
 		
 		return item;
 	}
+	
+	public static void deleteFromExistence(String uuid) {
+		items.remove(uuid);
+		stats.remove(uuid);
+	}
 }

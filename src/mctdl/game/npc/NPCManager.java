@@ -28,6 +28,9 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.datafixers.util.Pair;
 
 import mctdl.game.Main;
+import mctdl.game.money.MoneyManager;
+import mctdl.game.teams.TeamsManager;
+import mctdl.game.utils.PlayerData;
 import net.minecraft.server.v1_16_R3.EntityPlayer;
 import net.minecraft.server.v1_16_R3.EnumItemSlot;
 import net.minecraft.server.v1_16_R3.MinecraftServer;
@@ -143,6 +146,17 @@ static List<EntityPlayer> lookPlayer = new ArrayList<>();
 		}.runTaskLater(main, delay);
 	}
 	
+	public static List<EntityPlayer> getNPCs() {return npcss;}
+	
+	public static Player getNpcPlayerIfItIs(String uuid) {
+		for(EntityPlayer pl : NPCManager.getNPCs()) {
+			if(pl.getUniqueID().toString().equals(uuid)) {
+				return pl.getBukkitEntity();
+			}
+		}
+		return null;
+	}
+	
 	public static EntityPlayer npcBuilder(String name, String textureowner, Location loc, Player p, Main main) {
 		CraftPlayer cplayer  = (CraftPlayer) p;
 		EntityPlayer sp = cplayer.getHandle(); // get EntityPlayer from player
@@ -247,7 +261,12 @@ static List<EntityPlayer> lookPlayer = new ArrayList<>();
 		for(EntityPlayer npc : npcss) {
 			ps.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, npc));
 			ps.sendPacket(new PacketPlayOutEntityDestroy(npc.getId()));
+			TeamsManager.removePlayerTeam(npc.getUniqueIDString());
+			TeamsManager.removeUUIDToPseudo(npc.getUniqueIDString());
+			MoneyManager.deleteFromExistence(npc.getUniqueIDString());
+			PlayerData.deleteFromExistence(npc.getUniqueIDString());
 		}
+		
 		npcss.clear();
 	}
 	

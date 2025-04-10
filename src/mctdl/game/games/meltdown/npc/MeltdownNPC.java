@@ -28,7 +28,7 @@ public class MeltdownNPC {
 		
 		//Show NPC
 		for(Player p : Bukkit.getOnlinePlayers()) {
-			NPCManager.showNpcWithoutTabFor(main, npc, p, null);
+			NPCManager.showNPCFor(npc, p, null);
 		}
 		
 		// Register NPC as Player
@@ -40,7 +40,8 @@ public class MeltdownNPC {
 		
 		Player p = npc.getBukkitEntity();
 		
-		p.setFoodLevel(20);
+		//p.setFoodLevel(20);
+		System.out.println("main config stuff " + main.getConfig().getString("game"));
 		String game = main.getConfig().getString("game");
 		
 		HashMap<String, Integer> balances = MoneyManager.getRegsPlayer();

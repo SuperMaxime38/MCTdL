@@ -14,7 +14,7 @@ public class MDNPC_Utils {
 	}
 	
 	public static String getRandomName(String team) {
-		return "";
+		return "Poutre";
 	}
 
 }
