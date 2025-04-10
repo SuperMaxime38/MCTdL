@@ -118,7 +118,7 @@ public class TeamsManager{
 	 */
 	public static HashMap<String, String> getTeams() {return teams;}
 	
-	public static void setPlayerTeam(String name, String team) {teams.put(name, team);}
+	public static void setPlayerTeam(String uuid, String team) {teams.put(uuid, team);}
 	
 	public static void removePlayerTeam(String name) {
 		if(teams.containsKey(name)) {

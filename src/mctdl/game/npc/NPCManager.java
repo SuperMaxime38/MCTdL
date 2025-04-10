@@ -9,9 +9,7 @@ import java.util.Scanner;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.libs.org.apache.http.HttpResponse;
@@ -30,10 +28,6 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.datafixers.util.Pair;
 
 import mctdl.game.Main;
-import mctdl.game.commands.BaltopCommand;
-import mctdl.game.games.lobby.PouleZooka;
-import mctdl.game.teams.TeamsManager;
-import mctdl.game.utils.PlayerData;
 import net.minecraft.server.v1_16_R3.EntityPlayer;
 import net.minecraft.server.v1_16_R3.EnumItemSlot;
 import net.minecraft.server.v1_16_R3.MinecraftServer;
@@ -43,10 +37,10 @@ import net.minecraft.server.v1_16_R3.PacketPlayOutEntityHeadRotation;
 import net.minecraft.server.v1_16_R3.PacketPlayOutEntityTeleport;
 import net.minecraft.server.v1_16_R3.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_16_R3.PacketPlayOutPlayerInfo;
+import net.minecraft.server.v1_16_R3.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
 import net.minecraft.server.v1_16_R3.PlayerConnection;
 import net.minecraft.server.v1_16_R3.PlayerInteractManager;
 import net.minecraft.server.v1_16_R3.WorldServer;
-import net.minecraft.server.v1_16_R3.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
 
 public class NPCManager {
 
@@ -57,7 +51,7 @@ static HashMap<String, List<String>> textures = new HashMap<String, List<String>
 
 static List<EntityPlayer> npcss = new ArrayList<>();
 static List<EntityPlayer> lookPlayer = new ArrayList<>();
-static HashMap<String, List<String>> data = new HashMap<String, List<String>>();
+//static HashMap<String, List<String>> data = new HashMap<String, List<String>>();
 
 	public static boolean fileCheck(Main main){
     	
@@ -67,23 +61,16 @@ static HashMap<String, List<String>> data = new HashMap<String, List<String>>();
 
 	     
 	     if (!f.exists()) { //CREER SI FICHIER N'EXISTE PAS
-	         try {
-	        	 
-	        	 preset.createSection("textures");
-	        	 
-	        	 preset.createSection("npc");
-	        	 List<Integer> data = new ArrayList<>();
-	        	 data.add(-73);
-	        	 data.add(14);
-	        	 data.add(72);
-	        	 preset.set("npc.top1", data);
-	        	 
-	             preset.save(f);
-	             
-	         } catch (IOException exception) {
-
-	             exception.printStackTrace();
-	         }
+	         preset.createSection("textures");
+			 
+			 preset.createSection("npc");
+//	        	 List<Integer> data = new ArrayList<>();
+//	        	 data.add(-73);
+//	        	 data.add(14);
+//	        	 data.add(72);
+//	        	 preset.set("npc.top1", data);
+//	        	 
+//	             preset.save(f);
 	         return false;
 	     } else {
 	    	return true; 
@@ -104,10 +91,10 @@ static HashMap<String, List<String>> data = new HashMap<String, List<String>>();
 	 			textures.put(uuid, texture);
 	 		}
 	    }
-	    for(String role : yaml.getConfigurationSection("npc").getKeys(false)) {
-	    	List<String> elements = yaml.getStringList("npc." + role);
-	    	data.put(role, elements);
-	    }
+//	    for(String role : yaml.getConfigurationSection("npc").getKeys(false)) {
+//	    	List<String> elements = yaml.getStringList("npc." + role);
+//	    	data.put(role, elements);
+//	    }
 	}
 	
 	public static void updateConfig(Main main) {
@@ -121,11 +108,11 @@ static HashMap<String, List<String>> data = new HashMap<String, List<String>>();
 			yaml.set("textures." + uuid, textures.get(uuid));
 		}
 	    
-	    for (String role : data.keySet()) {
-	    	List<?> elements = data.get(role);
-	    	
-			yaml.set("npc." + role, elements);
-		}
+//	    for (String role : data.keySet()) {
+//	    	List<?> elements = data.get(role);
+//	    	
+//			yaml.set("npc." + role, elements);
+//		}
 	    
 	    try {
 			yaml.save(f);
@@ -137,86 +124,9 @@ static HashMap<String, List<String>> data = new HashMap<String, List<String>>();
 	}
 	
 	public static void onPlayerJoin(Player p, Main main, int delay) {
-		String name = "";
-		for (String role : data.keySet()) {
-			List<String> elements = data.get(role);
-			
-			
-			List<String> classement = BaltopCommand.getClassement();
-			ChatColor c = ChatColor.WHITE;
-			String owner = "Dream";
-			Location loc = new Location(Bukkit.getWorlds().get(0), Double.parseDouble(elements.get(0)), Double.parseDouble(elements.get(1)), Double.parseDouble(elements.get(2)));
-			//isLookingPlyaer
-			boolean doesLook = false;
-			
-			//Body+Head Rotation
-			float yaw = 0;
-			float pitch = 0;
-			
-			
-			//other npc infos---
-			List<ItemStack> items = new ArrayList<>();
-			ItemStack righthand = new ItemStack(Material.AIR);
-			ItemStack lefthand = new ItemStack(Material.AIR);
-			ItemStack helmet = new ItemStack(Material.AIR);
-			ItemStack chestplate = new ItemStack(Material.AIR);
-			ItemStack leggings = new ItemStack(Material.AIR);
-			ItemStack boots = new ItemStack(Material.AIR);
-			
-			switch(role) {
-				case "top1":
-					name = classement.get(0);
-					c = TeamsManager.getTeamColor(name);
-					owner = name;
-					doesLook = Boolean.parseBoolean(elements.get(3));
-					yaw = Float.parseFloat(elements.get(4));
-					pitch = Float.parseFloat(elements.get(5));
-					break;
-				case "top2":
-					name = classement.get(1);
-					c = TeamsManager.getTeamColor(name);
-					owner = name;
-					break;
-				case "poulezooka":
-					name = "Canwardo";
-					c = ChatColor.YELLOW;
-					owner = "Le_canward";
-					righthand = PouleZooka.getBazooka();
-					doesLook = true;
-					break;
-				default:
-					name = elements.get(3);
-					owner = elements.get(4);
-					
-					//Equipment
-					righthand = PlayerData.getItem(elements.get(5));
-					lefthand = PlayerData.getItem(elements.get(6));
-					helmet = PlayerData.getItem(elements.get(7));
-					chestplate = PlayerData.getItem(elements.get(8));
-					leggings = PlayerData.getItem(elements.get(9));
-					boots = PlayerData.getItem(elements.get(10));
-					
-					doesLook = Boolean.valueOf(elements.get(11));
-					//Rotation
-					yaw = Float.parseFloat(elements.get(12));
-					pitch = Float.parseFloat(elements.get(13));
-					break;
-			}
-			
-			EntityPlayer npc = npcBuilder(c + name, owner, loc, p, main);
-			
-			if(doesLook) lookPlayer.add(npc);
-			
-			 items.add(righthand);
-			 items.add(lefthand);
-			 items.add(helmet);
-			 items.add(chestplate);
-			 items.add(leggings);
-			 items.add(boots);
-			
-			npcss.add(npc);
-			showNPCFor(npc, p, items);
-			rotateNPC(npc, yaw, pitch, p);
+		
+		for(EntityPlayer npc : npcss) {
+			showNPCFor(npc, p, null);
 		}
 		
 		new BukkitRunnable() {
@@ -253,6 +163,7 @@ static HashMap<String, List<String>> data = new HashMap<String, List<String>>();
 		EntityPlayer npc = new EntityPlayer(server, lvl, gameProfile, pi); //Create NPC
 		npc.setPosition(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 		
+		npcss.add(npc);
 		
 		return npc;
 	}
@@ -271,6 +182,9 @@ static HashMap<String, List<String>> data = new HashMap<String, List<String>>();
 		
 		//NPC Equipment
 		List<Pair<EnumItemSlot, net.minecraft.server.v1_16_R3.ItemStack>> equipment = new ArrayList<>();
+		
+		if(items == null) return;
+		if(items.size() < 6) return;
 			
 		equipment.add(new Pair<>(EnumItemSlot.MAINHAND, CraftItemStack.asNMSCopy(items.get(0)))); //Item Main Hand
 		equipment.add(new Pair<>(EnumItemSlot.OFFHAND, CraftItemStack.asNMSCopy(items.get(1)))); //Item Left Hand
@@ -282,6 +196,27 @@ static HashMap<String, List<String>> data = new HashMap<String, List<String>>();
 			
 		ps.sendPacket(new PacketPlayOutEntityEquipment(npc.getBukkitEntity().getEntityId(), equipment));
 		
+	}
+	
+	public static void showNpcWithoutTabFor(Main main, EntityPlayer npc, Player p, List<ItemStack> items) {
+		showNPCFor(npc, p, items);
+		
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				hideTabNameFor(npc, p);
+			}
+			
+		}.runTaskLater(main, 10);
+	}
+	
+	public static void destroyNPC(EntityPlayer npc) {
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			npcKiller(npc, p);
+		}
+		
+		npcss.remove(npc);
 	}
 	
 	public static void hideTabNameFor(EntityPlayer npc, Player p) {
@@ -354,11 +289,13 @@ static HashMap<String, List<String>> data = new HashMap<String, List<String>>();
 	public static HashMap<String, List<String>> getTextures() {return textures;}
 	
 	public static List<String> getPlayerTexture(String name, Main main) {
-		
-		Player p = Bukkit.getPlayer(name);
-		String uuid = "";
-		if(p == null) {
-			CloseableHttpClient httpclient1 = HttpClients.createDefault();
+
+	    if(textures.containsKey(name)) return textures.get(name);
+
+	    Player p = Bukkit.getPlayer(name);
+	    String uuid = "";
+	    if(p == null) {
+	        CloseableHttpClient httpclient1 = HttpClients.createDefault();
 	        HttpGet httpget1 = new HttpGet("https://api.mojang.com/users/profiles/minecraft/"+ name);
 	        try {
 	            HttpResponse httpresponse1 = httpclient1.execute(httpget1);
@@ -366,76 +303,84 @@ static HashMap<String, List<String>> data = new HashMap<String, List<String>>();
 	            Scanner sc1 = new Scanner(httpresponse1.getEntity().getContent());
 	            
 	            //Get result
-	              while(sc1.hasNext()) {
-	                 String str1 = sc1.nextLine();
-	                 if(str1.contains("id")) {
-	                	 str1 = str1.replaceAll(" ", "");
-	                	 str1 = str1.replaceAll("id", "");
-	                	 str1 = str1.replaceAll("	", "");
-	                	 str1 = str1.replaceAll("\"", "");
-	                	 str1 = str1.replaceAll(",", "");
-	                	 str1 = str1.replaceAll(":", "");
-	                	 uuid = str1;
-	                 }
-	              }
+	                while(sc1.hasNext()) {
+	                    String str1 = sc1.nextLine();
+	                    if(str1.contains("id")) {
+	                        str1 = str1.replaceAll(" ", "");
+	                        str1 = str1.replaceAll("id", "");
+	                        str1 = str1.replaceAll("	", "");
+	                        str1 = str1.replaceAll("\"", "");
+	                        str1 = str1.replaceAll(",", "");
+	                        str1 = str1.replaceAll(":", "");
+	                        uuid = str1;
+	                    }
+	                }
+	                
+	            sc1.close();
 	        } catch (ClientProtocolException e) {
+	            System.out.println("[NPC] Failed to load player texture: " + name);
 	            // TODO Auto-generated catch block
 	            e.printStackTrace();
 	        } catch (IOException e) {
 	            // TODO Auto-generated catch block
+	            System.out.println("[NPC] Failed to load player texture: " + name);
 	            e.printStackTrace();
 	        }
-		} else {
-			uuid = Bukkit.getPlayer(name).getUniqueId().toString().replaceAll("-", ""); //Get UUID et enlève les -
-		}
-		
-		
-		String texture = "";
-		String signature = "";
-		
-		CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpGet httpget = new HttpGet("https://sessionserver.mojang.com/session/minecraft/profile/"+ uuid +"?unsigned=false");
+	    } else {
+	        uuid = Bukkit.getPlayer(name).getUniqueId().toString().replaceAll("-", ""); //Get UUID et enlève les -
+	    }
+	    
+	    
+	    String texture = "";
+	    String signature = "";
+	    
+	    CloseableHttpClient httpclient = HttpClients.createDefault();
+	    HttpGet httpget = new HttpGet("https://sessionserver.mojang.com/session/minecraft/profile/"+ uuid +"?unsigned=false");
 
-          //Executing the Get request
-          try {
-            HttpResponse httpresponse = httpclient.execute(httpget);
+	        //Executing the Get request
+	        try {
+	        HttpResponse httpresponse = httpclient.execute(httpget);
+	        System.out.println("http response stuff: " + httpresponse.getStatusLine().getStatusCode());
+	        System.out.println("url: " + httpget.getURI());
 
-            Scanner sc = new Scanner(httpresponse.getEntity().getContent());
-            
-            //Get result
-              while(sc.hasNext()) {
-                 String str = sc.nextLine();
-                 if(str.contains("value")) {
-                	 str = str.replaceAll(" ", "");
-                	 str = str.replaceAll("value", "");
-                	 str = str.replaceAll("	", "");
-                	 str = str.replaceAll("\"", "");
-                	 str = str.replaceAll(",", "");
-                	 str = str.replaceAll(":", "");
-                	 texture = str;
-                 } else if(str.contains("signature")) {
-                	 str = str.replaceAll(" ", "");
-                	 str = str.replaceAll("signature", "");
-                	 str = str.replaceAll("	", "");
-                	 str = str.replaceAll("\"", "");
-                	 str = str.replaceAll(":", "");
-                	 signature = str;
-                 }
-              }
-        } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-          
-          List<String> data = new ArrayList<>();
-          data.add(texture);
-          data.add(signature);
-          
-          textures.put(name, data); //Changer pr un uuid
-          
-          return data;
+	        Scanner sc = new Scanner(httpresponse.getEntity().getContent());
+	        
+	        //Get result
+	            while(sc.hasNext()) {
+	                String str = sc.nextLine();
+	                if(str.contains("value")) {
+	                    str = str.replaceAll(" ", "");
+	                    str = str.replaceAll("value", "");
+	                    str = str.replaceAll("	", "");
+	                    str = str.replaceAll("\"", "");
+	                    str = str.replaceAll(",", "");
+	                    str = str.replaceAll(":", "");
+	                    texture = str;
+	                } else if(str.contains("signature")) {
+	                    str = str.replaceAll(" ", "");
+	                    str = str.replaceAll("signature", "");
+	                    str = str.replaceAll("	", "");
+	                    str = str.replaceAll("\"", "");
+	                    str = str.replaceAll(":", "");
+	                    signature = str;
+	                }
+	            }
+	            
+	        sc.close();
+	    } catch (ClientProtocolException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+	    } catch (IOException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+	    }
+	        
+	        List<String> data = new ArrayList<>();
+	        data.add(texture);
+	        data.add(signature);
+	        
+	        textures.put(name, data); //Changer pr un uuid
+	        
+	        return data;
 	}
 }
