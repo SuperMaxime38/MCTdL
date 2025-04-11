@@ -39,12 +39,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import mctdl.game.Main;
 import mctdl.game.money.MoneyManager;
+import mctdl.game.npc.NPCManager;
 import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.PlayerData;
 import mctdl.game.utils.Spectate;
 import mctdl.game.utils.TimeFormater;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.minecraft.server.v1_16_R3.EntityPlayer;
 
 public class Meltdown implements Listener {
 
@@ -105,41 +107,59 @@ public class Meltdown implements Listener {
 	public static void playerTeleport() {
 		HashMap<String, String> teams = TeamsManager.getOnlinePlayers();
 		for (String uuid : teams.keySet()) {
-			Player p = Bukkit.getPlayer(UUID.fromString(uuid));
+			
 			List<Integer> tp = MeltdownFiles.getSpawnCoords(main, TeamsManager.getPlayerTeam(uuid));
-			p.teleport(new Location(Bukkit.getWorlds().get(0), tp.get(0), tp.get(1), tp.get(2), tp.get(3), 0));
+			
+			//Check if npc
+			EntityPlayer npc = NPCManager.getNpcByUUID(uuid);
+			if(npc != null) {
+				NPCManager.teleportNPC(npc, tp.get(0), tp.get(1), tp.get(2));
+			} else {
+				Player p = Bukkit.getPlayer(UUID.fromString(uuid));
+				p.teleport(new Location(Bukkit.getWorlds().get(0), tp.get(0), tp.get(1), tp.get(2), tp.get(3), 0)); 
+				
+				// Items
+				PlayerData.saveItems(p);
+				p.getInventory().clear();
+			}
 			
 			//Anti bug -- supposé useless
 			//-->
 			List<Integer> truc = new ArrayList<>();
 			playerdata.put(uuid, truc);
-			
-			// Items
-			PlayerData.saveItems(p);
-			p.getInventory().clear();
 		}
 	}
 
 	public static void playerBegin() {
 		HashMap<String, String> teams = TeamsManager.getOnlinePlayers();
 		for (String uuid : teams.keySet()) {
-			Player p = Bukkit.getPlayer(UUID.fromString(uuid));
-			p.setGameMode(GameMode.SURVIVAL);
-			p.setInvisible(false);
 			
-			p.getActivePotionEffects().clear();
-
-			p.getInventory().setItem(0, getBow());
-
-			p.getInventory().setItem(1, getCooldownPickaxe());
+			//Check for npc
+			EntityPlayer npc = NPCManager.getNpcByUUID(uuid);
+			if(npc != null) {
+				//DO SOMETHING
+			} else {
+				Player p = Bukkit.getPlayer(UUID.fromString(uuid));
+				p.setGameMode(GameMode.SURVIVAL);
+				p.setInvisible(false);
+				
+				p.getActivePotionEffects().clear();
+	
+				p.getInventory().setItem(0, getBow());
+	
+				p.getInventory().setItem(1, getCooldownPickaxe());
+				
+				p.getInventory().setItem(2, getHeater(TeamsManager.getPlayerTeam(uuid)));
+	
+				p.getInventory().setItem(27, new ItemStack(Material.ARROW));
+	
+				p.getActivePotionEffects().clear();
+				
+				regPlayer(p);
+			}
 			
-			p.getInventory().setItem(2, getHeater(TeamsManager.getPlayerTeam(uuid)));
-
-			p.getInventory().setItem(27, new ItemStack(Material.ARROW));
-
-			p.getActivePotionEffects().clear();
 			
-			regPlayer(p);
+			
 
 		}
 		Bukkit.broadcastMessage("§6Une partie de §4Meltdown §6vient de commencer !");

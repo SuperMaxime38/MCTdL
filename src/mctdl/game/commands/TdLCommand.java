@@ -149,7 +149,7 @@ public class TdLCommand implements CommandExecutor{
 				if(args[1].equals("remove")) {
 					playername = args[2];
 					if(!isLogged(s, playername)) return true;
-					TeamsManager.removePlayerTeam(Bukkit.getPlayer(playername).getUniqueId().toString());
+					TeamsManager.removePlayerTeamByName(playername);
 					s.sendMessage(h + playername  + " a été retiré de son équipe");
 					return true;
 				}

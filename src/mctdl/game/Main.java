@@ -212,17 +212,17 @@ public class Main extends JavaPlugin{
 	public void onDisable() {
 		saveDefaultConfig();
 		String h = header();
-		TeamsManager.updateConfig(this);
-		MoneyManager.updateConfig(this);
-		PlayerData.updateConfig(this);
 		
 		//NPC
 		if(getConfig().getBoolean("enable-npc")) {
 			NPCManager.updateConfig(this);
-			for (Player pl : Bukkit.getOnlinePlayers()) {
-				NPCManager.killAllNPCs(pl);
-			}
+			NPCManager.destroyNPCs();
 		}
+		
+
+		TeamsManager.updateConfig(this);
+		MoneyManager.updateConfig(this);
+		PlayerData.updateConfig(this);
 		
 		//Clear Display
 		GameVoting.clearDisplay();

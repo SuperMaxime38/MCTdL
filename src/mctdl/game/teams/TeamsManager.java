@@ -127,6 +127,10 @@ public class TeamsManager{
 		}
 	}
 	
+	public static void removePlayerTeamByName(String name) {
+		removePlayerTeam(getUUIDByPseudo(name).toString());
+	}
+	
 	public static void clearTeams(Main main) {
 		teams.clear();
 		updateConfig(main);
@@ -302,6 +306,9 @@ public class TeamsManager{
 		for (String uuid : teams.keySet()) {
 			p = Bukkit.getPlayer(UUID.fromString(uuid));
 			if(p == null) { //Le != null est buggé des fois
+				if(NPCManager.getNpcPlayerIfItIs(uuid) != null) {
+					online.put(uuid, teams.get(uuid));
+				}
 			} else {
 				online.put(uuid, teams.get(uuid));
 			}
@@ -341,6 +348,7 @@ public class TeamsManager{
 				}
 			}
 		}
+		System.out.println("Teams Online: " + teams);
 		return teams;
 	}
 	

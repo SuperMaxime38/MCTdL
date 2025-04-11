@@ -34,6 +34,7 @@ import mctdl.game.utils.PlayerData;
 import net.minecraft.server.v1_16_R3.EntityPlayer;
 import net.minecraft.server.v1_16_R3.EnumItemSlot;
 import net.minecraft.server.v1_16_R3.MinecraftServer;
+import net.minecraft.server.v1_16_R3.Packet;
 import net.minecraft.server.v1_16_R3.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_16_R3.PacketPlayOutEntityEquipment;
 import net.minecraft.server.v1_16_R3.PacketPlayOutEntityHeadRotation;
@@ -233,6 +234,12 @@ static List<EntityPlayer> lookPlayer = new ArrayList<>();
 		npcss.remove(npc);
 	}
 	
+	public static void destroyNPCs() {
+		for(EntityPlayer npc : npcss) {
+			destroyNPC(npc);
+		}
+	}
+	
 	public static void hideTabNameFor(EntityPlayer npc, Player p) {
 		CraftPlayer cplayer = (CraftPlayer) p;
 		EntityPlayer sp = cplayer.getHandle(); // get EntityPlayer from player
@@ -250,6 +257,14 @@ static List<EntityPlayer> lookPlayer = new ArrayList<>();
 		
 		ps.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, npc));
 		ps.sendPacket(new PacketPlayOutEntityDestroy(npc.getId()));
+		
+
+		TeamsManager.removePlayerTeam(npc.getUniqueIDString());
+		TeamsManager.removeUUIDToPseudo(npc.getUniqueIDString());
+		MoneyManager.deleteFromExistence(npc.getUniqueIDString());
+		PlayerData.deleteFromExistence(npc.getUniqueIDString());
+		
+		
 		npcss.remove(npc);
 	}
 	
@@ -261,14 +276,22 @@ static List<EntityPlayer> lookPlayer = new ArrayList<>();
 		for(EntityPlayer npc : npcss) {
 			ps.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, npc));
 			ps.sendPacket(new PacketPlayOutEntityDestroy(npc.getId()));
-			TeamsManager.removePlayerTeam(npc.getUniqueIDString());
-			TeamsManager.removeUUIDToPseudo(npc.getUniqueIDString());
-			MoneyManager.deleteFromExistence(npc.getUniqueIDString());
-			PlayerData.deleteFromExistence(npc.getUniqueIDString());
 		}
 		
 		npcss.clear();
 	}
+	
+	 public static void teleportNPC(EntityPlayer npc, double x, double y, double z) {
+
+         npc.setLocation(x, y, z, npc.yaw, npc.pitch);
+         Packet<?> packet = new PacketPlayOutEntityTeleport(npc);
+         
+	        for (Player p : Bukkit.getOnlinePlayers()) {
+	            PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
+
+	            connection.sendPacket(packet);
+	        }
+	    }
 	
 	public static void rotateNPC(EntityPlayer npc, float yaw, float pitch, Player p) {
 		Location loc = npc.getBukkitEntity().getLocation();
@@ -304,6 +327,13 @@ static List<EntityPlayer> lookPlayer = new ArrayList<>();
 	}
 	
 	public static List<EntityPlayer> getLookingNPCs() {return lookPlayer;}
+	
+	public static EntityPlayer getNpcByUUID(String uuid) {
+		for(EntityPlayer npc : npcss) {
+			if(npc.getUniqueIDString().equals(uuid)) return npc;
+		}
+		return null;
+	}
 	
 	public static HashMap<String, List<String>> getTextures() {return textures;}
 	
