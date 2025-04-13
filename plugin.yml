@@ -48,3 +48,6 @@ commands:
   testcmd:
     permission: tdl.commands.test
     description: This command is used to test stuff
+  tdlpacket:
+    permission: tdl.commands.packet
+    description: This command is used to send packets (npc manipulation)

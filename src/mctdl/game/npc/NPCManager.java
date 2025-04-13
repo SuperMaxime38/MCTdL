@@ -183,6 +183,10 @@ static List<EntityPlayer> lookPlayer = new ArrayList<>();
 		return npc;
 	}
 	
+	public static void addExternalNPC(EntityPlayer npc) {
+		npcss.add(npc);
+	}
+	
 	public static void showNPCFor(EntityPlayer npc, Player p, List<ItemStack> items) {
 		CraftPlayer cplayer = (CraftPlayer) p;
 		EntityPlayer sp = cplayer.getHandle(); // get EntityPlayer from player
@@ -229,6 +233,10 @@ static List<EntityPlayer> lookPlayer = new ArrayList<>();
 	public static void destroyNPC(EntityPlayer npc) {
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			npcKiller(npc, p);
+			if(!TeamsManager.getPlayerTeam(npc.getUniqueIDString()).equals("none")) { // Si npc is AI player, remove from team
+				
+				TeamsManager.removePlayerTeam(npc.getUniqueIDString());
+			}
 		}
 		
 		npcss.remove(npc);

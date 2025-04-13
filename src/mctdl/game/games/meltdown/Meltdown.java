@@ -15,6 +15,7 @@ import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.TrapDoor;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.ItemFrame;
@@ -113,7 +114,7 @@ public class Meltdown implements Listener {
 			//Check if npc
 			EntityPlayer npc = NPCManager.getNpcByUUID(uuid);
 			if(npc != null) {
-				NPCManager.teleportNPC(npc, tp.get(0), tp.get(1), tp.get(2));
+				delayedNPCTeleport(npc, tp.get(0), tp.get(1), tp.get(2));
 			} else {
 				Player p = Bukkit.getPlayer(UUID.fromString(uuid));
 				p.teleport(new Location(Bukkit.getWorlds().get(0), tp.get(0), tp.get(1), tp.get(2), tp.get(3), 0)); 
@@ -129,6 +130,18 @@ public class Meltdown implements Listener {
 			playerdata.put(uuid, truc);
 		}
 	}
+	
+	public static void delayedNPCTeleport(EntityPlayer npc, int x, int y, int z) {
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				NPCManager.teleportNPC(npc, x, y, z);
+				System.out.println("TELEPORT NPC");
+			}
+			
+		}.runTaskLater(main, 20);
+	}
 
 	public static void playerBegin() {
 		HashMap<String, String> teams = TeamsManager.getOnlinePlayers();
@@ -137,7 +150,13 @@ public class Meltdown implements Listener {
 			//Check for npc
 			EntityPlayer npc = NPCManager.getNpcByUUID(uuid);
 			if(npc != null) {
-				//DO SOMETHING
+				npc.inventory.clear();
+				npc.inventory.setItem(0, CraftItemStack.asNMSCopy(getBow()));
+				npc.inventory.setItem(1, CraftItemStack.asNMSCopy(getCooldownPickaxe()));
+				npc.inventory.setItem(2, CraftItemStack.asNMSCopy(getHeater(TeamsManager.getPlayerTeam(uuid))));
+				npc.inventory.setItem(27, CraftItemStack.asNMSCopy(new ItemStack(Material.ARROW)));
+				
+				regPlayer(npc.getBukkitEntity());
 			} else {
 				Player p = Bukkit.getPlayer(UUID.fromString(uuid));
 				p.setGameMode(GameMode.SURVIVAL);
@@ -181,7 +200,15 @@ public class Meltdown implements Listener {
 			public void run() {
 				HashMap<String, String> teams = TeamsManager.getOnlinePlayers();
 				for (String uuid : teams.keySet()) {
-					Player p = Bukkit.getPlayer(UUID.fromString(uuid));
+					
+					Player p;
+					
+					if(NPCManager.getNpcPlayerIfItIs(uuid) != null) {
+						p = NPCManager.getNpcPlayerIfItIs(uuid);
+					} else {
+						p = Bukkit.getPlayer(UUID.fromString(uuid));
+					}
+					
 					p.setGameMode(GameMode.ADVENTURE);
 					p.setInvisible(false);
 
@@ -190,6 +217,8 @@ public class Meltdown implements Listener {
 					p.getInventory().clear();
 					
 					PlayerData.registerPlayer(p);
+					
+					
 				}
 			}
 		}.runTaskLater(main, 5);
@@ -860,37 +889,34 @@ public class Meltdown implements Listener {
 				boolean anotherTeam = false;
 				for (String uuid : playerdata.keySet()) {
 					List<Integer> pData = playerdata.get(uuid);
-					Player pla = Bukkit.getPlayer(UUID.fromString(uuid));
-					if(pla == null) break;
+					
+					Player pla;
+					
+					if(NPCManager.getNpcPlayerIfItIs(uuid) != null) {
+						pla = NPCManager.getNpcPlayerIfItIs(uuid);
+					} else {
+						pla = Bukkit.getPlayer(UUID.fromString(uuid));
+					}
+					
+					
+					if(pla == null) {
+						// well il parait que != bug donc dans le doute...
+					} else
 					if(pla.getLocation().getY() <= fall_height && pData.get(0) != 0) {
-						int pgold = pData.get(2);
-						int pdeaths = pData.get(4);
-						pgold = pgold - 10;
-						pdeaths = pdeaths + 1;
-						pData.set(2, pgold);
-						pData.set(4, pdeaths);
-						pData.set(0, 0);
-						pData.set(1, 1);
-						pData.set(16, 1);
-							
+						
+						playerFallen(pData, uuid);
+
 						//Unset on fire
 						pla.setFireTicks(0);
-						
-						playerdata.put(uuid, pData);
 						Bukkit.broadcastMessage(TeamsManager.getTeamColor(uuid) + " " + pla.getName() + " §ffell in §clava");
 							
-						//Bukkit.getPlayer(pl).setGameMode(GameMode.SPECTATOR);
 						List<String> teamates = TeamsManager.getTeamMembers(TeamsManager.getPlayerTeam(uuid));
-						/*if(teamates.get(0) == pl) { //Si le premier qui ressort de la liste est le joueur lui meme (bah on va pas le faire s'auto spectate c logique)
-							Bukkit.getPlayer(pl).setSpectatorTarget(Bukkit.getPlayer(teamates.get(1)));
-						} else {
-							Bukkit.getPlayer(pl).setSpectatorTarget(Bukkit.getPlayer(teamates.get(0)));
-						}*/
 						
 						Spectate.setSpectatingGroup(pla, teamates);
 						
 						infiniteDeathMessage(pla);
 					}
+					
 					if (playerdata.get(uuid).get(1).equals(0) || playerdata.get(uuid).get(0).equals(1)) {
 						teams.add(TeamsManager.getPlayerTeam(uuid));
 					}
@@ -913,6 +939,21 @@ public class Meltdown implements Listener {
 			}
 		}.runTaskTimer(main, 0, 20);
 
+	}
+	
+	public static void playerFallen(List<Integer> pData, String uuid) {
+		int pgold = pData.get(2);
+		int pdeaths = pData.get(4);
+		pgold = pgold - 10;
+		pdeaths = pdeaths + 1;
+		pData.set(2, pgold);
+		pData.set(4, pdeaths);
+		pData.set(0, 0);
+		pData.set(1, 1);
+		pData.set(16, 1);
+			
+		
+		playerdata.put(uuid, pData);
 	}
 
 	public static void teamsChecker(String player) {

@@ -9,20 +9,20 @@ import org.bukkit.entity.Player;
 import mctdl.game.Main;
 import mctdl.game.money.MoneyManager;
 import mctdl.game.npc.NPCManager;
+import mctdl.game.npc.PlayerAI;
 import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.GameVoting;
 import mctdl.game.utils.PlayerData;
-import net.minecraft.server.v1_16_R3.EntityPlayer;
 
 public class MeltdownNPC {
 	
-	EntityPlayer npc;
+	PlayerAI npc;
 	Main main;
 	
 	String team;
 	
 	public MeltdownNPC(Main main, Player parent, String team) {
-		this.npc = NPCManager.npcBuilder(MDNPC_Utils.getRandomName(team), "PoutreCosmique", parent.getLocation(), parent, main);
+		this.npc = PlayerAI.createNPC(main, parent, "Poutre", parent.getWorld(), parent.getLocation());
 		this.main = main;
 		this.team = team;
 		
@@ -75,5 +75,7 @@ public class MeltdownNPC {
 
 		Player p = npc.getBukkitEntity();
 		TeamsManager.setPlayerTeam(p.getUniqueId().toString(), team);
+		
+		Bukkit.broadcastMessage(Main.header() + "AI Player " + TeamsManager.getTeamColorByTeam(team) + p.getName() + "§r has joined team " + TeamsManager.getTeamNameByTeam(team));
 	}
 }

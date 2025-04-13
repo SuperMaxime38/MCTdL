@@ -20,6 +20,7 @@ import mctdl.game.commands.BaltopCommand;
 import mctdl.game.commands.DummyCommand;
 import mctdl.game.commands.NPCCommand;
 import mctdl.game.commands.PouleZookaCMD;
+import mctdl.game.commands.TDLPacketCommand;
 import mctdl.game.commands.TdLCommand;
 import mctdl.game.commands.TdLTabCompleter;
 import mctdl.game.commands.TestCommand;
@@ -181,6 +182,7 @@ public class Main extends JavaPlugin{
 		getCommand("poulezooka").setExecutor(new PouleZookaCMD());
 		getCommand("dummy").setExecutor(new DummyCommand(this));
 		getCommand("testcmd").setExecutor(new TestCommand(this));
+		getCommand("tdlpacket").setExecutor(new TDLPacketCommand());
 		
 		//meltdown
 		getCommand("meltdown").setExecutor(new MDCommand(this));
