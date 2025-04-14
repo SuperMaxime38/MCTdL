@@ -22,7 +22,7 @@ public class MeltdownNPC {
 	String team;
 	
 	public MeltdownNPC(Main main, Player parent, String team) {
-		this.npc = PlayerAI.createNPC(main, parent, "Poutre", parent.getWorld(), parent.getLocation());
+		this.npc = PlayerAI.createNPC(main, parent, new MDNPC_Utils().getRandomName(team), parent.getWorld(), parent.getLocation());
 		this.main = main;
 		this.team = team;
 		

@@ -40,6 +40,15 @@ public class TestCommand implements CommandExecutor{
 			}
 		}
 		
+		if(args.length == 2) {
+			if(args[0].equals("npc")) {
+				if(s instanceof Player) {
+					Player p = (Player) s;
+					MeltdownNPC npc = new MeltdownNPC(main, p, args[1]);
+				}
+			}
+		}
+		
 		return false;
 	}
 
