@@ -230,6 +230,8 @@ public class Meltdown implements Listener {
 		FileConfiguration map = MeltdownFiles.checkMap(main);
 		map.set("isMapGenerated", false);
 		MeltdownFiles.saveDatas(map, main);
+		
+		main.getTabmanager().updateTabList(); // Display new scores
 	}
 
 	public static boolean isEnabled() {

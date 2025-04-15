@@ -34,6 +34,8 @@ public class TestCommand implements CommandExecutor{
 				if(s instanceof Player) {
 					Player p = (Player) s;
 					MeltdownNPC npc = new MeltdownNPC(main, p, "red");
+					
+				    main.getTabmanager().updateTabList();
 				}
 				
 				return true;
@@ -45,6 +47,8 @@ public class TestCommand implements CommandExecutor{
 				if(s instanceof Player) {
 					Player p = (Player) s;
 					MeltdownNPC npc = new MeltdownNPC(main, p, args[1]);
+
+				    main.getTabmanager().updateTabList();
 				}
 			}
 		}

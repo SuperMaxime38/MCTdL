@@ -158,6 +158,13 @@ static List<EntityPlayer> lookPlayer = new ArrayList<>();
 		return null;
 	}
 	
+	public static boolean isAnNPC(String uuid) {
+		for(EntityPlayer npc : npcss) {
+			if(npc.getUniqueIDString().equals(uuid)) return true;
+		}
+		return false;
+	}
+	
 	public static EntityPlayer npcBuilder(String name, String textureowner, Location loc, Player p, Main main) {
 		CraftPlayer cplayer  = (CraftPlayer) p;
 		EntityPlayer sp = cplayer.getHandle(); // get EntityPlayer from player
@@ -230,21 +237,17 @@ static List<EntityPlayer> lookPlayer = new ArrayList<>();
 		}.runTaskLater(main, 10);
 	}
 	
-	public static void destroyNPC(EntityPlayer npc) {
+	public static void destroyNPC(Main main, EntityPlayer npc) {
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			npcKiller(npc, p);
-			if(!TeamsManager.getPlayerTeam(npc.getUniqueIDString()).equals("none")) { // Si npc is AI player, remove from team
-				
-				TeamsManager.removePlayerTeam(npc.getUniqueIDString());
-			}
 		}
 		
-		npcss.remove(npc);
+		main.getTabmanager().updateTabList();
 	}
 	
-	public static void destroyNPCs() {
+	public static void destroyNPCs(Main main) {
 		for(EntityPlayer npc : npcss) {
-			destroyNPC(npc);
+			destroyNPC(main, npc);
 		}
 	}
 	

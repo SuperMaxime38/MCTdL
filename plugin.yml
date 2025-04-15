@@ -1,8 +1,8 @@
 name: MCTdL
 author: SuperMaxime38
-version: 0.2.4
+version: 0.2.5
 main: mctdl.game.Main
-description: MCTdl 's plugins manager
+description: MCTdL, Minecraft Tournament Plugin
 api-version: 1.13
 loadafter: [HungerGames, Multiverse-Core]
 depend: [ProtocolLib, WorldEdit, Multiverse-Core]

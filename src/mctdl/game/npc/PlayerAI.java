@@ -71,6 +71,8 @@ public class PlayerAI extends EntityPlayer {
 	    
 	    NPCManager.addExternalNPC(entityPlayer);
 	    
+	    main.getTabmanager().updateTabList();
+	    
 	    return entityPlayer;
 	    }
 	

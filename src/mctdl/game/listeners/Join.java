@@ -8,9 +8,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+
 import mctdl.game.Main;
 import mctdl.game.money.MoneyManager;
 import mctdl.game.npc.NPCManager;
+import mctdl.game.tablist.TabManager;
 import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.GameVoting;
 import mctdl.game.utils.PlayerData;
@@ -18,8 +21,10 @@ import mctdl.game.utils.PlayerData;
 public class Join implements Listener{
 	
 	static Main main;
+	static TabManager tabManager;
 	public Join(Main main) {
 		Join.main = main;
+		tabManager = main.getTabmanager();
 	}
 	
 	@EventHandler
@@ -66,5 +71,17 @@ public class Join implements Listener{
 			NPCManager.onPlayerJoin(p, main, 60);
 		}
 		
+		tabManager.updateTabList();
+		tabManager.tabClock(p);
+		
 	}
+
+	
+	 @EventHandler
+	 public static void onLeave(PlayerQuitEvent e) {
+		 // Handle leaving dudes
+		 tabManager.updateTabList();
+	 }
+
+
 }
