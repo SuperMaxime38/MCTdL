@@ -7,6 +7,9 @@ import org.bukkit.entity.Player;
 
 import mctdl.game.Main;
 import mctdl.game.games.meltdown.npc.MeltdownNPC;
+import mctdl.game.npc.NPCManager;
+import mctdl.game.tablist.TabManager;
+import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.objects.Canon;
 
 public class TestCommand implements CommandExecutor{
@@ -35,7 +38,7 @@ public class TestCommand implements CommandExecutor{
 					Player p = (Player) s;
 					MeltdownNPC npc = new MeltdownNPC(main, p, "red");
 					
-				    main.getTabmanager().updateTabList();
+				    TabManager.updateTabList();
 				}
 				
 				return true;
@@ -44,11 +47,21 @@ public class TestCommand implements CommandExecutor{
 		
 		if(args.length == 2) {
 			if(args[0].equals("npc")) {
+				
 				if(s instanceof Player) {
 					Player p = (Player) s;
 					MeltdownNPC npc = new MeltdownNPC(main, p, args[1]);
 
-				    main.getTabmanager().updateTabList();
+				    TabManager.updateTabList();
+				}
+			}
+		}
+		
+		if(args.length == 3) {
+			if(args[0].equals("npc")) {
+				if(args[1].equals("kill")) {
+					NPCManager.destroyNPC(NPCManager.getNpcByUUID(TeamsManager.getUUIDByPseudo(args[2]).toString()));
+					System.out.println("Killed NPC " + args[2]);
 				}
 			}
 		}

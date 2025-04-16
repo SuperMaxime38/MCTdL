@@ -41,6 +41,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import mctdl.game.Main;
 import mctdl.game.money.MoneyManager;
 import mctdl.game.npc.NPCManager;
+import mctdl.game.tablist.TabManager;
 import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.PlayerData;
 import mctdl.game.utils.Spectate;
@@ -231,7 +232,7 @@ public class Meltdown implements Listener {
 		map.set("isMapGenerated", false);
 		MeltdownFiles.saveDatas(map, main);
 		
-		main.getTabmanager().updateTabList(); // Display new scores
+		TabManager.updateTabList(); // Display new scores
 	}
 
 	public static boolean isEnabled() {

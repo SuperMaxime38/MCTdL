@@ -56,7 +56,6 @@ import mctdl.game.utils.objects.riffles.AssaultRiffle;
 public class Main extends JavaPlugin{
 
 	Main main = this;
-	TabManager tabManager = new TabManager(this);
 	
 	@Override
 	public void onEnable() {
@@ -90,9 +89,9 @@ public class Main extends JavaPlugin{
 				@Override
 				public void run() {
 					for (Player pl : Bukkit.getOnlinePlayers()) {
-						tabManager.tabClock(pl);
-						NPCManager.onPlayerJoin(pl, main, 60);
+						NPCManager.onPlayerJoin(pl, 60);
 					}
+					TabManager.updateTabList();
 				}
 			}.runTaskLater(this, 40);
 		}
@@ -218,7 +217,7 @@ public class Main extends JavaPlugin{
 		//NPC
 		if(getConfig().getBoolean("enable-npc")) {
 			NPCManager.updateConfig(this);
-			NPCManager.destroyNPCs(this);
+			NPCManager.destroyNPCs();
 		}
 		
 
@@ -248,9 +247,5 @@ public class Main extends JavaPlugin{
 				}
 			}.runTaskLater(main, 5);
 		}
-	}
-	
-	public TabManager getTabmanager() {
-		return tabManager;
 	}
 }

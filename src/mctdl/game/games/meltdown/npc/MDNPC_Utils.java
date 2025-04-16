@@ -17,7 +17,7 @@ public class MDNPC_Utils {
 		npc_names.put("green", Arrays.asList("Grass_Toucher", "Géant_Vert"));
 		npc_names.put("yellow", Arrays.asList("Lorem", "ShinyMe"));
 		npc_names.put("purple", Arrays.asList("NO_NAME"));
-		npc_names.put("aqua", Arrays.asList("Vodka_Water_Drinker"));
+		npc_names.put("aqua", Arrays.asList("LackOfInspi"));
 		npc_names.put("black", Arrays.asList("Shockdart_Vador"));
 		npc_names.put("orange", Arrays.asList("Le_poisson_Steve"));
 		

@@ -29,6 +29,7 @@ import com.mojang.datafixers.util.Pair;
 
 import mctdl.game.Main;
 import mctdl.game.money.MoneyManager;
+import mctdl.game.tablist.TabManager;
 import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.PlayerData;
 import net.minecraft.server.v1_16_R3.EntityPlayer;
@@ -55,9 +56,11 @@ static HashMap<String, List<String>> textures = new HashMap<String, List<String>
 
 static List<EntityPlayer> npcss = new ArrayList<>();
 static List<EntityPlayer> lookPlayer = new ArrayList<>();
+static Main main;
 //static HashMap<String, List<String>> data = new HashMap<String, List<String>>();
 
 	public static boolean fileCheck(Main main){
+		NPCManager.main = main;
     	
 	     File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "npc");
 	     File f = new File(userdata, File.separator + "npc.yml");
@@ -127,7 +130,7 @@ static List<EntityPlayer> lookPlayer = new ArrayList<>();
 		}
 	}
 	
-	public static void onPlayerJoin(Player p, Main main, int delay) {
+	public static void onPlayerJoin(Player p, int delay) {
 		
 		for(EntityPlayer npc : npcss) {
 			showNPCFor(npc, p, null);
@@ -165,7 +168,7 @@ static List<EntityPlayer> lookPlayer = new ArrayList<>();
 		return false;
 	}
 	
-	public static EntityPlayer npcBuilder(String name, String textureowner, Location loc, Player p, Main main) {
+	public static EntityPlayer npcBuilder(String name, String textureowner, Location loc, Player p) {
 		CraftPlayer cplayer  = (CraftPlayer) p;
 		EntityPlayer sp = cplayer.getHandle(); // get EntityPlayer from player
 		
@@ -174,7 +177,7 @@ static List<EntityPlayer> lookPlayer = new ArrayList<>();
 		
 		GameProfile gameProfile = new GameProfile(UUID.randomUUID(), name); //NPC Profile
 		
-		List<String> textures = NPCManager.getPlayerTexture(textureowner, main);
+		List<String> textures = NPCManager.getPlayerTexture(textureowner);
 		String texture = textures.get(0);
 		String signature = textures.get(1);
 		
@@ -224,7 +227,7 @@ static List<EntityPlayer> lookPlayer = new ArrayList<>();
 		
 	}
 	
-	public static void showNpcWithoutTabFor(Main main, EntityPlayer npc, Player p, List<ItemStack> items) {
+	public static void showNpcWithoutTabFor(EntityPlayer npc, Player p, List<ItemStack> items) {
 		showNPCFor(npc, p, items);
 		
 		new BukkitRunnable() {
@@ -237,17 +240,29 @@ static List<EntityPlayer> lookPlayer = new ArrayList<>();
 		}.runTaskLater(main, 10);
 	}
 	
-	public static void destroyNPC(Main main, EntityPlayer npc) {
+	public static void destroyNPC(EntityPlayer npc) {
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			npcKiller(npc, p);
 		}
 		
-		main.getTabmanager().updateTabList();
+
+		
+		TeamsManager.removePlayerTeam(npc.getUniqueIDString());
+		MoneyManager.deleteFromExistence(npc.getUniqueIDString());
+		PlayerData.deleteFromExistence(npc.getUniqueIDString());
+		
+
+		TeamsManager.removeUUIDToPseudo(npc.getUniqueIDString());
+		
+		
+		npcss.remove(npc);
+		
+		TabManager.updateTabList();
 	}
 	
-	public static void destroyNPCs(Main main) {
+	public static void destroyNPCs() {
 		for(EntityPlayer npc : npcss) {
-			destroyNPC(main, npc);
+			destroyNPC(npc);
 		}
 	}
 	
@@ -266,30 +281,26 @@ static List<EntityPlayer> lookPlayer = new ArrayList<>();
 		
 		PlayerConnection ps = sp.playerConnection; //GET Player "connection"
 		
-		ps.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, npc));
-		ps.sendPacket(new PacketPlayOutEntityDestroy(npc.getId()));
+		Packet<?> p1 = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, npc);
+		Packet<?> p2 = new PacketPlayOutEntityDestroy(npc.getId());
 		
+		new BukkitRunnable() {
 
-		TeamsManager.removePlayerTeam(npc.getUniqueIDString());
-		TeamsManager.removeUUIDToPseudo(npc.getUniqueIDString());
-		MoneyManager.deleteFromExistence(npc.getUniqueIDString());
-		PlayerData.deleteFromExistence(npc.getUniqueIDString());
+			@Override
+			public void run() {
+				ps.sendPacket(p1);
+				ps.sendPacket(p2);
+			}
+			
+		}.runTaskLater(main, 60);
 		
 		
-		npcss.remove(npc);
 	}
 	
 	public static void killAllNPCs(Player p) {
-		CraftPlayer cplayer = (CraftPlayer) p;
-		EntityPlayer sp = cplayer.getHandle(); // get EntityPlayer from player
-		
-		PlayerConnection ps = sp.playerConnection; //GET Player "connection"
 		for(EntityPlayer npc : npcss) {
-			ps.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, npc));
-			ps.sendPacket(new PacketPlayOutEntityDestroy(npc.getId()));
+			npcKiller(npc, p);
 		}
-		
-		npcss.clear();
 	}
 	
 	 public static void teleportNPC(EntityPlayer npc, double x, double y, double z) {
@@ -348,7 +359,7 @@ static List<EntityPlayer> lookPlayer = new ArrayList<>();
 	
 	public static HashMap<String, List<String>> getTextures() {return textures;}
 	
-	public static List<String> getPlayerTexture(String name, Main main) {
+	public static List<String> getPlayerTexture(String name) {
 
 	    if(textures.containsKey(name)) return textures.get(name);
 

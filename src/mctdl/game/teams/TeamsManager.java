@@ -444,7 +444,7 @@ public class TeamsManager{
 				return UUID.fromString(uuid);
 			}
 		}
-		return null;
+		return UUID.fromString(""); // null is annoying
 	}
 	
 	public static void removeUUIDToPseudo(String uuid) {

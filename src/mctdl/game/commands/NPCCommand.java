@@ -28,13 +28,16 @@ public class NPCCommand implements CommandExecutor{
 				}
 				if(args[0].equals("refresh")) {
 					NPCManager.killAllNPCs(p);
-					NPCManager.onPlayerJoin(p, main, 60);
+					NPCManager.onPlayerJoin(p, 60);
 				}
 				if(args[0].equals("refreshall")) {
 					for (Player pl : Bukkit.getOnlinePlayers()) {
 						NPCManager.killAllNPCs(pl);
-						NPCManager.onPlayerJoin(pl, main, 60);
+						NPCManager.onPlayerJoin(pl, 60);
 					}
+				}
+				if(args[0].equals("list")) {
+					s.sendMessage("npcs: " + NPCManager.getNPCs().toString());
 				}
 			} else if(args.length == 2) {
 			} else {

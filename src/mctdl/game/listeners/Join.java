@@ -21,10 +21,8 @@ import mctdl.game.utils.PlayerData;
 public class Join implements Listener{
 	
 	static Main main;
-	static TabManager tabManager;
 	public Join(Main main) {
 		Join.main = main;
-		tabManager = main.getTabmanager();
 	}
 	
 	@EventHandler
@@ -65,14 +63,13 @@ public class Join implements Listener{
 		if(main.getConfig().getBoolean("enable-npc")) {
 			HashMap<String, List<String>> textures = NPCManager.getTextures();
 			if(!textures.containsKey(p.getName())) {
-				NPCManager.getPlayerTexture(p.getName(), main);
+				NPCManager.getPlayerTexture(p.getName());
 				System.out.println("[MCTdL] Handler > Loaded " + p.getName() + "'s texture");
 			}
-			NPCManager.onPlayerJoin(p, main, 60);
+			NPCManager.onPlayerJoin(p, 60);
 		}
 		
-		tabManager.updateTabList();
-		tabManager.tabClock(p);
+		// Note: tablist is handled by TabManager (even on player join)
 		
 	}
 
@@ -80,7 +77,7 @@ public class Join implements Listener{
 	 @EventHandler
 	 public static void onLeave(PlayerQuitEvent e) {
 		 // Handle leaving dudes
-		 tabManager.updateTabList();
+		 TabManager.updateTabList();
 	 }
 
 

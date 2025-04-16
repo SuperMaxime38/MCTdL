@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
-import mctdl.game.Main;
+import mctdl.game.tablist.TabManager;
 import net.minecraft.server.v1_16_R3.DamageSource;
 import net.minecraft.server.v1_16_R3.EntityPlayer;
 import net.minecraft.server.v1_16_R3.EnumProtocolDirection;
@@ -29,24 +29,21 @@ import net.minecraft.server.v1_16_R3.WorldServer;
 
 public class PlayerAI extends EntityPlayer {
 	
-	Main main;
-
-	public PlayerAI(Main main, MinecraftServer minecraftserver, WorldServer worldserver, GameProfile gameprofile, PlayerInteractManager playerinteractmanager) {
+	public PlayerAI(MinecraftServer minecraftserver, WorldServer worldserver, GameProfile gameprofile, PlayerInteractManager playerinteractmanager) {
 		super(minecraftserver, worldserver, gameprofile, playerinteractmanager);
-		this.main = main;
 	}
 	
-	public static PlayerAI createNPC(Main main, Player p, String name, World world, Location location) {
+	public static PlayerAI createNPC(Player p, String name, World world, Location location) {
 
 	    MinecraftServer nmsServer = ((CraftServer) Bukkit.getServer()).getServer();
 	    WorldServer nmsWorld = ((CraftWorld) world).getHandle();
 	    GameProfile profile = new GameProfile(UUID.randomUUID(), name);
 	    PlayerInteractManager interactManager = new PlayerInteractManager(nmsWorld);
-	    PlayerAI entityPlayer = new PlayerAI(main, nmsServer, nmsWorld, profile, interactManager);
+	    PlayerAI entityPlayer = new PlayerAI(nmsServer, nmsWorld, profile, interactManager);
 	    entityPlayer.playerConnection = new PlayerConnection(nmsServer, new NetworkManager(EnumProtocolDirection.CLIENTBOUND), entityPlayer);
 
 	 
-	    List<String> textures = NPCManager.getPlayerTexture("PoutreCosmique", main);
+	    List<String> textures = NPCManager.getPlayerTexture("PoutreCosmique");
 		String texture = textures.get(0);
 		String signature = textures.get(1);
 		
@@ -71,7 +68,7 @@ public class PlayerAI extends EntityPlayer {
 	    
 	    NPCManager.addExternalNPC(entityPlayer);
 	    
-	    main.getTabmanager().updateTabList();
+	    TabManager.updateTabList();
 	    
 	    return entityPlayer;
 	    }

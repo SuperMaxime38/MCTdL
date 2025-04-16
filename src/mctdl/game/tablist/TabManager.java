@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import mctdl.game.Main;
 import mctdl.game.commands.BaltopCommand;
@@ -23,55 +22,51 @@ public class TabManager implements Listener{
 	
 	static Main main;
 	static String format;
+
+	static String edition;
 	public TabManager(Main main) {
 		TabManager.main = main;
+		edition = main.getConfig().getString("edition");
 		format = "";
 	}
 	
 	@EventHandler
 	public void baseTab(PlayerJoinEvent e) {
-		Player p = e.getPlayer();
-		tabClock(p);
-		
+		updateTabList();
 	}
 	
-	public void tabClock(Player p) {
-		
-		this.updateTabList();
-		
-		new BukkitRunnable() {
-			
-			String edition = main.getConfig().getString("edition");
-			
-			@Override
-			public void run() {
-				
-				if(!p.isOnline()) { // If player disconnect we can stop loading a tablist
-					cancel();
-					return;
-				}
-				
-				if(test(format)) updateTabList();
-				
-				p.setPlayerListHeader("§6Tournoi des Légendes  §f-  §3Edition " + edition + "\n"
-						+ format 
-						+ "\n§aAll Logged players :"
-						);
-			}
-		}.runTaskTimer(main, 0, 20);
-		
-		
-		p.setPlayerListFooter("");
-	}
-	
-	private boolean test(String frm) {
-		if(frm.equals(format)) return false;
-		System.out.println("diffrerent format found");
-		return true;
-	}
+//	public void tabClock(Player p) {
+//		
+//		this.updateTabList();
+//		
+//		new BukkitRunnable() {
+//			
+//			String edition = main.getConfig().getString("edition");
+//			
+//			@Override
+//			public void run() {
+//				
+//				if(!p.isOnline()) { // If player disconnect we can stop loading a tablist
+//					cancel();
+//					return;
+//				}
+//				
+//				if(test(format)) updateTabList();
+//				
+//				p.setPlayerListHeader("§6Tournoi des Légendes  §f-  §3Edition " + edition + "\n"
+//						+ format 
+//						+ "\n§aAll Logged players :"
+//						);
+//			}
+//		}.runTaskTimer(main, 0, 20);
+//		
+//		
+//		p.setPlayerListFooter("");
+//	}
 	
 	
-	public List<List<String>> getMembers(String team) {
+	
+	public static List<List<String>> getMembers(String team) {
 		List<List<String>> members = new ArrayList<>();
 		HashMap<String, String> teams = TeamsManager.getTeams();
 		Player p;
@@ -177,7 +172,7 @@ public class TabManager implements Listener{
 		return members;
 	}
 	
-	public void updateTabList() {
+	public static void updateTabList() {
 		List<Integer> teamsbal = BaltopCommand.getTeamsBal();
 		format = "\n§f---------- Equipes ----------";
 		
@@ -283,6 +278,13 @@ public class TabManager implements Listener{
 			}
 		}
 		format = format + "§f----------------------------";
+		
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			p.setPlayerListHeader("§6Tournoi des Légendes  §f-  §3Edition " + edition + "\n"
+					+ format 
+					+ "\n§aAll Logged players :"
+					);
+		}
 	}
 	
 }
