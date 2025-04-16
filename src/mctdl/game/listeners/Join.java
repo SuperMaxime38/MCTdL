@@ -8,9 +8,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+
 import mctdl.game.Main;
 import mctdl.game.money.MoneyManager;
 import mctdl.game.npc.NPCManager;
+import mctdl.game.tablist.TabManager;
 import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.GameVoting;
 import mctdl.game.utils.PlayerData;
@@ -60,11 +63,22 @@ public class Join implements Listener{
 		if(main.getConfig().getBoolean("enable-npc")) {
 			HashMap<String, List<String>> textures = NPCManager.getTextures();
 			if(!textures.containsKey(p.getName())) {
-				NPCManager.getPlayerTexture(p.getName(), main);
+				NPCManager.getPlayerTexture(p.getName());
 				System.out.println("[MCTdL] Handler > Loaded " + p.getName() + "'s texture");
 			}
-			NPCManager.onPlayerJoin(p, main, 60);
+			NPCManager.onPlayerJoin(p, 60);
 		}
 		
+		// Note: tablist is handled by TabManager (even on player join)
+		
 	}
+
+	
+	 @EventHandler
+	 public static void onLeave(PlayerQuitEvent e) {
+		 // Handle leaving dudes
+		 TabManager.updateTabList();
+	 }
+
+
 }

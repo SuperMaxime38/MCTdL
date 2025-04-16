@@ -71,7 +71,7 @@ public class TdLCommand implements CommandExecutor{
 			if(args[0].equals("poutres")) { //POUTREEE
 				if(s instanceof Player) {
 					p = (Player) s;
-					s.sendMessage("Vous avez " + MoneyManager.getPlayerPoutres(p.getName()) + " poutres");
+					s.sendMessage("Vous avez " + MoneyManager.getPlayerPoutres(TeamsManager.getUUIDByPseudo(p.getName()).toString()) + " poutres");
 					return true;
 				}
 			}
@@ -134,22 +134,22 @@ public class TdLCommand implements CommandExecutor{
 			if(args[0].equals("money")) {
 				if(args[1].equals("get")) {
 					playername = args[2];
-					if(!isLogged(s, playername)) return true;
-					s.sendMessage(h + playername + " a " + MoneyManager.getPlayerMoney(Bukkit.getPlayer(playername).getUniqueId().toString()) + " Coins");
+					//if(!isLogged(s, playername)) return true;
+					s.sendMessage(h + playername + " a " + MoneyManager.getPlayerMoney(TeamsManager.getUUIDByPseudo(playername).toString()) + " Coins");
 					return true;
 				}
 			}
 			if(args[0].equals("team")) {
 				if(args[1].equals("get")) {
 					playername = args[2];
-					if(!isLogged(s, playername)) return true;
-					s.sendMessage(h + playername + " est dans l'équipe " + TeamsManager.getPlayerTeam(Bukkit.getPlayer(playername).getUniqueId().toString()));
+					//if(!isLogged(s, playername)) return true;
+					s.sendMessage(h + playername + " est dans l'équipe " + TeamsManager.getPlayerTeam(TeamsManager.getUUIDByPseudo(playername).toString()));
 					return true;
 				}
 				if(args[1].equals("remove")) {
 					playername = args[2];
-					if(!isLogged(s, playername)) return true;
-					TeamsManager.removePlayerTeam(Bukkit.getPlayer(playername).getUniqueId().toString());
+					//if(!isLogged(s, playername)) return true;
+					TeamsManager.removePlayerTeamByName(playername);
 					s.sendMessage(h + playername  + " a été retiré de son équipe");
 					return true;
 				}
@@ -160,18 +160,7 @@ public class TdLCommand implements CommandExecutor{
 					playername = args[2];
 					teamname = args[3];
 					
-					if(!isLogged(s, playername)) {
-						UUID uid = TeamsManager.getUUIDByPseudo(playername);
-						if(uid != null) {
-							s.sendMessage("L'UUID du joueur a été trouvée, le joueur a donc pu rejoindre l'équipe");
-							TeamsManager.setPlayerTeam(uid.toString(), teamname);
-						} else {
-							return true;
-						}
-					} else {
-						TeamsManager.setPlayerTeam(Bukkit.getPlayer(playername).getUniqueId().toString(), teamname);
-					}
-					TeamsManager.updateConfig(main);
+					TeamsManager.setPlayerTeam(TeamsManager.getUUIDByPseudo(playername).toString(), teamname);
 					
 					s.sendMessage(h + "Le joueur §a" + playername + " §fa été transferé dans l'équipe §6" + teamname);
 					return true;
@@ -183,9 +172,9 @@ public class TdLCommand implements CommandExecutor{
 					amount = Integer.parseInt(args[3]);
 					
 
-					if(!isLogged(s, playername)) return true;
+					//if(!isLogged(s, playername)) return true;
 					
-					MoneyManager.setPlayerMoney(Bukkit.getPlayer(playername).getUniqueId().toString(), amount);
+					MoneyManager.setPlayerMoney(TeamsManager.getUUIDByPseudo(playername).toString(), amount);
 					s.sendMessage(h + "L'argent de " + playername  + " est de " + amount);
 					return true;
 				}
@@ -194,10 +183,12 @@ public class TdLCommand implements CommandExecutor{
 					amount = Integer.parseInt(args[3]);
 
 
-					if(!isLogged(s, playername)) return true;
+					//if(!isLogged(s, playername)) return true;
 					
-					MoneyManager.removePlayerMoney(Bukkit.getPlayer(playername).getUniqueId().toString(), amount);
-					s.sendMessage(h + "L'argent de " + playername  + " est de " + MoneyManager.getPlayerMoney(playername));
+					String uuid = TeamsManager.getUUIDByPseudo(playername).toString();
+					
+					MoneyManager.removePlayerMoney(uuid, amount);
+					s.sendMessage(h + "L'argent de " + playername  + " est de " + MoneyManager.getPlayerMoney(uuid));
 					return true;
 				}
 				if(args[1].equals("add")) {
@@ -205,11 +196,12 @@ public class TdLCommand implements CommandExecutor{
 					amount = Integer.parseInt(args[3]);
 					
 
-					if(!isLogged(s, playername)) return true;
+					//if(!isLogged(s, playername)) return true;
+
+					String uuid = TeamsManager.getUUIDByPseudo(playername).toString();
 					
-					
-					MoneyManager.addPlayerMoney(Bukkit.getPlayer(playername).getUniqueId().toString(), amount);
-					s.sendMessage(h + "L'argent de " + playername  + " est de " + MoneyManager.getPlayerMoney(playername));
+					MoneyManager.addPlayerMoney(uuid, amount);
+					s.sendMessage(h + "L'argent de " + playername  + " est de " + MoneyManager.getPlayerMoney(uuid));
 					return true;
 				}
 			}
@@ -219,27 +211,27 @@ public class TdLCommand implements CommandExecutor{
 					amount = Integer.parseInt(args[3]);
 					
 
-					if(!isLogged(s, playername)) return true;
+					//if(!isLogged(s, playername)) return true;
 					
-					MoneyManager.setPlayerPoutres(Bukkit.getPlayer(playername).getUniqueId().toString(), amount);
+					MoneyManager.setPlayerPoutres(TeamsManager.getUUIDByPseudo(playername).toString(), amount);
 					return true;
 				}
 				if(args[1].equals("remove")) {
 					playername = args[2];
 					amount = Integer.parseInt(args[3]);
 
-					if(!isLogged(s, playername)) return true;
+					//if(!isLogged(s, playername)) return true;
 					
-					MoneyManager.removePlayerPoutre(Bukkit.getPlayer(playername).getUniqueId().toString(), amount);
+					MoneyManager.removePlayerPoutre(TeamsManager.getUUIDByPseudo(playername).toString(), amount);
 					return true;
 				}
 				if(args[1].equals("add")) {
 					playername = args[2];
 					amount = Integer.parseInt(args[3]);
 
-					if(!isLogged(s, playername)) return true;
+					//if(!isLogged(s, playername)) return true;
 					
-					MoneyManager.addPlayerPoutre(Bukkit.getPlayer(playername).getUniqueId().toString(), amount);
+					MoneyManager.addPlayerPoutre(TeamsManager.getUUIDByPseudo(playername).toString(), amount);
 					return true;
 				}
 			}
@@ -251,11 +243,11 @@ public class TdLCommand implements CommandExecutor{
 		return false;
 	}
 	
-	private boolean isLogged(CommandSender s,String playername) {
-		if(Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(playername))) return true;
-
-		s.sendMessage(h + "Le joueur §a" + playername + " §fne semble pas connecté");
-		return false;
-	}
+//	private boolean isLogged(CommandSender s,String playername) {
+//		if(Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(playername))) return true;
+//
+//		s.sendMessage(h + "Le joueur §a" + playername + " §fne semble pas connecté");
+//		return false;
+//	}
 
 }

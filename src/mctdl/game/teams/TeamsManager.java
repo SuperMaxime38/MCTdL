@@ -119,12 +119,19 @@ public class TeamsManager{
 	 */
 	public static HashMap<String, String> getTeams() {return teams;}
 	
-	public static void setPlayerTeam(String uuid, String team) {teams.put(uuid, team);}
+	public static void setPlayerTeam(String uuid, String team) {
+		if(uuid == null) return;
+		teams.put(uuid, team);
+	}
 	
 	public static void removePlayerTeam(String uuid) {
 		if(teams.containsKey(uuid)) {
 			teams.remove(uuid);
 		}
+	}
+	
+	public static void removePlayerTeamByName(String name) {
+		removePlayerTeam(getUUIDByPseudo(name).toString());
 	}
 	
 	public static void clearTeams(Main main) {
@@ -302,6 +309,9 @@ public class TeamsManager{
 		for (String uuid : teams.keySet()) {
 			p = Bukkit.getPlayer(UUID.fromString(uuid));
 			if(p == null) { //Le != null est buggé des fois
+				if(NPCManager.getNpcPlayerIfItIs(uuid) != null) {
+					online.put(uuid, teams.get(uuid));
+				}
 			} else {
 				online.put(uuid, teams.get(uuid));
 			}
@@ -325,23 +335,33 @@ public class TeamsManager{
 	}
 	
 	public static List<String> getOnlineTeams() {
-		List<String> teams = new ArrayList<>();
-		List<String> teams_name = Arrays.asList("red", "blue", "green", "yellow", "purple", "aqua", "black", "orange");
+		List<String> online_teams = new ArrayList<>();
+//		List<String> teams_name = Arrays.asList("red", "blue", "green", "yellow", "purple", "aqua", "black", "orange");
+//		
+//		for(String team : teams_name) {
+//			for(String uuid : TeamsManager.getTeamMembers(team)) {
+//				if(Bukkit.getPlayer(UUID.fromString(uuid)) != null) {
+//					teams.add(team);
+//					break;
+//				}
+//				if(NPCManager.isAnNPC(uuid)) {
+//					System.out.println("NPC: " + NPCManager.getNpcPlayerIfItIs(uuid).getName());
+//					teams.add(team);
+//					break;
+//				}
+//			}
+//		}
 		
-		for(String team : teams_name) {
-			for(String uuid : TeamsManager.getTeamMembers(team)) {
-				if(Bukkit.getPlayer(UUID.fromString(uuid)) != null) {
-					teams.add(team);
-					break;
-				}
-				if(NPCManager.getNpcPlayerIfItIs(uuid) != null) {
-					System.out.println("NPC: " + NPCManager.getNpcPlayerIfItIs(uuid).getName());
-					teams.add(team);
-					break;
-				}
+		for(String uuid : teams.keySet()) {
+			if(Bukkit.getPlayer(UUID.fromString(uuid)) != null || NPCManager.isAnNPC(uuid)) {
+				if(!online_teams.contains(teams.get(uuid))) online_teams.add(teams.get(uuid));
 			}
 		}
-		return teams;
+			
+		
+		
+		System.out.println("Teams Online: " + online_teams);
+		return online_teams;
 	}
 	
 	/**
@@ -420,10 +440,11 @@ public class TeamsManager{
 	public static UUID getUUIDByPseudo(String pseudo) {
 		for(String uuid : uuidToPseudo.keySet()) {
 			if(uuidToPseudo.get(uuid).equals(pseudo)) {
+				System.out.println("found it ! " + uuid);
 				return UUID.fromString(uuid);
 			}
 		}
-		return null;
+		return UUID.fromString(""); // null is annoying
 	}
 	
 	public static void removeUUIDToPseudo(String uuid) {

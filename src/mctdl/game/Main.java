@@ -20,6 +20,7 @@ import mctdl.game.commands.BaltopCommand;
 import mctdl.game.commands.DummyCommand;
 import mctdl.game.commands.NPCCommand;
 import mctdl.game.commands.PouleZookaCMD;
+import mctdl.game.commands.TDLPacketCommand;
 import mctdl.game.commands.TdLCommand;
 import mctdl.game.commands.TdLTabCompleter;
 import mctdl.game.commands.TestCommand;
@@ -83,15 +84,14 @@ public class Main extends JavaPlugin{
 		
 		//Load TAB & NPCs (if server reload)
 		if(!Bukkit.getOnlinePlayers().isEmpty()) {
-			
 			new BukkitRunnable() {
 				
 				@Override
 				public void run() {
 					for (Player pl : Bukkit.getOnlinePlayers()) {
-						TabManager.tabClock(pl);
-						NPCManager.onPlayerJoin(pl, main, 60);
+						NPCManager.onPlayerJoin(pl, 60);
 					}
+					TabManager.updateTabList();
 				}
 			}.runTaskLater(this, 40);
 		}
@@ -181,6 +181,7 @@ public class Main extends JavaPlugin{
 		getCommand("poulezooka").setExecutor(new PouleZookaCMD());
 		getCommand("dummy").setExecutor(new DummyCommand(this));
 		getCommand("testcmd").setExecutor(new TestCommand(this));
+		getCommand("tdlpacket").setExecutor(new TDLPacketCommand());
 		
 		//meltdown
 		getCommand("meltdown").setExecutor(new MDCommand(this));
@@ -212,17 +213,17 @@ public class Main extends JavaPlugin{
 	public void onDisable() {
 		saveDefaultConfig();
 		String h = header();
-		TeamsManager.updateConfig(this);
-		MoneyManager.updateConfig(this);
-		PlayerData.updateConfig(this);
 		
 		//NPC
 		if(getConfig().getBoolean("enable-npc")) {
 			NPCManager.updateConfig(this);
-			for (Player pl : Bukkit.getOnlinePlayers()) {
-				NPCManager.killAllNPCs(pl);
-			}
+			NPCManager.destroyNPCs();
 		}
+		
+
+		TeamsManager.updateConfig(this);
+		MoneyManager.updateConfig(this);
+		PlayerData.updateConfig(this);
 		
 		//Clear Display
 		GameVoting.clearDisplay();
