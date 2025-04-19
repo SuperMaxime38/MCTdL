@@ -17,6 +17,7 @@ import com.mojang.authlib.properties.Property;
 import mctdl.game.tablist.TabManager;
 import net.minecraft.server.v1_16_R3.DamageSource;
 import net.minecraft.server.v1_16_R3.EntityPlayer;
+import net.minecraft.server.v1_16_R3.EnumMoveType;
 import net.minecraft.server.v1_16_R3.EnumProtocolDirection;
 import net.minecraft.server.v1_16_R3.MinecraftServer;
 import net.minecraft.server.v1_16_R3.NetworkManager;
@@ -70,14 +71,39 @@ public class PlayerAI extends EntityPlayer {
 	    
 	    TabManager.updateTabList();
 	    
+	    entityPlayer.setNoGravity(false);
+	    entityPlayer.noclip = false;
+	    entityPlayer.collides = true;
+	    entityPlayer.setInvisible(false);
+	    entityPlayer.setInvulnerable(false);
+	    
+	    System.out.println("NPC Info: " + entityPlayer.getName() + "\n" + entityPlayer.isInvulnerable() + "\n" + entityPlayer.isInvisible() + "\n" + entityPlayer.isNoGravity() + "\n" + entityPlayer.isCollidable());
+	    
 	    return entityPlayer;
 	    }
 	
+	public EntityPlayer getEntity() {
+		return this;
+	}
+	
     @Override public void tick() {
     super.tick();
-    if (noDamageTicks > 0) {
-        --noDamageTicks;
-    }
+
+	    if (!this.onGround) {
+	        this.setMot(this.getMot().add(0, -0.08, 0)); // gravité
+	    }
+	
+	    this.move(EnumMoveType.SELF, this.getMot()); // applique le mouvement
+	    this.setMot(this.getMot().d(0.48, 0.48, 0.48)); // friction
+	
+	    if (this.positionChanged) {
+	        this.setMot(this.getMot().a(0.7)); // réduction si collision
+	    }
+	
+	
+	    if (this.noDamageTicks > 0) {
+	        --this.noDamageTicks;
+	    }
     }
 
     public void despawn() {
@@ -91,10 +117,16 @@ public class PlayerAI extends EntityPlayer {
 
     @Override
     public boolean damageEntity(DamageSource damagesource, float f) {
-    net.minecraft.server.v1_16_R3.Entity attacker = damagesource.getEntity();
-
-    boolean damaged = super.damageEntity(damagesource, f);
-    return damaged;
+	    //net.minecraft.server.v1_16_R3.Entity attacker = damagesource.getEntity();
+	
+    	float newHealth = Math.max(0, this.getHealth() - f);
+    	this.setHealth(newHealth);
+		
+		System.out.println("damaged NPC (triggered method) " + newHealth +  "HPs");
+    	if (newHealth == 0) {
+    	    this.die();
+    	}
+		return true;
     }
 
 }

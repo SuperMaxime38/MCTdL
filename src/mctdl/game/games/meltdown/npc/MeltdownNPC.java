@@ -3,7 +3,6 @@ package mctdl.game.games.meltdown.npc;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import mctdl.game.Main;
@@ -26,12 +25,6 @@ public class MeltdownNPC {
 		this.main = main;
 		this.team = team;
 		
-		//Show NPC
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			NPCManager.showNPCFor(npc, p, null);
-		}
-		
-		// Register NPC as Player
 		fakeJoin();
 		registerIntoTeam();
 	}
@@ -60,7 +53,7 @@ public class MeltdownNPC {
 			MoneyManager.setPlayerPoutres(p.getUniqueId().toString(), 0);
 		}
 		if(game.equals("lobby")) {
-			p.teleport(new Location(p.getWorld(), 8, 6, 8));
+			NPCManager.teleportNPC(npc.getEntity(),8, 6, 8);
 			PlayerData.registerPlayer(p);
 		}
 		
