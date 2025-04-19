@@ -21,6 +21,8 @@ import net.minecraft.server.v1_16_R3.EnumMoveType;
 import net.minecraft.server.v1_16_R3.EnumProtocolDirection;
 import net.minecraft.server.v1_16_R3.MinecraftServer;
 import net.minecraft.server.v1_16_R3.NetworkManager;
+import net.minecraft.server.v1_16_R3.Packet;
+import net.minecraft.server.v1_16_R3.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_16_R3.PacketPlayOutEntityHeadRotation;
 import net.minecraft.server.v1_16_R3.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_16_R3.PacketPlayOutPlayerInfo;
@@ -81,7 +83,7 @@ public class PlayerAI extends EntityPlayer {
 	    
 	    return entityPlayer;
 	    }
-	
+
 	public EntityPlayer getEntity() {
 		return this;
 	}
@@ -119,14 +121,57 @@ public class PlayerAI extends EntityPlayer {
     public boolean damageEntity(DamageSource damagesource, float f) {
 	    //net.minecraft.server.v1_16_R3.Entity attacker = damagesource.getEntity();
 	
-    	float newHealth = Math.max(0, this.getHealth() - f);
-    	this.setHealth(newHealth);
-		
-		System.out.println("damaged NPC (triggered method) " + newHealth +  "HPs");
-    	if (newHealth == 0) {
-    	    this.die();
-    	}
-		return true;
+    	// Appliquer les dégâts
+        float newHealth = Math.max(0, this.getHealth() - f);
+        this.setHealth(newHealth);
+
+        // Knockback si l'attaquant est une entité
+        if (damagesource.getEntity() != null) {
+            net.minecraft.server.v1_16_R3.Entity attacker = damagesource.getEntity();
+            double dx = this.locX() - attacker.locX();
+            double dz = this.locZ() - attacker.locZ();
+            double magnitude = Math.sqrt(dx * dx + dz * dz);
+
+            if (magnitude > 0) {
+                double strength = 0.4; // force du knockback
+                dx /= magnitude;
+                dz /= magnitude;
+                this.setMot(this.getMot().add(dx * strength, 0.3, dz * strength)); // ajoute aussi un petit rebond vertical
+            }
+        }
+
+        if (newHealth == 0) {
+            this.respawn();
+        }
+
+        return true;
     }
+    
+    public void respawn() {
+    	
+    	this.setHealth(this.getMaxHealth());
+    	
+    	Packet<?> del = new PacketPlayOutEntityDestroy(this.getBukkitEntity().getEntityId());
+    	Packet<?> load = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, this);
+	    PacketPlayOutEntityHeadRotation headRotation = new PacketPlayOutEntityHeadRotation(this, (byte) ((this.getBukkitEntity().getLocation().getYaw() * 256f) / 360f));
+    	Packet<?> join = new PacketPlayOutNamedEntitySpawn(this);
+    	
+    	for(Player p : Bukkit.getOnlinePlayers()) {
+    		PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
+    		
+			connection.sendPacket(del);
+    		
+	        connection.sendPacket(load);
+	        connection.sendPacket(join);
+	        connection.sendPacket(headRotation);
+    	}
+    	
+    	this.setNoGravity(false);
+	    this.noclip = false;
+	    this.collides = true;
+	    this.setInvisible(false);
+	    this.setInvulnerable(false);
+    }
+    
 
 }

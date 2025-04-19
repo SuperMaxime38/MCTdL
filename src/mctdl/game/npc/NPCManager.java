@@ -257,6 +257,7 @@ static Main main;
 		
 		npcss.remove(npc);
 		npc.getBukkitEntity().remove();
+		npc.die();
 		
 		TabManager.updateTabList();
 	}
@@ -282,14 +283,14 @@ static Main main;
 		
 		PlayerConnection ps = sp.playerConnection; //GET Player "connection"
 		
-		Packet<?> p1 = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, npc);
+		//Packet<?> p1 = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, npc);
 		Packet<?> p2 = new PacketPlayOutEntityDestroy(npc.getBukkitEntity().getEntityId());
 		
 		new BukkitRunnable() {
 
 			@Override
 			public void run() {
-				ps.sendPacket(p1);
+				//ps.sendPacket(p1);
 				ps.sendPacket(p2);
 			}
 			
