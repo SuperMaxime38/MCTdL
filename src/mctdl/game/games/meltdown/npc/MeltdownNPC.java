@@ -3,9 +3,11 @@ package mctdl.game.games.meltdown.npc;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import mctdl.game.Main;
+import mctdl.game.games.meltdown.Meltdown;
 import mctdl.game.money.MoneyManager;
 import mctdl.game.npc.NPCManager;
 import mctdl.game.npc.PlayerAI;
@@ -20,13 +22,19 @@ public class MeltdownNPC {
 	
 	String team;
 	
-	public MeltdownNPC(Main main, Player parent, String team) {
-		this.npc = PlayerAI.createNPC(parent, new MDNPC_Utils().getRandomName(team), parent.getWorld(), parent.getLocation());
+	public MeltdownNPC(Main main, String team) {
+		this.npc = PlayerAI.createNPC(new MDNPC_Utils().getRandomName(team), Bukkit.getWorlds().get(0), new Location(Bukkit.getWorlds().get(0), 8, 6, 8));
 		this.main = main;
 		this.team = team;
 		
+		Meltdown.addNPC(this);
+		
 		fakeJoin();
 		registerIntoTeam();
+	}
+	
+	public PlayerAI getNPC() {
+		return this.npc;
 	}
 	
 	private void fakeJoin() {

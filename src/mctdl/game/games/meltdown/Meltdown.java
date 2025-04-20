@@ -39,6 +39,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import mctdl.game.Main;
+import mctdl.game.games.meltdown.npc.MeltdownNPC;
 import mctdl.game.money.MoneyManager;
 import mctdl.game.npc.NPCManager;
 import mctdl.game.tablist.TabManager;
@@ -58,9 +59,19 @@ public class Meltdown implements Listener {
 
 	// Random datas
 	static int pickaxe_cooldown, money_per_block, heater_cooldwon, money_per_kill;
+	
+
+	
+	//NPC related stuff
+	static HashMap<Player, List<MeltdownNPC>> inViewNPCs;
+	static List<MeltdownNPC> IAs;
+	
 
 	public Meltdown(Main main) {
 		Meltdown.main = main;
+		
+		inViewNPCs = new HashMap<Player, List<MeltdownNPC>>();
+		IAs = new ArrayList<MeltdownNPC>();
 	}
 
 	// Setup
@@ -253,6 +264,18 @@ public class Meltdown implements Listener {
 		
 		return true;
 	}
+	
+	public static List<MeltdownNPC> getNPCs() {
+		return IAs;
+	}
+	
+	public static void addNPC(MeltdownNPC npc) {
+		IAs.add(npc);
+	}
+	
+	public static void removeNPC(MeltdownNPC npc) {
+		IAs.remove(npc);
+	}
 
 	public static void applyMoneyWon() {
 		HashMap<String, Integer> balances = MoneyManager.getRegsPlayer();
@@ -333,6 +356,8 @@ public class Meltdown implements Listener {
 		datas.add(15, 1);
 		datas.add(16, 0);
 		playerdata.put(p.getUniqueId().toString(), datas);
+		
+		inViewNPCs.put(p, new ArrayList<MeltdownNPC>());
 	}
 
 	public static List<Integer> getRawPlayerDatas(String uuid) {
@@ -981,7 +1006,7 @@ public class Meltdown implements Listener {
 			public void run() {
 				
 				//Check
-				if(!enable) {
+				if(!enable || p == null) {
 					cancel();
 					return;
 				}
@@ -1125,14 +1150,15 @@ public class Meltdown implements Listener {
 	}*/
 
 	public static void gameTimer() { //Time counter --> Trigger l'ouverture des portes par exemples
-		List<Integer> room_times = MeltdownFiles.getRoomTimes(main); //Récupère les temps de déclenchement des alarmes
-		List<Integer> room_coordsA = MeltdownFiles.getRoomCoords(main, "A");
-		List<Integer> room_coordsB = MeltdownFiles.getRoomCoords(main, "B");
-		List<Integer> room_coordsC = MeltdownFiles.getRoomCoords(main, "C");
-		List<Integer> room_coordsD = MeltdownFiles.getRoomCoords(main, "D");
-		List<Integer> room_coordsE = MeltdownFiles.getRoomCoords(main, "E");
-		List<Integer> room_coordsM = MeltdownFiles.getRoomCoords(main, "M");
 		new BukkitRunnable() {
+			
+			List<Integer> room_times = MeltdownFiles.getRoomTimes(main); //Récupère les temps de déclenchement des alarmes
+			List<Integer> room_coordsA = MeltdownFiles.getRoomCoords(main, "A");
+			List<Integer> room_coordsB = MeltdownFiles.getRoomCoords(main, "B");
+			List<Integer> room_coordsC = MeltdownFiles.getRoomCoords(main, "C");
+			List<Integer> room_coordsD = MeltdownFiles.getRoomCoords(main, "D");
+			List<Integer> room_coordsE = MeltdownFiles.getRoomCoords(main, "E");
+			List<Integer> room_coordsM = MeltdownFiles.getRoomCoords(main, "M");
 			
 			int counter = 0;
 			int alarm_tA = room_times.get(0); //Récupère le temps A
@@ -1197,6 +1223,20 @@ public class Meltdown implements Listener {
 							+ "§3Mode de jeu §f: §4Meltdown\n"
 							+ "§6Coins : " + playerdata.get(p.getUniqueId().toString()).get(2) + "\n"
 							+ "§cTemps passé §f: " + time); //Affiche depuis cb de temps la partie à commencée
+					
+					// Handle NPC re teleport when close enought to player (<128)
+					for(MeltdownNPC npc : IAs) {
+						Location loc = new Location(p.getWorld(), npc.getNPC().locX(), npc.getNPC().locY(), npc.getNPC().locZ());
+						double distance = p.getLocation().distance(loc);
+						if(distance < 128 && !inViewNPCs.get(p).contains(npc)) {
+							List<MeltdownNPC> npcs = inViewNPCs.get(p);
+							npcs.add(npc);
+							inViewNPCs.put(p, npcs);
+							
+							NPCManager.showNpcWithoutTabFor(npc.getNPC(), p, null);
+
+						}
+					}
 				}
 				
 			}

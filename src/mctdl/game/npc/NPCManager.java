@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -251,6 +252,7 @@ static Main main;
 		MoneyManager.deleteFromExistence(npc.getUniqueIDString());
 		PlayerData.deleteFromExistence(npc.getUniqueIDString());
 		
+		System.out.println("Test (in NPCManager#destroyNPC) -> items & stats of playerdata " + PlayerData.getPlayersData());
 
 		TeamsManager.removeUUIDToPseudo(npc.getUniqueIDString());
 		
@@ -263,7 +265,8 @@ static Main main;
 	}
 	
 	public static void destroyNPCs() {
-		for(EntityPlayer npc : npcss) {
+		List<EntityPlayer> copy_of_npcs = npcss.stream().collect(Collectors.toList());
+		for(EntityPlayer npc : copy_of_npcs) {
 			destroyNPC(npc);
 		}
 	}
@@ -286,15 +289,8 @@ static Main main;
 		//Packet<?> p1 = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, npc);
 		Packet<?> p2 = new PacketPlayOutEntityDestroy(npc.getBukkitEntity().getEntityId());
 		
-		new BukkitRunnable() {
-
-			@Override
-			public void run() {
-				//ps.sendPacket(p1);
-				ps.sendPacket(p2);
-			}
-			
-		}.runTaskLater(main, 60);
+		//ps.sendPacket(p1);
+		ps.sendPacket(p2);
 		
 		
 	}
@@ -308,14 +304,23 @@ static Main main;
 	 public static void teleportNPC(EntityPlayer npc, double x, double y, double z) {
 
          npc.setLocation(x, y, z, npc.yaw, npc.pitch);
-         Packet<?> packet = new PacketPlayOutEntityTeleport(npc);
-         
-	        for (Player p : Bukkit.getOnlinePlayers()) {
-	            PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
-
-	            connection.sendPacket(packet);
-	        }
-	    }
+         npc.enderTeleportTo(x, y, z);
+//         Packet<?> packet = new PacketPlayOutEntityTeleport(npc);
+//         
+//	        for (Player p : Bukkit.getOnlinePlayers()) {
+//	            PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
+//
+//	            connection.sendPacket(packet);
+//	        }
+	  }
+	 
+	 public static void renderNpcForPlayer(EntityPlayer npc, Player p) {
+		 Packet<?> packet = new PacketPlayOutEntityTeleport(npc);
+		 Packet<?> packet2 = new PacketPlayOutEntityHeadRotation(npc, (byte) ((npc.getBukkitEntity().getLocation().getYaw() * 256f) / 360f));
+		 PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
+		 connection.sendPacket(packet);
+		 connection.sendPacket(packet2);
+	 }
 	
 	public static void rotateNPC(EntityPlayer npc, float yaw, float pitch, Player p) {
 		Location loc = npc.getBukkitEntity().getLocation();

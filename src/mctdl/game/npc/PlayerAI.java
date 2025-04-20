@@ -1,5 +1,6 @@
 package mctdl.game.npc;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,15 +11,19 @@ import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
+import mctdl.game.Main;
 import mctdl.game.tablist.TabManager;
+import net.minecraft.server.v1_16_R3.BlockPosition;
 import net.minecraft.server.v1_16_R3.DamageSource;
 import net.minecraft.server.v1_16_R3.EntityPlayer;
 import net.minecraft.server.v1_16_R3.EnumMoveType;
 import net.minecraft.server.v1_16_R3.EnumProtocolDirection;
+import net.minecraft.server.v1_16_R3.MathHelper;
 import net.minecraft.server.v1_16_R3.MinecraftServer;
 import net.minecraft.server.v1_16_R3.NetworkManager;
 import net.minecraft.server.v1_16_R3.Packet;
@@ -28,6 +33,7 @@ import net.minecraft.server.v1_16_R3.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_16_R3.PacketPlayOutPlayerInfo;
 import net.minecraft.server.v1_16_R3.PlayerConnection;
 import net.minecraft.server.v1_16_R3.PlayerInteractManager;
+import net.minecraft.server.v1_16_R3.Vec3D;
 import net.minecraft.server.v1_16_R3.WorldServer;
 
 public class PlayerAI extends EntityPlayer {
@@ -36,7 +42,7 @@ public class PlayerAI extends EntityPlayer {
 		super(minecraftserver, worldserver, gameprofile, playerinteractmanager);
 	}
 	
-	public static PlayerAI createNPC(Player p, String name, World world, Location location) {
+	public static PlayerAI createNPC(String name, World world, Location location) {
 
 	    MinecraftServer nmsServer = ((CraftServer) Bukkit.getServer()).getServer();
 	    WorldServer nmsWorld = ((CraftWorld) world).getHandle();
@@ -63,10 +69,30 @@ public class PlayerAI extends EntityPlayer {
 
 	    for (Player player : Bukkit.getOnlinePlayers()) {
 	        PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
-	        connection.sendPacket(playerInfoAdd);
-	        connection.sendPacket(namedEntitySpawn);
-	        connection.sendPacket(headRotation);
-	        connection.sendPacket(playerInfoRemove);
+	        
+	        new BukkitRunnable() {
+	        	
+	        	List<Packet<?>> packets = Arrays.asList(playerInfoAdd, namedEntitySpawn, headRotation, playerInfoRemove);
+	        	int counter = 0;
+
+				@Override
+				public void run() {
+					if(counter >= packets.size()) {
+						cancel();
+						
+					} else {
+						connection.sendPacket(packets.get(counter));
+					}
+					counter++;
+					
+				}
+		        
+	        }.runTaskTimer(Main.getPlugin(Main.class), 0, 5);
+	        
+//	        connection.sendPacket(playerInfoAdd);
+//	        connection.sendPacket(namedEntitySpawn);
+//	        connection.sendPacket(headRotation);
+//	        connection.sendPacket(playerInfoRemove);
 	    }
 	    
 	    NPCManager.addExternalNPC(entityPlayer);
@@ -91,16 +117,42 @@ public class PlayerAI extends EntityPlayer {
     @Override public void tick() {
     super.tick();
 
-	    if (!this.onGround) {
-	        this.setMot(this.getMot().add(0, -0.08, 0)); // gravité
-	    }
-	
-	    this.move(EnumMoveType.SELF, this.getMot()); // applique le mouvement
-	    this.setMot(this.getMot().d(0.48, 0.48, 0.48)); // friction
-	
-	    if (this.positionChanged) {
-	        this.setMot(this.getMot().a(0.7)); // réduction si collision
-	    }
+ // Gravité
+    if (!this.onGround) {
+        this.setMot(this.getMot().add(0, -0.08, 0));
+    }
+
+    // Appliquer le mouvement
+    this.move(EnumMoveType.SELF, this.getMot());
+
+    Vec3D mot = this.getMot();
+
+    // Friction dépendant du sol
+    if (this.onGround) {
+        // Récupère le bloc sous les pieds
+        int x = MathHelper.floor(this.locX());
+        int y = MathHelper.floor(this.locY() - 1.0);
+        int z = MathHelper.floor(this.locZ());
+
+        float friction = 0.91f;
+
+        if (this.world.getType(new BlockPosition(x, y, z)).getBlock() != null) {
+            friction = this.world.getType(new BlockPosition(x, y, z)).getBlock().getFrictionFactor() * 0.91f;
+        }
+
+        double frictionX = mot.x * friction;
+        double frictionZ = mot.z * friction;
+
+        this.setMot(frictionX, mot.y, frictionZ);
+    } else {
+        // En l'air : friction moindre
+        this.setMot(mot.x * 0.91, mot.y * 0.98, mot.z * 0.91);
+    }
+
+    // Collision amortie
+    if (this.positionChanged && this.onGround) {
+        this.setMot(this.getMot().a(0.6));
+    }
 	
 	
 	    if (this.noDamageTicks > 0) {
