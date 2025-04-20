@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import mctdl.game.Main;
+import mctdl.game.games.meltdown.Meltdown;
 import mctdl.game.money.MoneyManager;
 import mctdl.game.npc.NPCManager;
 import mctdl.game.npc.PlayerAI;
@@ -21,19 +22,19 @@ public class MeltdownNPC {
 	
 	String team;
 	
-	public MeltdownNPC(Main main, Player parent, String team) {
-		this.npc = PlayerAI.createNPC(parent, new MDNPC_Utils().getRandomName(team), parent.getWorld(), parent.getLocation());
+	public MeltdownNPC(Main main, String team) {
+		this.npc = PlayerAI.createNPC(new MDNPC_Utils().getRandomName(team), Bukkit.getWorlds().get(0), new Location(Bukkit.getWorlds().get(0), 8, 6, 8));
 		this.main = main;
 		this.team = team;
 		
-		//Show NPC
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			NPCManager.showNPCFor(npc, p, null);
-		}
+		Meltdown.addNPC(this);
 		
-		// Register NPC as Player
 		fakeJoin();
 		registerIntoTeam();
+	}
+	
+	public PlayerAI getNPC() {
+		return this.npc;
 	}
 	
 	private void fakeJoin() {
@@ -60,7 +61,7 @@ public class MeltdownNPC {
 			MoneyManager.setPlayerPoutres(p.getUniqueId().toString(), 0);
 		}
 		if(game.equals("lobby")) {
-			p.teleport(new Location(p.getWorld(), 8, 6, 8));
+			NPCManager.teleportNPC(npc.getEntity(),8, 6, 8);
 			PlayerData.registerPlayer(p);
 		}
 		

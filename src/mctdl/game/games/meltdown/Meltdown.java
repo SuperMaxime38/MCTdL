@@ -39,6 +39,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import mctdl.game.Main;
+import mctdl.game.games.meltdown.npc.MeltdownNPC;
 import mctdl.game.money.MoneyManager;
 import mctdl.game.npc.NPCManager;
 import mctdl.game.tablist.TabManager;
@@ -54,10 +55,23 @@ public class Meltdown implements Listener {
 
 	static boolean enable = false;
 	static Main main;
-	//static FileConfiguration data;
+
+
+	// Random datas
+	static int pickaxe_cooldown, money_per_block, heater_cooldwon, money_per_kill;
+	
+
+	
+	//NPC related stuff
+	static HashMap<Player, List<MeltdownNPC>> inViewNPCs;
+	static List<MeltdownNPC> IAs;
+	
 
 	public Meltdown(Main main) {
 		Meltdown.main = main;
+		
+		inViewNPCs = new HashMap<Player, List<MeltdownNPC>>();
+		IAs = new ArrayList<MeltdownNPC>();
 	}
 
 	// Setup
@@ -68,6 +82,12 @@ public class Meltdown implements Listener {
 			System.out.println("[§4Meltdown§f] You need 2 teams in order to start a session");
 			return;
 		}
+		
+		// Load random datas
+		pickaxe_cooldown = main.getConfig().getInt("games.meltdown.cooldown.pickaxe");
+		money_per_block = main.getConfig().getInt("games.meltdown.money.block");
+		heater_cooldwon = main.getConfig().getInt("games.meltdown.cooldown.heater");
+		money_per_kill = main.getConfig().getInt("games.meltdown.money.kills");
 		
 		boolean isMapGenerated = MeltdownFiles.isMapGenerated(main);
 		if (isMapGenerated == false) {
@@ -244,6 +264,18 @@ public class Meltdown implements Listener {
 		
 		return true;
 	}
+	
+	public static List<MeltdownNPC> getNPCs() {
+		return IAs;
+	}
+	
+	public static void addNPC(MeltdownNPC npc) {
+		IAs.add(npc);
+	}
+	
+	public static void removeNPC(MeltdownNPC npc) {
+		IAs.remove(npc);
+	}
 
 	public static void applyMoneyWon() {
 		HashMap<String, Integer> balances = MoneyManager.getRegsPlayer();
@@ -324,6 +356,8 @@ public class Meltdown implements Listener {
 		datas.add(15, 1);
 		datas.add(16, 0);
 		playerdata.put(p.getUniqueId().toString(), datas);
+		
+		inViewNPCs.put(p, new ArrayList<MeltdownNPC>());
 	}
 
 	public static List<Integer> getRawPlayerDatas(String uuid) {
@@ -354,7 +388,7 @@ public class Meltdown implements Listener {
 		meta.setDisplayName("§6Coin Pickaxe");
 		meta.setLore(Arrays.asList("§7C'est votre §6Pioche d'Equipe §7, §cUN SEUL §7membre peut l'avoir en même temps",
 				"§aAbility §f: §6Mine Coins",
-				"§3Cooldown §f: " + main.getConfig().getInt("games.meltdown.cooldown.pickaxe") + " secondes"));
+				"§3Cooldown §f: " + pickaxe_cooldown + " secondes"));
 		meta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1, false);
 		meta.setUnbreakable(true);
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -369,7 +403,7 @@ public class Meltdown implements Listener {
 		meta.setDisplayName("§cClaim Pickaxe");
 		meta.setLore(Arrays.asList("§7Clic droit pour obtenir la §6Pioche d'Equipe",
 				"§cSeulement UN membre de l'équipe peut l'avoir en même temps",
-				"§3Cooldown : §f" + main.getConfig().getInt("games.meltdown.cooldown.pickaxe") + " secondes"));
+				"§3Cooldown : §f" + pickaxe_cooldown + " secondes"));
 		meta.setUnbreakable(true);
 		item.setItemMeta(meta);
 
@@ -419,7 +453,7 @@ public class Meltdown implements Listener {
 																				// claim la pioche alors mettre un
 																				// cooldown
 								pl = Bukkit.getPlayer(UUID.fromString(uuid));
-								playerdata.get(uuid).set(13,main.getConfig().getInt("games.meltdown.cooldown.pickaxe"));
+								playerdata.get(uuid).set(13,pickaxe_cooldown);
 								pickaxeCooldown(pl);
 								if (pl != p) {
 									pl.getInventory().setItem(1, getCooldownPickaxe());
@@ -437,7 +471,7 @@ public class Meltdown implements Listener {
 
 	public static void pickaxeCooldown(Player p) {
 		new BukkitRunnable() {
-			int cd = main.getConfig().getInt("games.meltdown.cooldown.pickaxe");
+			int cd = pickaxe_cooldown;
 			String uuid = p.getUniqueId().toString();
 
 			@Override
@@ -496,7 +530,7 @@ public class Meltdown implements Listener {
 			}
 			List<Integer> data = playerdata.get(e.getPlayer().getUniqueId().toString());
 			int bal = data.get(2);
-			int amount = main.getConfig().getInt("games.meltdown.money.block");
+			int amount = money_per_block;
 			bal = bal + amount;
 			data.set(2, bal);
 			if(amount < 0) {
@@ -517,7 +551,7 @@ public class Meltdown implements Listener {
 				if(playerdata.get(uuid).get(8) == loc.getX() && playerdata.get(uuid).get(9) == loc.getY() && playerdata.get(uuid).get(10) == loc.getZ()){ //Si heater cassé est celui du joueur qui l'a cassé
 					Player p = Bukkit.getPlayer(UUID.fromString(uuid));
 					p.getInventory().addItem(getHeater(TeamsManager.getPlayerTeam(uuid)));
-					playerdata.get(uuid).set(12, main.getConfig().getInt("games.meltdown.cooldown.heater"));
+					playerdata.get(uuid).set(12, heater_cooldwon);
 					playerdata.get(uuid).set(8, null);
 					playerdata.get(uuid).set(9, null);
 					playerdata.get(uuid).set(10, null);
@@ -583,7 +617,7 @@ public class Meltdown implements Listener {
 
 	public static void heaterCooldown(Player p) {
 		new BukkitRunnable() {
-			int cd = main.getConfig().getInt("games.meltdown.cooldown.heater");
+			int cd = heater_cooldwon;
 			String uuid = p.getUniqueId().toString();
 
 			@Override
@@ -738,13 +772,6 @@ public class Meltdown implements Listener {
 		e.setCancelled(true);
 	}
 
-	// Cancel Right Click
-	/*
-	 * @EventHandler public static void onRightClick(PlayerInteractEvent e) {
-	 * if(!enable) return; if(!playerdata.containsKey(e.getPlayer().getName()))
-	 * return; if(e.getAction() == Action.RIGHT_CLICK_BLOCK) { e.setCancelled(true);
-	 * return; } }
-	 */
 	@EventHandler
 	public static void rightClickEntity(PlayerInteractAtEntityEvent e) {
 		if (enable != true)
@@ -758,22 +785,6 @@ public class Meltdown implements Listener {
 			e.setCancelled(true);
 		}
 	}
-
-	// When Froze
-	/*
-	@EventHandler
-	public static void onMove(PlayerToggleSneakEvent e) {
-		if (!enable)
-			return;
-		if (!playerdata.containsKey(e.getPlayer().getName()))
-			return;
-
-		String name = e.getPlayer().getName();
-
-		if (playerdata.get(name).get(1).equals(1)) {
-			e.setCancelled(true); //Empeche la personne de s'enlever du spectate mode
-		}
-	}*/
 
 	@EventHandler
 	public static void tryToShoot(ProjectileLaunchEvent e) {
@@ -824,7 +835,7 @@ public class Meltdown implements Listener {
 		// shooterData.set(2, sgold); -->Update a la fin du script
 		shooterData.set(3, skills);
 		
-		shooter.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§4KILL §6+" + main.getConfig().getInt("games.meltdown.money.kills") + " Coins"));
+		shooter.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§4KILL §6+" + money_per_kill + " Coins"));
 
 		int pgold = pData.get(2);
 		int pdeaths = pData.get(4);
@@ -971,15 +982,8 @@ public class Meltdown implements Listener {
 			} else { //Spectate team members
 				if(playerdata.get(pl).get(16).equals(0)) { //Si il est gelé mais ne spectate pas
 					
-					//Bukkit.getPlayer(pl).setGameMode(GameMode.SPECTATOR);
-					
 					List<String> teamates = TeamsManager.getTeamMembers(TeamsManager.getPlayerTeam(pl));
-					/*if(teamates.get(0) == Bukkit.getPlayer(pl).getName()) { //Si le premier qui ressort de la liste est le joueur lui meme (bah on va pas le faire s'auto spectate c logique)
-						Bukkit.getPlayer(pl).setSpectatorTarget(Bukkit.getPlayer(teamates.get(1)));
-					} else {
-						Bukkit.getPlayer(pl).setSpectatorTarget(Bukkit.getPlayer(teamates.get(0)));
-					}
-					*/
+					
 					Spectate.setSpectatingGroup(Bukkit.getPlayer(UUID.fromString(pl)), teamates);
 					
 					infiniteDeathMessage(Bukkit.getPlayer(UUID.fromString(pl)));
@@ -1002,7 +1006,7 @@ public class Meltdown implements Listener {
 			public void run() {
 				
 				//Check
-				if(!enable) {
+				if(!enable || p == null) {
 					cancel();
 					return;
 				}
@@ -1024,7 +1028,11 @@ public class Meltdown implements Listener {
 	// Animation (frozen dudes)
 	public static void iceCube(String uuid) {
 		Player p = Bukkit.getPlayer(UUID.fromString(uuid));
-		Location loc = p.getLocation();
+		
+		//A TESTER (flm de le faire ce soir) --> no crash but nothing happens
+		if(p == null) p = NPCManager.getNpcPlayerIfItIs(uuid);
+		
+		Location loc = p.getLocation(); // CRASH WHEN PLAYER IS AN AI (NullPointer)
 		p.setGameMode(GameMode.SPECTATOR);
 
 		List<Integer> ls = playerdata.get(uuid);
@@ -1142,14 +1150,15 @@ public class Meltdown implements Listener {
 	}*/
 
 	public static void gameTimer() { //Time counter --> Trigger l'ouverture des portes par exemples
-		List<Integer> room_times = MeltdownFiles.getRoomTimes(main); //Récupère les temps de déclenchement des alarmes
-		List<Integer> room_coordsA = MeltdownFiles.getRoomCoords(main, "A");
-		List<Integer> room_coordsB = MeltdownFiles.getRoomCoords(main, "B");
-		List<Integer> room_coordsC = MeltdownFiles.getRoomCoords(main, "C");
-		List<Integer> room_coordsD = MeltdownFiles.getRoomCoords(main, "D");
-		List<Integer> room_coordsE = MeltdownFiles.getRoomCoords(main, "E");
-		List<Integer> room_coordsM = MeltdownFiles.getRoomCoords(main, "M");
 		new BukkitRunnable() {
+			
+			List<Integer> room_times = MeltdownFiles.getRoomTimes(main); //Récupère les temps de déclenchement des alarmes
+			List<Integer> room_coordsA = MeltdownFiles.getRoomCoords(main, "A");
+			List<Integer> room_coordsB = MeltdownFiles.getRoomCoords(main, "B");
+			List<Integer> room_coordsC = MeltdownFiles.getRoomCoords(main, "C");
+			List<Integer> room_coordsD = MeltdownFiles.getRoomCoords(main, "D");
+			List<Integer> room_coordsE = MeltdownFiles.getRoomCoords(main, "E");
+			List<Integer> room_coordsM = MeltdownFiles.getRoomCoords(main, "M");
 			
 			int counter = 0;
 			int alarm_tA = room_times.get(0); //Récupère le temps A
@@ -1214,6 +1223,20 @@ public class Meltdown implements Listener {
 							+ "§3Mode de jeu §f: §4Meltdown\n"
 							+ "§6Coins : " + playerdata.get(p.getUniqueId().toString()).get(2) + "\n"
 							+ "§cTemps passé §f: " + time); //Affiche depuis cb de temps la partie à commencée
+					
+					// Handle NPC re teleport when close enought to player (<128)
+					for(MeltdownNPC npc : IAs) {
+						Location loc = new Location(p.getWorld(), npc.getNPC().locX(), npc.getNPC().locY(), npc.getNPC().locZ());
+						double distance = p.getLocation().distance(loc);
+						if(distance < 128 && !inViewNPCs.get(p).contains(npc)) {
+							List<MeltdownNPC> npcs = inViewNPCs.get(p);
+							npcs.add(npc);
+							inViewNPCs.put(p, npcs);
+							
+							NPCManager.showNpcWithoutTabFor(npc.getNPC(), p, null);
+
+						}
+					}
 				}
 				
 			}

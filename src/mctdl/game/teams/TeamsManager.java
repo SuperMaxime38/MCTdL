@@ -413,11 +413,11 @@ public class TeamsManager{
 	 * @return List<String> des team (ex:red)
 	 */
 	public static List<String> getNonEmptyTeams() {
-		List<String> teams = new ArrayList<>();
-		for(String team : getTeams().values()) {
-			if(teams.contains(team)) teams.add(team);
+		List<String> non_empty_teams = new ArrayList<>();
+		for(String team : teams.values()) {
+			if(!non_empty_teams.contains(team)) non_empty_teams.add(team);
 		}
-		return teams;
+		return non_empty_teams;
 	}
 	
 	public static void updatePseudo(String uuid, String pseudo) {
@@ -444,7 +444,7 @@ public class TeamsManager{
 				return UUID.fromString(uuid);
 			}
 		}
-		return UUID.fromString(""); // null is annoying
+		return UUID.fromString("00000000-0000-0000-0000-000000000000"); // null is annoying
 	}
 	
 	public static void removeUUIDToPseudo(String uuid) {

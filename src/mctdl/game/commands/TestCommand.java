@@ -34,12 +34,9 @@ public class TestCommand implements CommandExecutor{
 				}
 				return true;
 			case "npc":
-				if(s instanceof Player) {
-					Player p = (Player) s;
-					MeltdownNPC npc = new MeltdownNPC(main, p, "red");
-					
-				    TabManager.updateTabList();
-				}
+				MeltdownNPC npc = new MeltdownNPC(main, "red");
+				
+			    TabManager.updateTabList();
 				
 				return true;
 			}
@@ -47,13 +44,9 @@ public class TestCommand implements CommandExecutor{
 		
 		if(args.length == 2) {
 			if(args[0].equals("npc")) {
-				
-				if(s instanceof Player) {
-					Player p = (Player) s;
-					MeltdownNPC npc = new MeltdownNPC(main, p, args[1]);
+				MeltdownNPC npc = new MeltdownNPC(main, args[1]);
 
-				    TabManager.updateTabList();
-				}
+			    TabManager.updateTabList();
 			}
 		}
 		

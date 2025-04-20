@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 
 import mctdl.game.Main;
 import mctdl.game.games.lobby.FortuneWheel;
+import mctdl.game.games.meltdown.Meltdown;
+import mctdl.game.games.meltdown.npc.MeltdownNPC;
 import mctdl.game.money.MoneyManager;
 import mctdl.game.npc.NPCManager;
 import mctdl.game.teams.TeamsManager;
@@ -116,6 +118,22 @@ public class TdLCommand implements CommandExecutor{
 			if(args[0].equals("uptime")) {
 				s.sendMessage("Uptime : " + Time.getUptime());
 				s.sendMessage("Current Tick : " + Time.getCurrentTick());
+			}
+			if(args[0].equals("fillteams")) {
+				for(String team : TeamsManager.getNonEmptyTeams()) {
+					s.sendMessage("Filling team " + team);
+					for(int i = 4 - TeamsManager.getTeamMembers(team).size(); i > 0; i--) {
+						MeltdownNPC npc = new MeltdownNPC(main, team);
+						Meltdown.addNPC(npc);
+						s.sendMessage("Added " + npc.getNPC().getName());
+					}
+				}
+//				for (Player pl : Bukkit.getOnlinePlayers()) { // Refresh NPCs
+//					NPCManager.killAllNPCs(pl);
+//					NPCManager.onPlayerJoin(pl, 60);
+//				}
+				s.sendMessage("Teams have been filled");
+				return true;
 			}
 		} else if(args.length == 2) {
 			if(args[0].equals("teams")) {
