@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 
 import mctdl.game.Main;
 import mctdl.game.npc.NPCManager;
+import mctdl.game.tablist.TabManager;
 
 public class TeamsManager{
 	
@@ -121,11 +122,13 @@ public class TeamsManager{
 	public static void setPlayerTeam(String uuid, String team) {
 		if(uuid == null) return;
 		teams.put(uuid, team);
+		TabManager.updateTabList();
 	}
 	
 	public static void removePlayerTeam(String uuid) {
 		if(teams.containsKey(uuid)) {
 			teams.remove(uuid);
+			TabManager.updateTabList();
 		}
 	}
 	
@@ -136,6 +139,7 @@ public class TeamsManager{
 	public static void clearTeams(Main main) {
 		teams.clear();
 		updateConfig(main);
+		TabManager.updateTabList();
 	}
 	
 	public static void updateConfig(Main main) {
@@ -330,11 +334,14 @@ public class TeamsManager{
 		HashMap<String, String> teams = getTeams();
 		Player p;
 		
-		for (String uuid : teams.keySet()) { //NOT WORKING !!!
+		for (String uuid : teams.keySet()) {
 			if(teams.get(uuid).equals(team)) {
 				p = Bukkit.getPlayer(UUID.fromString(uuid));
 				if(p == null) {
-					return false;
+					if(NPCManager.getNpcPlayerIfItIs(uuid) == null) {
+						return false;
+					}
+					
 				}
 			}
 		}
@@ -343,21 +350,6 @@ public class TeamsManager{
 	
 	public static List<String> getOnlineTeams() {
 		List<String> online_teams = new ArrayList<>();
-//		List<String> teams_name = Arrays.asList("red", "blue", "green", "yellow", "purple", "aqua", "black", "orange");
-//		
-//		for(String team : teams_name) {
-//			for(String uuid : TeamsManager.getTeamMembers(team)) {
-//				if(Bukkit.getPlayer(UUID.fromString(uuid)) != null) {
-//					teams.add(team);
-//					break;
-//				}
-//				if(NPCManager.isAnNPC(uuid)) {
-//					System.out.println("NPC: " + NPCManager.getNpcPlayerIfItIs(uuid).getName());
-//					teams.add(team);
-//					break;
-//				}
-//			}
-//		}
 		
 		for(String uuid : teams.keySet()) {
 			if(Bukkit.getPlayer(UUID.fromString(uuid)) != null || NPCManager.isAnNPC(uuid)) {

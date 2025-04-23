@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import mctdl.game.Main;
+import mctdl.game.tablist.TabManager;
 
 public class MoneyManager {
 static HashMap<String, Integer> balances = new HashMap<String, Integer>();
@@ -45,7 +46,7 @@ static HashMap<String, Integer> poutres_owners = new HashMap<String, Integer>();
 	public static HashMap<String, Integer> getLifeTimeCoins() {return lifetime;}
 	public static HashMap<String, Integer> getWhoHasPoutres() {return poutres_owners;} //POUTRE
 	
-	public static void setPlayerMoney(String uuid, int amount) {balances.put(uuid, amount);}
+	public static void setPlayerMoney(String uuid, int amount) {balances.put(uuid, amount);TabManager.updateTabList();}
 	public static void setPlayerLifeTimeCoins(String uuid, int amount) {lifetime.put(uuid, amount);}
 	public static void setPlayerPoutres(String uuid, int amount) {poutres_owners.put(uuid, amount);} //POUTRE
 	
@@ -54,6 +55,7 @@ static HashMap<String, Integer> poutres_owners = new HashMap<String, Integer>();
 			int money = balances.get(uuid);
 			money = money - amount;
 			balances.put(uuid, money);
+			TabManager.updateTabList();
 		}
 	}
 	public static void removePlayerPoutre(String uuid, int amount) { //POUTRE
@@ -69,6 +71,7 @@ static HashMap<String, Integer> poutres_owners = new HashMap<String, Integer>();
 			int money = balances.get(uuid);
 			money = money + amount;
 			balances.put(uuid, money);
+			TabManager.updateTabList();
 		}
 	}
 	public static void addPlayerLifeTimeCoins(String uuid, int amount) {

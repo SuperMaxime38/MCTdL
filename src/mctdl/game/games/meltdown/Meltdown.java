@@ -26,6 +26,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -58,7 +59,7 @@ public class Meltdown implements Listener {
 
 
 	// Random datas
-	static int pickaxe_cooldown, money_per_block, heater_cooldwon, money_per_kill;
+	static int pickaxe_cooldown, money_per_block, heater_cooldwon, money_per_kill, money_per_death, money_per_final, money_for_eliminated;
 	
 
 	
@@ -88,6 +89,9 @@ public class Meltdown implements Listener {
 		money_per_block = main.getConfig().getInt("games.meltdown.money.block");
 		heater_cooldwon = main.getConfig().getInt("games.meltdown.cooldown.heater");
 		money_per_kill = main.getConfig().getInt("games.meltdown.money.kills");
+		money_per_death = main.getConfig().getInt("games.meltdown.money.deaths");
+		money_per_final = main.getConfig().getInt("games.meltdown.money.final-kill");
+		money_for_eliminated = main.getConfig().getInt("games.meltdown.money.eliminated");
 		
 		boolean isMapGenerated = MeltdownFiles.isMapGenerated(main);
 		if (isMapGenerated == false) {
@@ -222,12 +226,11 @@ public class Meltdown implements Listener {
 				HashMap<String, String> teams = TeamsManager.getOnlinePlayers();
 				for (String uuid : teams.keySet()) {
 					
-					Player p;
+					Player p = Bukkit.getPlayer(UUID.fromString(uuid));
 					
-					if(NPCManager.getNpcPlayerIfItIs(uuid) != null) {
+					if(p == null) {
 						p = NPCManager.getNpcPlayerIfItIs(uuid);
-					} else {
-						p = Bukkit.getPlayer(UUID.fromString(uuid));
+						NPCManager.teleportNPC(NPCManager.getNpcByUUID(uuid), 8, 6, 8);
 					}
 					
 					p.setGameMode(GameMode.ADVENTURE);
@@ -343,12 +346,12 @@ public class Meltdown implements Listener {
 		datas.add(2, 0);
 		datas.add(3, 0);
 		datas.add(4, 0);
-		datas.add(5, null);
-		datas.add(6, null);
-		datas.add(7, null);
-		datas.add(8, null);
-		datas.add(9, null);
-		datas.add(10, null);
+		datas.add(5, 0);
+		datas.add(6, 0); // LOC "0" mean no loc (bcs 0 is near spawn)
+		datas.add(7, 0);
+		datas.add(8, 0);
+		datas.add(9, 0);
+		datas.add(10, 0);
 		datas.add(11, 0);
 		datas.add(12, 0);
 		datas.add(13, 0);
@@ -552,9 +555,9 @@ public class Meltdown implements Listener {
 					Player p = Bukkit.getPlayer(UUID.fromString(uuid));
 					p.getInventory().addItem(getHeater(TeamsManager.getPlayerTeam(uuid)));
 					playerdata.get(uuid).set(12, heater_cooldwon);
-					playerdata.get(uuid).set(8, null);
-					playerdata.get(uuid).set(9, null);
-					playerdata.get(uuid).set(10, null);
+					playerdata.get(uuid).set(8, 0);
+					playerdata.get(uuid).set(9, 0);
+					playerdata.get(uuid).set(10, 0);
 					heaterCooldown(p);
 					loc.getBlock().setType(Material.AIR);
 				}
@@ -805,8 +808,6 @@ public class Meltdown implements Listener {
 	@EventHandler
 	public static void onShoot(EntityDamageByEntityEvent e) {
 		
-		System.out.println("triggered");
-		
 		if (!enable)
 			return;
 
@@ -819,38 +820,61 @@ public class Meltdown implements Listener {
 			return;
 
 		e.setDamage(0);
-		
-		System.out.println("Reach here");
-
-		HashMap<String, String> teams = TeamsManager.getOnlinePlayers();
 
 		Player shooter = (Player) arrow.getShooter();
 		Player p = (Player) e.getEntity();
 
+		shootingChecker(shooter, p);
+	}
+	
+	//Check if player shot is NPC
+	@EventHandler
+	public static void onNPCShoot(ProjectileHitEvent e) {
+		if(!enable) return;
+		if(!(e.getEntity() instanceof Arrow)) return;
+		EntityPlayer npc;
+		try {
+			npc = NPCManager.getNpcByUUID(e.getHitEntity().getUniqueId().toString());
+		} catch (NullPointerException e1) {
+			return;
+		}
+		
+		// If this reaches this point, it means that the player shot an NPC
+		Arrow arrow = (Arrow) e.getEntity();
+		if(!(arrow.getShooter() instanceof Player)) return;
+		
+		e.setCancelled(true);
+		
+		shootingChecker((Player) arrow.getShooter(), npc.getBukkitEntity());
+		
+	}
+	
+	
+	//Shooting checker
+	public static void shootingChecker(Player shooter, Player p) {
 		if (TeamsManager.getPlayerTeam(shooter.getUniqueId().toString()).equals(TeamsManager.getPlayerTeam(p.getUniqueId().toString())))
 			return;
-
+		
+		HashMap<String, String> teams = TeamsManager.getOnlinePlayers();
+		
 		List<Integer> shooterData = playerdata.get(shooter.getUniqueId().toString());
 		List<Integer> pData = playerdata.get(p.getUniqueId().toString());
 
 		int sgold = shooterData.get(2);
 		int skills = shooterData.get(3);
-		sgold = sgold + 50;
+		sgold = sgold + money_per_kill;
 		skills = skills + 1;
-		// shooterData.set(2, sgold); -->Update a la fin du script
 		shooterData.set(3, skills);
 		
 		shooter.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§4KILL §6+" + money_per_kill + " Coins"));
 
 		int pgold = pData.get(2);
 		int pdeaths = pData.get(4);
-		pgold = pgold - 10;
+		pgold = pgold - money_per_death;
 		pdeaths = pdeaths + 1;
 		pData.set(2, pgold);
 		pData.set(4, pdeaths);
 		pData.set(1, 1);
-
-		System.out.println("Reach here 2");
 		
 		iceCube(p.getUniqueId().toString());
 		Bukkit.broadcastMessage(TeamsManager.getTeamColor(p.getUniqueId().toString()) + p.getName() + " §fwas frozen by "
@@ -883,13 +907,14 @@ public class Meltdown implements Listener {
 				Bukkit.getPlayer(mates).setInvisible(true);
 			}
 
-			sgold = sgold + 100;
+			sgold = sgold + money_per_final;
+			pgold -= money_for_eliminated;
 			Bukkit.broadcastMessage("§6L'équipe des " + TeamsManager.getTeamColor(p.getUniqueId().toString())
 					+ TeamsManager.getTeamName(p.getUniqueId().toString()) + " §6a été §céliminé");
 
 		}
 		shooterData.set(2, sgold);
-		System.out.println("Reach here 3");
+		pData.set(2, pgold);
 		teamsChecker(shooter.getName());
 	}
 
@@ -967,7 +992,7 @@ public class Meltdown implements Listener {
 	public static void playerFallen(List<Integer> pData, String uuid) {
 		int pgold = pData.get(2);
 		int pdeaths = pData.get(4);
-		pgold = pgold - 10;
+		pgold = pgold - money_for_eliminated;
 		pdeaths = pdeaths + 1;
 		pData.set(2, pgold);
 		pData.set(4, pdeaths);
@@ -993,9 +1018,11 @@ public class Meltdown implements Listener {
 					
 					List<String> teamates = TeamsManager.getTeamMembers(TeamsManager.getPlayerTeam(pl));
 					
-					Spectate.setSpectatingGroup(Bukkit.getPlayer(UUID.fromString(pl)), teamates);
+					Player p = Bukkit.getPlayer(UUID.fromString(pl));
+					if(p == null) p = NPCManager.getNpcPlayerIfItIs(pl);
+					Spectate.setSpectatingGroup(p, teamates);
 					
-					infiniteDeathMessage(Bukkit.getPlayer(UUID.fromString(pl)));
+					infiniteDeathMessage(p);
 				}
 			}
 		}
@@ -1089,7 +1116,7 @@ public class Meltdown implements Listener {
 							loc = new Location(Bukkit.getWorlds().get(0), X, Y, Z);
 							
 							//Heater loc
-							HX = playerdata.get(player).get(8);
+							HX = playerdata.get(player).get(8); // No need to check if is = to 0 bcs if it is the case, distance will be greater than 3
 							HY = playerdata.get(player).get(9);
 							HZ = playerdata.get(player).get(10);
 							
@@ -1125,9 +1152,9 @@ public class Meltdown implements Listener {
 		p.setGameMode(GameMode.SURVIVAL);
 
 		ls.set(1, 0);
-		ls.set(5, null);
-		ls.set(6, null);
-		ls.set(7, null);
+		ls.set(5, 0);
+		ls.set(6, 0);
+		ls.set(7, 0);
 		ls.set(16, 0);
 		playerdata.put(uuid, ls);
 	}

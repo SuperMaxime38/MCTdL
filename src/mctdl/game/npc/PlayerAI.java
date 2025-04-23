@@ -180,16 +180,19 @@ public class PlayerAI extends EntityPlayer {
         // Knockback si l'attaquant est une entité
         if (damagesource.getEntity() != null) {
             net.minecraft.server.v1_16_R3.Entity attacker = damagesource.getEntity();
-            double dx = this.locX() - attacker.locX();
-            double dz = this.locZ() - attacker.locZ();
-            double magnitude = Math.sqrt(dx * dx + dz * dz);
-
-            if (magnitude > 0) {
-                double strength = 0.4; // force du knockback
-                dx /= magnitude;
-                dz /= magnitude;
-                this.setMot(this.getMot().add(dx * strength, 0.3, dz * strength)); // ajoute aussi un petit rebond vertical
+            if(!(attacker instanceof net.minecraft.server.v1_16_R3.EntityArrow)) {
+            	double dx = this.locX() - attacker.locX();
+	            double dz = this.locZ() - attacker.locZ();
+	            double magnitude = Math.sqrt(dx * dx + dz * dz);
+	
+	            if (magnitude > 0) {
+	                double strength = 0.4; // force du knockback
+	                dx /= magnitude;
+	                dz /= magnitude;
+	                this.setMot(this.getMot().add(dx * strength, 0.3, dz * strength)); // ajoute aussi un petit rebond vertical
+	            }
             }
+            
         }
 
         if (newHealth == 0) {
