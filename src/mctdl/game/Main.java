@@ -40,6 +40,8 @@ import mctdl.game.listeners.Damage;
 import mctdl.game.listeners.Interact;
 import mctdl.game.listeners.Join;
 import mctdl.game.listeners.Move;
+import mctdl.game.listeners.NMSEventHandler;
+import mctdl.game.listeners.NpcEvents;
 import mctdl.game.money.MoneyManager;
 import mctdl.game.npc.NPCCommandCompleter;
 import mctdl.game.npc.NPCManager;
@@ -90,6 +92,7 @@ public class Main extends JavaPlugin{
 				public void run() {
 					for (Player pl : Bukkit.getOnlinePlayers()) {
 						NPCManager.onPlayerJoin(pl, 60);
+						ScoreboardManager.initScoreboardForPlayer(pl);
 					}
 					TabManager.updateTabList();
 				}
@@ -109,7 +112,7 @@ public class Main extends JavaPlugin{
 			@Override
 			public void onPacketReceiving(PacketEvent e) {
 				PacketContainer packet = e.getPacket();
-				Player p = e.getPlayer();
+				//Player p = e.getPlayer();
 				
 				//Extract Info
 				if(e.getPacket().getType() == PacketType.Play.Server.NAMED_SOUND_EFFECT) {
@@ -157,12 +160,17 @@ public class Main extends JavaPlugin{
 		getServer().getPluginManager().registerEvents(new Nexus(this), this);
 		
 		
+		//NMS Listener
+		NMSEventHandler.loop(main);
+		
 		//Register LISTENERS---------------------------------------------------------
 		getServer().getPluginManager().registerEvents(new Damage(this), this);
 		getServer().getPluginManager().registerEvents(new Join(this), this);
 		getServer().getPluginManager().registerEvents(new Interact(this), this);
 		getServer().getPluginManager().registerEvents(new Move(this), this);
 		getServer().getPluginManager().registerEvents(new Spectate(this), this);
+		Bukkit.getPluginManager().registerEvents(new NpcEvents(), this); // Handles NPC events (such as projectile hit)
+		
 		
 		//Lobby Games----------------------------------------------------------------
 			// --> Jump

@@ -462,7 +462,7 @@ public class Meltdown implements Listener {
 						}
 					} else { // SI ya du cooldown
 						p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(
-								"§cLa pioche est en cooldown : " + playerdata.get(p.getUniqueId().toString()).get(13) + " secondes"));
+								"§cLa pioche est en cooldown: " + playerdata.get(p.getUniqueId().toString()).get(13) + " secondes"));
 					}
 				}
 			}
@@ -664,7 +664,7 @@ public class Meltdown implements Listener {
 			return;
 		}
 		if (playerdata.get(uuid).get(12) > 0) {
-			p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§cYour heater is on cooldown :" + playerdata.get(uuid).get(12) + "s"));
+			p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§cYour heater is on cooldown: " + playerdata.get(uuid).get(12) + "s"));
 			e.setCancelled(true);
 			return;
 		} else { // SI LE HEATER PEUT ETRE PLACE ALORS
@@ -804,6 +804,9 @@ public class Meltdown implements Listener {
 	// Shoot with Freezing Gun
 	@EventHandler
 	public static void onShoot(EntityDamageByEntityEvent e) {
+		
+		System.out.println("triggered");
+		
 		if (!enable)
 			return;
 
@@ -816,6 +819,8 @@ public class Meltdown implements Listener {
 			return;
 
 		e.setDamage(0);
+		
+		System.out.println("Reach here");
 
 		HashMap<String, String> teams = TeamsManager.getOnlinePlayers();
 
@@ -845,6 +850,8 @@ public class Meltdown implements Listener {
 		pData.set(4, pdeaths);
 		pData.set(1, 1);
 
+		System.out.println("Reach here 2");
+		
 		iceCube(p.getUniqueId().toString());
 		Bukkit.broadcastMessage(TeamsManager.getTeamColor(p.getUniqueId().toString()) + p.getName() + " §fwas frozen by "
 				+ TeamsManager.getTeamColor(shooter.getName()) + shooter.getName());
@@ -882,6 +889,7 @@ public class Meltdown implements Listener {
 
 		}
 		shooterData.set(2, sgold);
+		System.out.println("Reach here 3");
 		teamsChecker(shooter.getName());
 	}
 
@@ -937,7 +945,8 @@ public class Meltdown implements Listener {
 				}
 				if (teams.isEmpty()) {
 					System.out.println("§cAn error happend in the meltdown game\n No winners found");
-					// DO SMTH
+					applyMoneyWon(); // Still we apply the money
+					disable(main); // Stop the game cause error
 				}
 				String refTeam = teams.get(0);
 				for (String team : teams) {

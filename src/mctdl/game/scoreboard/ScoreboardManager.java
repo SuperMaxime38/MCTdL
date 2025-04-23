@@ -29,6 +29,10 @@ public class ScoreboardManager implements Listener{
 	@EventHandler
 	public static void onJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
+		initScoreboardForPlayer(p);
+	}
+	
+	public static void initScoreboardForPlayer(Player p) {
 		List<String> old = new ArrayList<String>();	
 		
 		org.bukkit.scoreboard.ScoreboardManager mng = Bukkit.getScoreboardManager();
@@ -125,8 +129,6 @@ public class ScoreboardManager implements Listener{
 		
 		
 		p.setScoreboard(board);
-		
-		//p.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§4TEstttttt"));
 	}
 
 }

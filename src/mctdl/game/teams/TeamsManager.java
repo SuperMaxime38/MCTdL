@@ -3,7 +3,6 @@ package mctdl.game.teams;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -237,6 +236,14 @@ public class TeamsManager{
 		return team;
 	}
 	
+	/**
+	 * 
+	 * Retourne la couleur de la team du joueur
+	 * Si le joueur n'appartient pas à une équipe, la couleur sera blanche
+	 * 
+	 * @param uuid
+	 * @return la couleur au format ChatColor
+	 */
 	public static ChatColor getTeamColor(String uuid) {
 		String team = getPlayerTeam(uuid);
 		switch (team) {

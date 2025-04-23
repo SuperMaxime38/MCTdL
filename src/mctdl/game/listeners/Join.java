@@ -3,6 +3,7 @@ package mctdl.game.listeners;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,6 +30,7 @@ public class Join implements Listener{
 	public static void onJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
 		p.setFoodLevel(20);
+		p.setDisplayName(TeamsManager.getTeamColor(p.getUniqueId().toString()) + p.getName() + ChatColor.WHITE);
 		String game = main.getConfig().getString("game");
 		
 		HashMap<String, Integer> balances = MoneyManager.getRegsPlayer();
