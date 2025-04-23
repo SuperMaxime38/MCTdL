@@ -90,6 +90,7 @@ public class Main extends JavaPlugin{
 				public void run() {
 					for (Player pl : Bukkit.getOnlinePlayers()) {
 						NPCManager.onPlayerJoin(pl, 60);
+						ScoreboardManager.initScoreboardForPlayer(pl);
 					}
 					TabManager.updateTabList();
 				}
@@ -109,7 +110,7 @@ public class Main extends JavaPlugin{
 			@Override
 			public void onPacketReceiving(PacketEvent e) {
 				PacketContainer packet = e.getPacket();
-				Player p = e.getPlayer();
+				//Player p = e.getPlayer();
 				
 				//Extract Info
 				if(e.getPacket().getType() == PacketType.Play.Server.NAMED_SOUND_EFFECT) {
@@ -156,13 +157,13 @@ public class Main extends JavaPlugin{
 		//Nexus
 		getServer().getPluginManager().registerEvents(new Nexus(this), this);
 		
-		
 		//Register LISTENERS---------------------------------------------------------
 		getServer().getPluginManager().registerEvents(new Damage(this), this);
 		getServer().getPluginManager().registerEvents(new Join(this), this);
 		getServer().getPluginManager().registerEvents(new Interact(this), this);
 		getServer().getPluginManager().registerEvents(new Move(this), this);
 		getServer().getPluginManager().registerEvents(new Spectate(this), this);
+		
 		
 		//Lobby Games----------------------------------------------------------------
 			// --> Jump

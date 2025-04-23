@@ -1,7 +1,5 @@
 package mctdl.game.commands;
 
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -187,10 +185,12 @@ public class TdLCommand implements CommandExecutor{
 			if(args[0].equals("money")) {
 				if(args[1].equals("set")) {
 					playername = args[2];
-					amount = Integer.parseInt(args[3]);
 					
-
-					//if(!isLogged(s, playername)) return true;
+					try {
+						amount = Integer.parseInt(args[3]);
+					} catch (NumberFormatException e) {
+						return false;
+					}
 					
 					MoneyManager.setPlayerMoney(TeamsManager.getUUIDByPseudo(playername).toString(), amount);
 					s.sendMessage(h + "L'argent de " + playername  + " est de " + amount);
@@ -198,10 +198,12 @@ public class TdLCommand implements CommandExecutor{
 				}
 				if(args[1].equals("remove")) {
 					playername = args[2];
-					amount = Integer.parseInt(args[3]);
-
-
-					//if(!isLogged(s, playername)) return true;
+					
+					try {
+						amount = Integer.parseInt(args[3]);
+					} catch (NumberFormatException e) {
+						return false;
+					}
 					
 					String uuid = TeamsManager.getUUIDByPseudo(playername).toString();
 					
@@ -211,10 +213,12 @@ public class TdLCommand implements CommandExecutor{
 				}
 				if(args[1].equals("add")) {
 					playername = args[2];
-					amount = Integer.parseInt(args[3]);
 					
-
-					//if(!isLogged(s, playername)) return true;
+					try {
+						amount = Integer.parseInt(args[3]);
+					} catch (NumberFormatException e) {
+						return false;
+					}
 
 					String uuid = TeamsManager.getUUIDByPseudo(playername).toString();
 					
@@ -226,28 +230,35 @@ public class TdLCommand implements CommandExecutor{
 			if(args[0].equals("poutre")) { //Poutre money managing commands
 				if(args[1].equals("set")) {
 					playername = args[2];
-					amount = Integer.parseInt(args[3]);
 					
-
-					//if(!isLogged(s, playername)) return true;
+					try {
+						amount = Integer.parseInt(args[3]);
+					} catch (NumberFormatException e) {
+						return false;
+					}
 					
 					MoneyManager.setPlayerPoutres(TeamsManager.getUUIDByPseudo(playername).toString(), amount);
 					return true;
 				}
 				if(args[1].equals("remove")) {
 					playername = args[2];
-					amount = Integer.parseInt(args[3]);
-
-					//if(!isLogged(s, playername)) return true;
 					
+					try {
+						amount = Integer.parseInt(args[3]);
+					} catch (NumberFormatException e) {
+						return false;
+					}
 					MoneyManager.removePlayerPoutre(TeamsManager.getUUIDByPseudo(playername).toString(), amount);
 					return true;
 				}
 				if(args[1].equals("add")) {
 					playername = args[2];
-					amount = Integer.parseInt(args[3]);
-
-					//if(!isLogged(s, playername)) return true;
+					
+					try {
+						amount = Integer.parseInt(args[3]);
+					} catch (NumberFormatException e) {
+						return false;
+					}
 					
 					MoneyManager.addPlayerPoutre(TeamsManager.getUUIDByPseudo(playername).toString(), amount);
 					return true;

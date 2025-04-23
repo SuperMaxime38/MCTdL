@@ -40,6 +40,8 @@ public class PlayerAI extends EntityPlayer {
 	
 	public PlayerAI(MinecraftServer minecraftserver, WorldServer worldserver, GameProfile gameprofile, PlayerInteractManager playerinteractmanager) {
 		super(minecraftserver, worldserver, gameprofile, playerinteractmanager);
+		
+	    //CraftPlayer bukkitEntity = new CraftPlayer((CraftServer) Bukkit.getServer(), this);
 	}
 	
 	public static PlayerAI createNPC(String name, World world, Location location) {
@@ -104,8 +106,6 @@ public class PlayerAI extends EntityPlayer {
 	    entityPlayer.collides = true;
 	    entityPlayer.setInvisible(false);
 	    entityPlayer.setInvulnerable(false);
-	    
-	    System.out.println("NPC Info: " + entityPlayer.getName() + "\n" + entityPlayer.isInvulnerable() + "\n" + entityPlayer.isInvisible() + "\n" + entityPlayer.isNoGravity() + "\n" + entityPlayer.isCollidable());
 	    
 	    return entityPlayer;
 	    }
@@ -180,22 +180,24 @@ public class PlayerAI extends EntityPlayer {
         // Knockback si l'attaquant est une entité
         if (damagesource.getEntity() != null) {
             net.minecraft.server.v1_16_R3.Entity attacker = damagesource.getEntity();
-            double dx = this.locX() - attacker.locX();
-            double dz = this.locZ() - attacker.locZ();
-            double magnitude = Math.sqrt(dx * dx + dz * dz);
-
-            if (magnitude > 0) {
-                double strength = 0.4; // force du knockback
-                dx /= magnitude;
-                dz /= magnitude;
-                this.setMot(this.getMot().add(dx * strength, 0.3, dz * strength)); // ajoute aussi un petit rebond vertical
+            if(!(attacker instanceof net.minecraft.server.v1_16_R3.EntityArrow)) {
+            	double dx = this.locX() - attacker.locX();
+	            double dz = this.locZ() - attacker.locZ();
+	            double magnitude = Math.sqrt(dx * dx + dz * dz);
+	
+	            if (magnitude > 0) {
+	                double strength = 0.4; // force du knockback
+	                dx /= magnitude;
+	                dz /= magnitude;
+	                this.setMot(this.getMot().add(dx * strength, 0.3, dz * strength)); // ajoute aussi un petit rebond vertical
+	            }
             }
+            
         }
 
         if (newHealth == 0) {
             this.respawn();
         }
-
         return true;
     }
     
@@ -223,6 +225,16 @@ public class PlayerAI extends EntityPlayer {
 	    this.collides = true;
 	    this.setInvisible(false);
 	    this.setInvulnerable(false);
+    }
+
+    public boolean isHitBy(net.minecraft.server.v1_16_R3.Entity other) {
+        double dx = this.locX() - other.locX();
+        double dy = this.locY() - other.locY();
+        double dz = this.locZ() - other.locZ();
+        
+        System.out.println("distance squarred: " + (dx * dx + dy * dy + dz * dz));
+        
+        return dx * dx + dy * dy + dz * dz < 1.6; // For some reason distances seems to be weird so 1.6 bcs it works
     }
     
 
