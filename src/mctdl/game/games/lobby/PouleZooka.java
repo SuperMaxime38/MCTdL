@@ -158,16 +158,14 @@ public class PouleZooka implements Listener{
 			loc.getWorld().playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 1.8f, 0.1f);
 			loc.getWorld().playSound(loc, Sound.ENTITY_CHICKEN_DEATH, 2.5f, 1.5f);
 			
-			//Getter
-			Vector dir = e.getEntity().getLocation().getDirection();
-			
 			//Do stuff
 			List<Entity> ents = e.getEntity().getNearbyEntities(2, 2, 2);
 			if(ents.isEmpty()) return;
 			for(Entity ent : ents) {
 				if(ent instanceof Player) {
 					Player p = (Player) ent;
-					p.setVelocity(p.getVelocity().add(new Vector(-dir.getX()*1.05, 0.9, -dir.getZ()*1.05)));
+					Vector deltaDir = e.getEntity().getLocation().toVector().clone().subtract(p.getLocation().toVector());
+					p.setVelocity(p.getVelocity().add(new Vector(-deltaDir.getX()*1.05, 0.9, -deltaDir.getZ()*1.05)));
 				}
 				if(thieves.contains(ent)) {
 					thieves.get(thieves.indexOf(ent)).remove();

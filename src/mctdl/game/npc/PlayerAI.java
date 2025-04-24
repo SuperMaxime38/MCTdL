@@ -12,6 +12,7 @@ import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -37,11 +38,25 @@ import net.minecraft.server.v1_16_R3.Vec3D;
 import net.minecraft.server.v1_16_R3.WorldServer;
 
 public class PlayerAI extends EntityPlayer {
+
+	public static final int WALK_FORWARD = 0;
+	public static final int WALK_BACKWARD = 1;
+	public static final int WALK_LEFT = 2;
+	public static final int WALK_RIGHT = 3;
+	public static final int JUMP = 4;
+	private final double speed = 0.21585850519;
+	//private final double jumpSpeed = 0.42;
+	private final double runMult = 1.3;
+	private final double sneakMult = 0.3;
+	
+	private boolean isSneaking = false;
+	private boolean isSprinting = false;
+	
+	private float yaw = 0.0F;
 	
 	public PlayerAI(MinecraftServer minecraftserver, WorldServer worldserver, GameProfile gameprofile, PlayerInteractManager playerinteractmanager) {
 		super(minecraftserver, worldserver, gameprofile, playerinteractmanager);
-		
-	    //CraftPlayer bukkitEntity = new CraftPlayer((CraftServer) Bukkit.getServer(), this);
+		this.yaw = this.getBukkitEntity().getLocation().getYaw();
 	}
 	
 	public static PlayerAI createNPC(String name, World world, Location location) {
@@ -235,6 +250,57 @@ public class PlayerAI extends EntityPlayer {
         System.out.println("distance squarred: " + (dx * dx + dy * dy + dz * dz));
         
         return dx * dx + dy * dy + dz * dz < 1.6; // For some reason distances seems to be weird so 1.6 bcs it works
+    }
+    
+    public void walk(int direction) {
+    	switch(direction) {
+    	case WALK_FORWARD:
+    		computeVelocity(this.yaw);
+    		break;
+    	case WALK_BACKWARD:
+			computeVelocity(this.yaw + 180);
+			break;
+    	case WALK_LEFT:
+			computeVelocity(this.yaw - 90);
+			break;
+		case WALK_RIGHT:
+			computeVelocity(this.yaw + 90);
+			break;
+		case JUMP:
+			this.jump();
+			break;
+    	}
+    }
+    
+    /**
+     * This method rotates the player
+     * @param yaw: The yaw of the player in degrees (Y axis)
+     * @param pitch: The pitch of the player in degrees (X axis)
+     */
+    public void rotate(float yaw, float pitch) {
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			NPCManager.rotateNPC(this, yaw, pitch, p);
+		}
+		this.yaw = yaw;
+    }
+    
+    private void computeVelocity(double angle) {
+    	double rad = Math.toRadians(angle);
+    	double Zmult = Math.cos(rad);
+    	double Xmult = -Math.sin(rad);
+    	
+    	Vector vect = new Vector(Xmult * this.speed, 0, Zmult * this.speed);
+    	if(isSprinting && !isSneaking) vect = vect.multiply(this.runMult);
+    	if(isSneaking) vect = vect.multiply(this.sneakMult);
+    	
+    	double yVel = this.getBukkitEntity().getVelocity().getY();
+		vect.setY(yVel);
+		
+		this.getBukkitEntity().setVelocity(vect);
+    }
+    
+    public void stopWalking() {
+    	this.getBukkitEntity().setVelocity(new Vector(0, 0, 0));
     }
     
 
