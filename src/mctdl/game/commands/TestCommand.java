@@ -7,8 +7,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import mctdl.game.Main;
+import mctdl.game.ai_trainer.Environnement;
 import mctdl.game.games.meltdown.npc.MeltdownNPC;
 import mctdl.game.npc.NPCManager;
 import mctdl.game.npc.PlayerAI;
@@ -46,6 +48,19 @@ public class TestCommand implements CommandExecutor{
 				
 			    TabManager.updateTabList();
 				
+				return true;
+			case "env":
+				MeltdownNPC npc2 = new MeltdownNPC(main, "red");
+				tests.add(npc2.getNPC());
+				Environnement env = new Environnement(npc2.getNPC());
+				new BukkitRunnable() {
+
+					@Override
+					public void run() {
+						env.update();
+					}
+					
+				}.runTaskTimer(main,60, 60);
 				return true;
 			}
 		}

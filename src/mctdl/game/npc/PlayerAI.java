@@ -7,10 +7,16 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -303,5 +309,19 @@ public class PlayerAI extends EntityPlayer {
     	this.getBukkitEntity().setVelocity(new Vector(0, 0, 0));
     }
     
-
+    public void shoot(Vector dir) {
+    	Arrow arrow = this.getBukkitEntity().launchProjectile(Arrow.class, dir);
+    	arrow.setPickupStatus(Arrow.PickupStatus.DISALLOWED);
+    }
+    
+    public void breakBlock(Location loc) {
+    	Main.getPlugin(Main.class).getServer().getPluginManager().callEvent(new BlockBreakEvent(loc.getBlock(), this.getBukkitEntity()));
+    }
+    
+    public void placeBlock(Location loc) {
+    	 // Won't prolly work
+    	Main.getPlugin(Main.class).getServer().getPluginManager().callEvent(new PlayerInteractEvent(getBukkitEntity(), Action.RIGHT_CLICK_BLOCK, this.getBukkitEntity().getInventory().getItemInMainHand(), this.getBukkitEntity().getTargetBlock(null, 3), this.getBukkitEntity().getTargetBlock(null, 3).getFace(this.getBukkitEntity().getTargetBlock(null, 3))));
+    }
+    
+    public float getYaw() {return this.yaw;}
 }

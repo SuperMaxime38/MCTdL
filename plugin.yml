@@ -1,6 +1,6 @@
 name: MCTdL
 author: SuperMaxime38
-version: 0.2.9
+version: 0.2.10
 main: mctdl.game.Main
 description: MCTdL, Minecraft Tournament Plugin
 api-version: 1.13
