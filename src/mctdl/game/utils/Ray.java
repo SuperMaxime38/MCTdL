@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 
 import mctdl.game.ai_trainer.Environnement;

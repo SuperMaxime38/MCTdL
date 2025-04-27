@@ -14,7 +14,6 @@ import mctdl.game.ai_trainer.Environnement;
 import mctdl.game.games.meltdown.npc.MeltdownNPC;
 import mctdl.game.npc.NPCManager;
 import mctdl.game.npc.PlayerAI;
-import mctdl.game.tablist.TabManager;
 import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.objects.Canon;
 
@@ -46,8 +45,6 @@ public class TestCommand implements CommandExecutor{
 				MeltdownNPC npc = new MeltdownNPC(main, "red");
 				tests.add(npc.getNPC());
 				
-			    TabManager.updateTabList();
-				
 				return true;
 			case "env":
 				MeltdownNPC npc2 = new MeltdownNPC(main, "red");
@@ -57,7 +54,7 @@ public class TestCommand implements CommandExecutor{
 
 					@Override
 					public void run() {
-						env.update();
+						if(main.getConfig().getString("game").equals("meltdown")) env.update();
 					}
 					
 				}.runTaskTimer(main,60, 60);
@@ -69,8 +66,6 @@ public class TestCommand implements CommandExecutor{
 			if(args[0].equals("npc")) {
 				MeltdownNPC npc = new MeltdownNPC(main, args[1]);
 				tests.add(npc.getNPC());
-
-			    TabManager.updateTabList();
 			}
 		}
 		

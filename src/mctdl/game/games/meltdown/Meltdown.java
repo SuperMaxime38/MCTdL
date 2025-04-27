@@ -230,7 +230,14 @@ public class Meltdown implements Listener {
 					
 					if(p == null) {
 						p = NPCManager.getNpcPlayerIfItIs(uuid);
-						NPCManager.teleportNPC(NPCManager.getNpcByUUID(uuid), 8, 6, 8);
+						new BukkitRunnable() {
+
+							@Override
+							public void run() {
+								NPCManager.teleportNPC(NPCManager.getNpcByUUID(uuid), 8, 6, 8);
+							}
+							
+						}.runTaskLater(main, 5);
 					}
 					
 					p.setGameMode(GameMode.ADVENTURE);
@@ -449,6 +456,7 @@ public class Meltdown implements Listener {
 					if (playerdata.get(uid).get(13) == 0) { // Si ya pas de cooldown
 
 						p.getInventory().setItem(1, getPickaxe());
+						playerdata.get(uid).set(11, 1);
 						Player pl;
 						String team = TeamsManager.getPlayerTeam(uid);
 						for (String uuid : playerdata.keySet()) {
@@ -460,6 +468,7 @@ public class Meltdown implements Listener {
 								pickaxeCooldown(pl);
 								if (pl != p) {
 									pl.getInventory().setItem(1, getCooldownPickaxe());
+									playerdata.get(uid).set(11, 0);
 								}
 							}
 						}
@@ -550,7 +559,7 @@ public class Meltdown implements Listener {
 
 	public static void whatHeater(Location loc) { //A RECODER
 		for (String uuid : playerdata.keySet()) {
-			if(playerdata.get(uuid).get(8) != null) { //Si la valeur Heater X n'est pas nulle <=> ce joueur a placé un heater
+			if(playerdata.get(uuid).get(8) != 0) { //Si la valeur Heater X n'est pas nulle <=> ce joueur a placé un heater
 				if(playerdata.get(uuid).get(8) == loc.getX() && playerdata.get(uuid).get(9) == loc.getY() && playerdata.get(uuid).get(10) == loc.getZ()){ //Si heater cassé est celui du joueur qui l'a cassé
 					Player p = Bukkit.getPlayer(UUID.fromString(uuid));
 					p.getInventory().addItem(getHeater(TeamsManager.getPlayerTeam(uuid)));

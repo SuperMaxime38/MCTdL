@@ -7,7 +7,6 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
@@ -15,7 +14,6 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -89,6 +87,13 @@ public class PlayerAI extends EntityPlayer {
 	    PacketPlayOutNamedEntitySpawn namedEntitySpawn = new PacketPlayOutNamedEntitySpawn(entityPlayer);
 	    PacketPlayOutEntityHeadRotation headRotation = new PacketPlayOutEntityHeadRotation(entityPlayer, (byte) ((location.getYaw() * 256f) / 360f));
 	    PacketPlayOutPlayerInfo playerInfoRemove = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, entityPlayer);
+	    
+
+	    entityPlayer.setNoGravity(false);
+	    entityPlayer.noclip = false;
+	    entityPlayer.collides = true;
+	    entityPlayer.setInvisible(false);
+	    entityPlayer.setInvulnerable(false);
 
 	    for (Player player : Bukkit.getOnlinePlayers()) {
 	        PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
@@ -121,12 +126,6 @@ public class PlayerAI extends EntityPlayer {
 	    NPCManager.addExternalNPC(entityPlayer);
 	    
 	    TabManager.updateTabList();
-	    
-	    entityPlayer.setNoGravity(false);
-	    entityPlayer.noclip = false;
-	    entityPlayer.collides = true;
-	    entityPlayer.setInvisible(false);
-	    entityPlayer.setInvulnerable(false);
 	    
 	    return entityPlayer;
 	    }
