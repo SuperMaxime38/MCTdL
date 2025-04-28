@@ -5,11 +5,12 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import mctdl.game.Main;
+import mctdl.game.ai_trainer.Environnement;
 import mctdl.game.games.meltdown.Meltdown;
 import mctdl.game.money.MoneyManager;
-import mctdl.game.npc.NPCManager;
 import mctdl.game.npc.PlayerAI;
 import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.GameVoting;
@@ -19,6 +20,8 @@ public class MeltdownNPC {
 	
 	PlayerAI npc;
 	Main main;
+	
+	Environnement env;
 	
 	String team;
 	
@@ -31,6 +34,20 @@ public class MeltdownNPC {
 		
 		fakeJoin();
 		registerIntoTeam();
+		
+		this.env = new Environnement(npc);
+		loop();
+	}
+	
+	public void loop() {
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				if(main.getConfig().getString("game").equals("meltdown")) env.update();
+			}
+			
+		}.runTaskTimer(main, 0, 100);
 	}
 	
 	public PlayerAI getNPC() {
@@ -61,7 +78,7 @@ public class MeltdownNPC {
 			MoneyManager.setPlayerPoutres(p.getUniqueId().toString(), 0);
 		}
 		if(game.equals("lobby")) {
-			NPCManager.teleportNPC(npc.getEntity(),8, 6, 8);
+			this.npc.teleport(8, 6, 8);
 			PlayerData.registerPlayer(p);
 		}
 		

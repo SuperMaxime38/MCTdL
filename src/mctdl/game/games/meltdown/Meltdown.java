@@ -43,6 +43,7 @@ import mctdl.game.Main;
 import mctdl.game.games.meltdown.npc.MeltdownNPC;
 import mctdl.game.money.MoneyManager;
 import mctdl.game.npc.NPCManager;
+import mctdl.game.npc.PlayerAI;
 import mctdl.game.tablist.TabManager;
 import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.PlayerData;
@@ -161,7 +162,8 @@ public class Meltdown implements Listener {
 
 			@Override
 			public void run() {
-				NPCManager.teleportNPC(npc, x, y, z);
+				//NPCManager.teleportNPC(npc, x, y, z);
+				((PlayerAI) npc).teleport(x, y, z);
 				System.out.println("TELEPORT NPC");
 			}
 			
@@ -234,7 +236,8 @@ public class Meltdown implements Listener {
 
 							@Override
 							public void run() {
-								NPCManager.teleportNPC(NPCManager.getNpcByUUID(uuid), 8, 6, 8);
+								//NPCManager.teleportNPC(NPCManager.getNpcByUUID(uuid), 8, 6, 8);
+								((PlayerAI) NPCManager.getNpcByUUID(uuid)).teleport(8, 6, 8);
 							}
 							
 						}.runTaskLater(main, 5);

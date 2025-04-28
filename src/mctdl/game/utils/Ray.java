@@ -43,7 +43,7 @@ public class Ray {
 			
 			Block b = world.getBlockAt(current.getBlockX(), current.getBlockY(), current.getBlockZ());
 			
-			world.spawnParticle(Particle.FLAME, new Location(world, current.getX(), current.getY(), current.getZ()), 3, 0.01, 0.01, 0.01, -0.0005);
+			//world.spawnParticle(Particle.FLAME, new Location(world, current.getX(), current.getY(), current.getZ()), 3, 0.01, 0.01, 0.01, -0.0005);
 			
 			if(!Environnement.getTransparentBlocks().contains(b.getType())) {
 				return current.distance(this.origin);
@@ -60,9 +60,9 @@ public class Ray {
 	public boolean checkTransparencyToDirection() {
 		Vector current = this.origin.clone();
 		
-		Vector dir = this.direction.subtract(this.origin).normalize();
+		Vector dir = this.direction.clone().subtract(this.origin.clone()).normalize();
 		
-		while(current.distance(this.direction) > 1) {
+		while(current.distance(this.direction) >= 1) {
 			current.add(dir);
 			
 			Block b = world.getBlockAt(current.getBlockX(), current.getBlockY(), current.getBlockZ());

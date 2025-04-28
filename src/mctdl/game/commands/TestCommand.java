@@ -46,19 +46,19 @@ public class TestCommand implements CommandExecutor{
 				tests.add(npc.getNPC());
 				
 				return true;
-			case "env":
-				MeltdownNPC npc2 = new MeltdownNPC(main, "red");
-				tests.add(npc2.getNPC());
-				Environnement env = new Environnement(npc2.getNPC());
-				new BukkitRunnable() {
-
-					@Override
-					public void run() {
-						if(main.getConfig().getString("game").equals("meltdown")) env.update();
-					}
-					
-				}.runTaskTimer(main,60, 60);
-				return true;
+//			case "env":
+//				MeltdownNPC npc2 = new MeltdownNPC(main, "red");
+//				tests.add(npc2.getNPC());
+//				Environnement env = new Environnement(npc2.getNPC());
+//				new BukkitRunnable() {
+//
+//					@Override
+//					public void run() {
+//						if(main.getConfig().getString("game").equals("meltdown")) env.update();
+//					}
+//					
+//				}.runTaskTimer(main,60, 60);
+//				return true;
 			}
 		}
 		

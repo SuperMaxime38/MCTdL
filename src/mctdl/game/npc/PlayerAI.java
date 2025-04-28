@@ -58,6 +58,8 @@ public class PlayerAI extends EntityPlayer {
 	
 	private float yaw = 0.0F;
 	
+	private double posX, posY, posZ;
+	
 	public PlayerAI(MinecraftServer minecraftserver, WorldServer worldserver, GameProfile gameprofile, PlayerInteractManager playerinteractmanager) {
 		super(minecraftserver, worldserver, gameprofile, playerinteractmanager);
 		this.yaw = this.getBukkitEntity().getLocation().getYaw();
@@ -135,49 +137,57 @@ public class PlayerAI extends EntityPlayer {
 	}
 	
     @Override public void tick() {
-    super.tick();
-
- // Gravité
-    if (!this.onGround) {
-        this.setMot(this.getMot().add(0, -0.08, 0));
-    }
-
-    // Appliquer le mouvement
-    this.move(EnumMoveType.SELF, this.getMot());
-
-    Vec3D mot = this.getMot();
-
-    // Friction dépendant du sol
-    if (this.onGround) {
-        // Récupère le bloc sous les pieds
-        int x = MathHelper.floor(this.locX());
-        int y = MathHelper.floor(this.locY() - 1.0);
-        int z = MathHelper.floor(this.locZ());
-
-        float friction = 0.91f;
-
-        if (this.world.getType(new BlockPosition(x, y, z)).getBlock() != null) {
-            friction = this.world.getType(new BlockPosition(x, y, z)).getBlock().getFrictionFactor() * 0.91f;
-        }
-
-        double frictionX = mot.x * friction;
-        double frictionZ = mot.z * friction;
-
-        this.setMot(frictionX, mot.y, frictionZ);
-    } else {
-        // En l'air : friction moindre
-        this.setMot(mot.x * 0.91, mot.y * 0.98, mot.z * 0.91);
-    }
-
-    // Collision amortie
-    if (this.positionChanged && this.onGround) {
-        this.setMot(this.getMot().a(0.6));
-    }
+	    super.tick();
 	
+	    // Gravité
+	    if (!this.onGround) {
+	        this.setMot(this.getMot().add(0, -0.08, 0));
+	    }
 	
+	    // Appliquer le mouvement
+	    this.move(EnumMoveType.SELF, this.getMot());
+	
+	    Vec3D mot = this.getMot();
+	
+	    // Friction dépendant du sol
+	    if (this.onGround) {
+	        // Récupère le bloc sous les pieds
+	        int x = MathHelper.floor(this.locX());
+	        int y = MathHelper.floor(this.locY() - 1.0);
+	        int z = MathHelper.floor(this.locZ());
+	
+	        float friction = 0.91f;
+	
+	        if (this.world.getType(new BlockPosition(x, y, z)).getBlock() != null) {
+	            friction = this.world.getType(new BlockPosition(x, y, z)).getBlock().getFrictionFactor() * 0.91f;
+	        }
+	
+	        double frictionX = mot.x * friction;
+	        double frictionZ = mot.z * friction;
+	
+	        this.setMot(frictionX, mot.y, frictionZ);
+	    } else {
+	        // En l'air : friction moindre
+	        this.setMot(mot.x * 0.91, mot.y * 0.98, mot.z * 0.91);
+	    }
+	
+	    // Collision amortie
+	    if (this.positionChanged && this.onGround) {
+	        this.setMot(this.getMot().a(0.6));
+	    }
+		
+		
 	    if (this.noDamageTicks > 0) {
 	        --this.noDamageTicks;
 	    }
+	    
+	    //Mise à jour de la position
+	    Vec3D velocity = this.getMot();
+
+	    this.posX += velocity.x;
+	    this.posY += velocity.y;
+	    this.posZ += velocity.z;
+	    
     }
 
     public void despawn() {
@@ -322,5 +332,30 @@ public class PlayerAI extends EntityPlayer {
     	Main.getPlugin(Main.class).getServer().getPluginManager().callEvent(new PlayerInteractEvent(getBukkitEntity(), Action.RIGHT_CLICK_BLOCK, this.getBukkitEntity().getInventory().getItemInMainHand(), this.getBukkitEntity().getTargetBlock(null, 3), this.getBukkitEntity().getTargetBlock(null, 3).getFace(this.getBukkitEntity().getTargetBlock(null, 3))));
     }
     
+    public void teleport(double x, double y, double z) {
+		this.posX = x;
+		this.posY = y;
+		this.posZ = z;
+    	NPCManager.teleportNPC(this, x, y, z);
+    }
+    
     public float getYaw() {return this.yaw;}
+    
+    public float getPitch() {return this.pitch;}
+    
+    public double getX() {return this.posX;}
+	public double getY() {return this.posY;}
+	public double getZ() {return this.posZ;}
+	
+	public void setX(double x) {
+		this.posX = x;
+	}
+	
+	public void setY(double y) {
+		this.posY = y;
+	}
+	
+	public void setZ(double z) {
+		this.posZ = z;
+	}
 }

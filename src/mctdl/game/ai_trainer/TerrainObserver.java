@@ -11,15 +11,13 @@ import mctdl.game.npc.PlayerAI;
 public class TerrainObserver {
 
 	PlayerAI player;
-	int cornerX, cornerZ, width;
+	int radius;
 	List<Double> blocks;
 	World world;
 	
 	public TerrainObserver(PlayerAI player, double radius) {
 		this.player = player;
-		this.cornerX = (int) (player.locX() - radius);
-		this.cornerZ = (int) (player.locZ() - radius);
-		this.width = (int) (radius * 2);
+		this.radius = (int) radius;
 		this.world = player.getBukkitEntity().getWorld();
 		
 		this.blocks = new ArrayList<Double>();
@@ -27,9 +25,14 @@ public class TerrainObserver {
 	
 	public List<Double> update() {
 		blocks.clear();
-		for(int x = this.cornerX; x < this.cornerX + this.width; x++) {
-			for(int z = this.cornerZ; z < this.cornerZ + this.width; z++) {
-				Block b = world.getBlockAt(x, (int) player.locY(), z);
+		for(int x = -radius; x < radius; x++) {
+			for(int z = -radius; z < radius; z++) {
+				int X = x + (int) player.getX();
+				int Z = z + (int) player.getZ();
+				int Y = (int) player.getY() - 1;
+				Block b = world.getBlockAt(X, Y, Z);
+				
+				//System.out.println("loc: " + X + ", " + (player.getY()-1) + ", " + Z + " type: " + b.getType());
 				
 				if(Environnement.getTransparentBlocks().contains(b.getType())) {
 					blocks.add(0.0);
