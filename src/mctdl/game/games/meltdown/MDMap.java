@@ -7,6 +7,7 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Openable;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -20,6 +21,7 @@ public class MDMap {
 	static List<Location> banned = new ArrayList<>();
 	static List<Cuboid> melting = new ArrayList<>();
 	static List<Location> alarms = new ArrayList<>();
+	static World world = Bukkit.getWorlds().get(0);
 	
 	public static void generateMap(Main main) {
 		
@@ -53,8 +55,8 @@ public class MDMap {
 			int X2 = rooms.get(i + 2);
 			int Y2 = rooms.get(i + 3);
 			
-			Location pos1 = new Location(Bukkit.getWorlds().get(0), X1, 11, Y1);
-			Location pos2 = new Location(Bukkit.getWorlds().get(0), X2, 26, Y2);
+			Location pos1 = new Location(world, X1, 11, Y1);
+			Location pos2 = new Location(world, X2, 26, Y2);
 			Cuboid cube = new Cuboid(pos1, pos2);
 			melting.add(cube);
 			
@@ -81,8 +83,8 @@ public class MDMap {
 			int Y2 = doors.get(i + 4);
 			int Z2 = doors.get(i + 5);
 			
-			Location pos1 = new Location(Bukkit.getWorlds().get(0), X1, Y1, Z1);
-			Location pos2 = new Location(Bukkit.getWorlds().get(0), X2, Y2, Z2);
+			Location pos1 = new Location(world, X1, Y1, Z1);
+			Location pos2 = new Location(world, X2, Y2, Z2);
 			Cuboid cube = new Cuboid(pos1, pos2);
 			
 			for (Block block : cube) {
@@ -92,7 +94,7 @@ public class MDMap {
 	}
 	
 	public static void roomTrigger(List<Integer> rooms, Main main) {
-		banned.add(new Location(Bukkit.getWorlds().get(0), 0, 0, 0));
+		banned.add(new Location(world, 0, 0, 0));
 		
 		for(int i = 0; i < rooms.size(); i += 4) {
 			int X1 = rooms.get(i);
@@ -169,8 +171,21 @@ public class MDMap {
 					int Z = coords.get(1);
 					
 					for (int i4 = 11; i4 < 27; i4++) {
-						Location loc = new Location(Bukkit.getWorlds().get(0), X,i4, Z);
+						Location loc = new Location(world, X,i4, Z);
 						loc.getBlock().setType(Material.AIR);
+						for(int x = -1; x < 2; x++) {
+
+							Location neighbor = new Location(world, X + x,i4, Z);
+							if(!world.getBlockAt(neighbor).getType().equals(Material.AIR)) { // les blocks voisins de se qui ont fondu se transfoment en coal block
+								world.getBlockAt(neighbor).setType(Material.BLACKSTONE);
+							}
+						}
+						for(int z = -1; z < 2; z++) {
+							Location neighbor = new Location(world, X,i4, Z);
+							if(!world.getBlockAt(neighbor).getType().equals(Material.AIR)) { // les blocks voisins de se qui ont fondu se transfoment en coal block
+								world.getBlockAt(neighbor).setType(Material.BLACKSTONE);
+							}
+						}
 						
 						//Ajoute cette coord aux blocks bannis
 						banned.add(loc);
@@ -185,7 +200,7 @@ public class MDMap {
 	}
 	
 	public static List<Location> getBannedLocs() {
-		banned.add(new Location(Bukkit.getWorlds().get(0), 0, 0, 0));
+		banned.add(new Location(world, 0, 0, 0));
 		return banned;
 	}
 	

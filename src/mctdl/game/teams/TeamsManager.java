@@ -356,10 +356,6 @@ public class TeamsManager{
 				if(!online_teams.contains(teams.get(uuid))) online_teams.add(teams.get(uuid));
 			}
 		}
-			
-		
-		
-		System.out.println("Teams Online: " + online_teams);
 		return online_teams;
 	}
 	

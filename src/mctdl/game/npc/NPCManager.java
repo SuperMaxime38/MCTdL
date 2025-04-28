@@ -303,15 +303,16 @@ static Main main;
 	
 	 public static void teleportNPC(EntityPlayer npc, double x, double y, double z) {
 
-         npc.setLocation(x, y, z, npc.yaw, npc.pitch);
-         npc.enderTeleportTo(x, y, z);
-//         Packet<?> packet = new PacketPlayOutEntityTeleport(npc);
-//         
-//	        for (Player p : Bukkit.getOnlinePlayers()) {
-//	            PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
-//
-//	            connection.sendPacket(packet);
-//	        }
+        npc.setLocation(x, y, z, npc.yaw, npc.pitch);
+        npc.getBukkitEntity().teleport(new Location(Bukkit.getWorld("world"), x, y, z));
+//      npc.enderTeleportTo(x, y, z);
+        Packet<?> packet = new PacketPlayOutEntityTeleport(npc);
+         
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
+
+            connection.sendPacket(packet);
+        }
 	  }
 	 
 	 public static void renderNpcForPlayer(EntityPlayer npc, Player p) {
