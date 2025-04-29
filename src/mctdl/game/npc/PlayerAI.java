@@ -48,6 +48,7 @@ public class PlayerAI extends EntityPlayer {
 	public static final int WALK_LEFT = 2;
 	public static final int WALK_RIGHT = 3;
 	public static final int JUMP = 4;
+	public static final double ARROW_SPEED = 3.0;
 	private final double speed = 0.21585850519;
 	//private final double jumpSpeed = 0.42;
 	private final double runMult = 1.3;
@@ -297,6 +298,7 @@ public class PlayerAI extends EntityPlayer {
 			NPCManager.rotateNPC(this, yaw, pitch, p);
 		}
 		this.yaw = yaw;
+		this.pitch = pitch;
     }
     
     private void computeVelocity(double angle) {
@@ -319,7 +321,7 @@ public class PlayerAI extends EntityPlayer {
     }
     
     public void shoot(Vector dir) {
-    	Arrow arrow = this.getBukkitEntity().launchProjectile(Arrow.class, dir);
+    	Arrow arrow = this.getBukkitEntity().launchProjectile(Arrow.class, dir.multiply(ARROW_SPEED));
     	arrow.setPickupStatus(Arrow.PickupStatus.DISALLOWED);
     }
     

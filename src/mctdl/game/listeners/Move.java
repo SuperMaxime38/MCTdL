@@ -1,5 +1,6 @@
 package mctdl.game.listeners;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -32,6 +33,28 @@ public class Move implements Listener{
 		}
 		if(p.getLocation().getY() < -10) {
 			p.teleport(new Location(Bukkit.getWorlds().get(0), 8, 6, 8));
+		}
+		
+		if(NPCManager.getInViewNPCs().get(p) == null) {
+			NPCManager.inViewNPCs.put(p, new ArrayList<EntityPlayer>());
+		}
+		//Refresh NPCs (chunk loading at 128 or something fin bref)
+		for(EntityPlayer npc : NPCManager.getNPCs()) {
+			Location loc = new Location(p.getWorld(), npc.locX(), npc.locY(), npc.locZ());
+			double distance = p.getLocation().distance(loc);
+			
+			if(distance < 48 && !NPCManager.getInViewNPCs().get(p).contains(npc)) {
+				List<EntityPlayer> npcs = NPCManager.getInViewNPCs().get(p);
+				npcs.add(npc);
+				NPCManager.inViewNPCs.put(p, npcs);
+				
+				NPCManager.showNpcWithoutTabFor(npc, p, null);
+
+			} else if(distance > 48 && NPCManager.getInViewNPCs().get(p).contains(npc)) {
+				List<EntityPlayer> npcs = NPCManager.getInViewNPCs().get(p);
+				npcs.remove(npc);
+				NPCManager.inViewNPCs.put(p, npcs);
+			}
 		}
 		
 		List<EntityPlayer> moves = NPCManager.getLookingNPCs();

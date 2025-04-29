@@ -7,10 +7,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import mctdl.game.Main;
-import mctdl.game.ai_trainer.Environnement;
 import mctdl.game.games.meltdown.npc.MeltdownNPC;
 import mctdl.game.npc.NPCManager;
 import mctdl.game.npc.PlayerAI;
@@ -123,6 +121,30 @@ public class TestCommand implements CommandExecutor{
 
 				return true;
 				
+			}
+		}
+		
+		if(args.length == 4) {
+			if(args[0].equals("rt")) {
+				PlayerAI npc = null;
+				for(PlayerAI ai : tests) {
+					if(ai.getName().equals(args[1])) npc = ai;
+				}
+				if(npc == null) {
+					s.sendMessage("NPC not found");
+					return true;
+				}
+				
+				try {
+					float yaw = Float.parseFloat(args[2]);
+					float pitch = Float.parseFloat(args[3]);
+					s.sendMessage("Rotated: yaw: " + yaw + " | pitch: " + pitch);
+					npc.rotate(yaw, pitch);
+				} catch (NumberFormatException e) {
+					s.sendMessage("Invalid value (this isn't a number dude)");
+				}
+
+				return true;
 			}
 		}
 		

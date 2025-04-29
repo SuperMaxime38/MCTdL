@@ -1,10 +1,12 @@
 package mctdl.game.commands;
 
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import mctdl.game.npc.NPCManager;
+import mctdl.game.npc.PlayerAI;
 import mctdl.game.teams.TeamsManager;
 import net.minecraft.server.v1_16_R3.EntityPlayer;
 
@@ -21,6 +23,24 @@ public class TDLPacketCommand implements CommandExecutor {
 		if(args.length == 1) {
 			if(args[0].equals("tp")) {
 				s.sendMessage("/tdlpacket tp <npc> <x> <y> <z>");
+				return true;
+			}
+		}
+		
+		if(args.length == 2) {
+			if(args[0].equals("shoot")) {
+				EntityPlayer npc = NPCManager.getNpcByUUID(TeamsManager.getUUIDByPseudo(args[1]).toString());
+				if(npc == null) {
+					s.sendMessage("NPC not found");
+					return true;
+				}
+				
+				if(npc instanceof PlayerAI) {
+					PlayerAI ai = (PlayerAI) npc;
+					Location lc = new Location(ai.getBukkitEntity().getWorld(), ai.getX(), ai.getY(), ai.getZ(), ai.getYaw(), ai.getPitch());
+					((PlayerAI) npc).shoot(lc.getDirection());
+				}
+				
 				return true;
 			}
 		}

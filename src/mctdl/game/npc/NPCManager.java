@@ -29,6 +29,7 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.datafixers.util.Pair;
 
 import mctdl.game.Main;
+import mctdl.game.games.meltdown.npc.MeltdownNPC;
 import mctdl.game.money.MoneyManager;
 import mctdl.game.tablist.TabManager;
 import mctdl.game.teams.TeamsManager;
@@ -53,6 +54,8 @@ public class NPCManager {
 
 //Liste des textures
 static HashMap<String, List<String>> textures = new HashMap<String, List<String>>();
+
+public static HashMap<Player, List<EntityPlayer>> inViewNPCs = new HashMap<Player, List<EntityPlayer>>();
 	
 
 static List<EntityPlayer> npcss = new ArrayList<>();
@@ -461,5 +464,13 @@ static Main main;
 	        textures.put(name, data); //Changer pr un uuid
 	        
 	        return data;
+	}
+
+	public static HashMap<Player, List<EntityPlayer>> getInViewNPCs() {
+		return inViewNPCs;
+	}
+
+	public static void setInViewNPCs(HashMap<Player, List<EntityPlayer>> inViewNPCs) {
+		NPCManager.inViewNPCs = inViewNPCs;
 	}
 }

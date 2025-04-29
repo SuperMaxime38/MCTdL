@@ -1147,13 +1147,19 @@ public class Meltdown implements Listener {
 	}
 
 	public static void unFreeze(String uuid) {
-		Player p = Bukkit.getPlayer(UUID.fromString(uuid));
 
 		List<Integer> ls = playerdata.get(uuid);
 		int X = ls.get(5);
 		int Y = ls.get(6);
 		int Z = ls.get(7);
-		Location loc = new Location(p.getWorld(), X, Y, Z);
+		Location loc = new Location(Bukkit.getWorlds().get(0), X, Y, Z);
+		
+		Player p = Bukkit.getPlayer(UUID.fromString(uuid));
+		if(p == null) {
+			p = NPCManager.getNpcPlayerIfItIs(uuid);
+			EntityPlayer npc = NPCManager.getNpcByUUID(uuid);
+			((PlayerAI) npc).teleport(X, Y, Z);
+		}
 
 		p.teleport(loc);
 		loc.getBlock().setType(Material.AIR);
