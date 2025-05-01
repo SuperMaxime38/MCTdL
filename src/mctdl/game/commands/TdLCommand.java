@@ -1,5 +1,10 @@
 package mctdl.game.commands;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -21,6 +26,18 @@ public class TdLCommand implements CommandExecutor{
 
 	static Main main;
 	String h;
+
+	List<String> red = new ArrayList<String>(Arrays.asList("Star_Lord", "Lorem_Impsum", "Red_Steel_Beam", "Fireplace"));
+	List<String> blue = new ArrayList<String>(Arrays.asList("Fat_Seal", "Sea_You_Soon", "Titanic_Driver", "Lipton"));
+	List<String> green = new ArrayList<String>(Arrays.asList("Grass_Toucher", "Géant_Vert", "JaimeLesPommes", "Harry Coteur"));
+	List<String> yellow = new ArrayList<String>(Arrays.asList("YellowSnow", "ShinyMe", "Sparkles", "SunWeightedGuy"));
+	List<String> purple = new ArrayList<String>(Arrays.asList("Jaded", "Crystalline", "PASDINSPI1", "PASDINSPI2"));
+	List<String> aqua = new ArrayList<String>(Arrays.asList("RapinDolphin", "Aqualand", "SlipMan", "DrinkWater"));
+	List<String> black = new ArrayList<String>(Arrays.asList("Shockdart_Vador", "IGotNPass", "UnZoizeau", "SoMuchDarkSasuke"));
+	List<String> orange = new ArrayList<String>(Arrays.asList("Le_poisson_Steve", "CarSmasher", "MecanismMyLove", "BeepBeepImABot"));
+	
+	Random rdm = new Random();
+	
 	public TdLCommand(Main main) {
 		TdLCommand.main = main;
 		h = Main.header();
@@ -121,15 +138,12 @@ public class TdLCommand implements CommandExecutor{
 				for(String team : TeamsManager.getNonEmptyTeams()) {
 					s.sendMessage("Filling team " + team);
 					for(int i = 4 - TeamsManager.getTeamMembers(team).size(); i > 0; i--) {
-						MeltdownNPC npc = new MeltdownNPC(main, team);
+						
+						MeltdownNPC npc = new MeltdownNPC(main, nameStuff(team), team);
 						Meltdown.addNPC(npc);
 						s.sendMessage("Added " + npc.getNPC().getName());
 					}
 				}
-//				for (Player pl : Bukkit.getOnlinePlayers()) { // Refresh NPCs
-//					NPCManager.killAllNPCs(pl);
-//					NPCManager.onPlayerJoin(pl, 60);
-//				}
 				s.sendMessage("Teams have been filled");
 				return true;
 			}
@@ -145,6 +159,22 @@ public class TdLCommand implements CommandExecutor{
 					s.sendMessage(h + "La hashmap a été chargé selon les données enregistrées dans la config");
 					return true;
 				}
+			}
+
+			if(args[0].equals("fillteams")) {
+				if(args[1].equals("-a")) {
+					for(String team : Arrays.asList("red", "blue", "green", "yellow", "purple", "aqua", "orange", "black")) {
+						s.sendMessage("Filling team " + team);
+						for(int i = 4 - TeamsManager.getTeamMembers(team).size(); i > 0; i--) {
+							MeltdownNPC npc = new MeltdownNPC(main, nameStuff(team), team);
+							Meltdown.addNPC(npc);
+							s.sendMessage("Added " + npc.getNPC().getName());
+						}
+					}
+					s.sendMessage("All teams have been filled");
+					return true;
+				}
+				
 			}
 		} else if(args.length == 3) {
 			if(args[0].equals("money")) {
@@ -270,6 +300,46 @@ public class TdLCommand implements CommandExecutor{
 		}
 		
 		return false;
+	}
+	
+	private String nameStuff(String team) {
+		switch(team) {
+		case "red":
+			String name = red.get(rdm.nextInt(red.size()));
+			red.remove(name);
+			return name;
+		case "blue":
+			name = blue.get(rdm.nextInt(blue.size()));
+			blue.remove(name);
+			return name;
+		case "green":
+			name = green.get(rdm.nextInt(green.size()));
+			green.remove(name);
+			return name;
+		case "yellow":
+			name = yellow.get(rdm.nextInt(yellow.size()));
+			yellow.remove(name);
+			return name;
+		case "purple":
+			name = purple.get(rdm.nextInt(purple.size()));
+			purple.remove(name);
+			return name;
+		case "aqua":
+			name = aqua.get(rdm.nextInt(aqua.size()));
+			aqua.remove(name);
+			return name;
+		case "black":
+			name = black.get(rdm.nextInt(black.size()));
+			black.remove(name);
+			return name;
+		case "orange":
+			name = orange.get(rdm.nextInt(orange.size()));
+			orange.remove(name);
+			return name;
+		default:
+			return null;
+			
+		}
 	}
 	
 //	private boolean isLogged(CommandSender s,String playername) {

@@ -546,7 +546,7 @@ public class MeltdownFiles {
 
 	}
 	
-	static FileConfiguration checkMap(Main main) {
+	public static FileConfiguration checkMap(Main main) {
 		String map = main.getConfig().getString("games.meltdown.map");
 		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "maps");
 		File f = new File(userdata, File.separator + map + ".yml");

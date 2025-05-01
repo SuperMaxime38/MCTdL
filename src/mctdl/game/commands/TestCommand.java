@@ -1,6 +1,7 @@
 package mctdl.game.commands;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.command.Command;
@@ -40,7 +41,7 @@ public class TestCommand implements CommandExecutor{
 				}
 				return true;
 			case "npc":
-				MeltdownNPC npc = new MeltdownNPC(main, "red");
+				MeltdownNPC npc = new MeltdownNPC(main, "ExampleRED", "red");
 				tests.add(npc.getNPC());
 				
 				return true;
@@ -62,7 +63,11 @@ public class TestCommand implements CommandExecutor{
 		
 		if(args.length == 2) {
 			if(args[0].equals("npc")) {
-				MeltdownNPC npc = new MeltdownNPC(main, args[1]);
+				if(!Arrays.asList("red", "blue", "green", "yellow", "purple","aqua", "black", "orange").contains(args[1])) {
+					s.sendMessage("Team not found");
+					return true;
+				}
+				MeltdownNPC npc = new MeltdownNPC(main, "Example", args[1]);
 				tests.add(npc.getNPC());
 			}
 		}

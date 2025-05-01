@@ -297,6 +297,12 @@ public class Meltdown implements Listener {
 
 			int gold = balances.get(uuid);
 			int meltdown_gold = playerdata.get(uuid).get(2);
+			
+			//Check if NPS for scoring fn
+			if(NPCManager.getNpcByUUID(uuid) != null) {
+				PlayerAI npc = (PlayerAI) NPCManager.getNpcByUUID(uuid);
+				npc.setScore(npc.getScore() + meltdown_gold);
+			}
 
 			// Check is player can get compensation from offline teammate
 			String team = TeamsManager.getPlayerTeam(uuid);
@@ -462,23 +468,42 @@ public class Meltdown implements Listener {
 						playerdata.get(uid).set(11, 1);
 						Player pl;
 						String team = TeamsManager.getPlayerTeam(uid);
-						for (String uuid : playerdata.keySet()) {
-							if (team == TeamsManager.getPlayerTeam(uuid)) { // Si le joueur appartient à la team qui a
-																				// claim la pioche alors mettre un
-																				// cooldown
-								pl = Bukkit.getPlayer(UUID.fromString(uuid));
-								playerdata.get(uuid).set(13,pickaxe_cooldown);
-								pickaxeCooldown(pl);
-								if (pl != p) {
-									pl.getInventory().setItem(1, getCooldownPickaxe());
-									playerdata.get(uid).set(11, 0);
-								}
-							}
+						for(String mateUID : TeamsManager.getTeamMembers(team)) {
+							pl = Bukkit.getPlayer(UUID.fromString(mateUID));
+							if(pl == null) pl = NPCManager.getNpcPlayerIfItIs(mateUID);
+							if(pl == null) continue; // offline
+                            playerdata.get(mateUID).set(13,pickaxe_cooldown);
+                            pickaxeCooldown(pl);
+                            if (pl != p) {
+                                pl.getInventory().setItem(1, getCooldownPickaxe());
+                                playerdata.get(uid).set(11, 0);
+                            }
 						}
 					} else { // SI ya du cooldown
 						p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(
 								"§cLa pioche est en cooldown: " + playerdata.get(p.getUniqueId().toString()).get(13) + " secondes"));
 					}
+				}
+			}
+		}
+	}
+	
+	public static void getPickaxeForNPC(MeltdownNPC npc) {
+		String uuid = npc.getNPC().getUniqueIDString();
+		
+		if(playerdata.get(uuid).get(11) == 0 && playerdata.get(uuid).get(13) == 0) {
+			playerdata.get(uuid).set(11, 1);
+			
+			PlayerAI npcAI = (PlayerAI) npc.getNPC();
+			
+			Location loc = new Location(Bukkit.getWorlds().get(0), npcAI.getX(), npcAI.getY(), npcAI.getZ());
+			if(npc.getEnvironnement().findNearestBlock(loc, Material.GOLD_BLOCK, 3) != null) {
+				npcAI.setScore(npcAI.getScore() + 1);
+			}
+			
+			for(String mateUID : TeamsManager.getTeamMembers(TeamsManager.getPlayerTeam(uuid))) {
+				if(mateUID != uuid) {
+					playerdata.get(mateUID).set(13, pickaxe_cooldown);
 				}
 			}
 		}
@@ -565,6 +590,8 @@ public class Meltdown implements Listener {
 			if(playerdata.get(uuid).get(8) != 0) { //Si la valeur Heater X n'est pas nulle <=> ce joueur a placé un heater
 				if(playerdata.get(uuid).get(8) == loc.getX() && playerdata.get(uuid).get(9) == loc.getY() && playerdata.get(uuid).get(10) == loc.getZ()){ //Si heater cassé est celui du joueur qui l'a cassé
 					Player p = Bukkit.getPlayer(UUID.fromString(uuid));
+					if(p == null) p = NPCManager.getNpcPlayerIfItIs(uuid);
+					if(p == null) return;
 					p.getInventory().addItem(getHeater(TeamsManager.getPlayerTeam(uuid)));
 					playerdata.get(uuid).set(12, heater_cooldwon);
 					playerdata.get(uuid).set(8, 0);
@@ -637,6 +664,10 @@ public class Meltdown implements Listener {
 
 			@Override
 			public void run() {
+				if(!enable) {
+					cancel();
+					return;
+				}
 				if (cd == 0) {
 					List<Integer> datas = playerdata.get(uuid);
 					if(datas != null) {
@@ -701,36 +732,42 @@ public class Meltdown implements Listener {
 
 			// Particles
 			particleEffect(loc, bt, b);
+		}
+	}
+	
+	public static Material getHeaterForTeam(String team) {
+		switch(team) {
+		case "red": return Material.RED_TERRACOTTA;
+		case "blue": return Material.BLUE_TERRACOTTA;
+		case "green": return Material.GREEN_TERRACOTTA;
+		case "yellow": return Material.YELLOW_TERRACOTTA;
+		case "purple": return Material.PURPLE_TERRACOTTA;
+		case "aqua": return Material.LIGHT_BLUE_TERRACOTTA;
+		case "black": return Material.BLACK_TERRACOTTA;
+		case "orange": return Material.ORANGE_TERRACOTTA;
+		default: return Material.AIR;
+		}
+	}
+	
+	public static void placeHeaterForNpc(MeltdownNPC npc) {
+		String uuid = npc.getNPC().getUniqueIDString();
+		List<Integer> datas = playerdata.get(uuid);
+		
+		List<Location> banned = MDMap.getBannedLocs();
 
-			new BukkitRunnable() {
+		Block block = npc.getNPC().getBukkitEntity().getTargetBlock(null, 5);
+		Location loc = block.getLocation().add(0, 1, 0);
+		
+		if(datas.get(0)== 1 && datas.get(1) == 1 && datas.get(8) == 0 && datas.get(12) == 0 && !banned.contains(loc)) { // Peut placer le heater
+			Material bt = block.getType();
+			playerdata.get(uuid).set(8, loc.getBlockX());
+			playerdata.get(uuid).set(9, loc.getBlockY());
+			playerdata.get(uuid).set(10, loc.getBlockZ());
 
-				@Override
-				public void run() {
-					if (enable == false)
-						cancel();
-					if (bt != b.getType()) {
-						cancel();
-					}
-					for (String uuid : playerdata.keySet()) {
-						Player pl = Bukkit.getPlayer(UUID.fromString(uuid));
-						if (pl != null) { // Empeche les bugs
-							if (loc.distance(pl.getLocation()) <= 3) { // Rayon du heater
-								if (playerdata.get(uuid).get(14) < 100) { // Si joueur freeze
-									playerdata.get(uuid).set(14, playerdata.get(uuid).get(14) + 1);
-									pl.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(
-											"§3Vous êtes dégelés à §b" + playerdata.get(uuid).get(14) + " §3%"));
-
-								} else { // Si le joueur à son pourcentage de "dégel supérieur à 99%
-									if (playerdata.get(uuid).get(1) == 1) { // Si il est gelé
-										unFreeze(uuid); // Dégeler le joueur
-									}
-								}
-							}
-						}
-					}
-				}
-
-			}.runTaskTimer(main, 0, 4);
+			// Particles
+			particleEffect(loc, bt, block);
+			
+			loc.getBlock().setType(getHeaterForTeam(TeamsManager.getPlayerTeam(npc.getNPC().getUniqueIDString())));
 		}
 	}
 
@@ -1099,9 +1136,9 @@ public class Meltdown implements Listener {
 		unfreezeProcess(main, uuid);
 	}
 	
-	public static void unfreezeProcess(Main main, String playername) {
-		List<Integer> ls = playerdata.get(playername);
-		String team = TeamsManager.getPlayerTeam(playername);
+	public static void unfreezeProcess(Main main, String uuid) {
+		List<Integer> ls = playerdata.get(uuid);
+		String team = TeamsManager.getPlayerTeam(uuid);
 		
 		new BukkitRunnable() {
 			int HX, HY, HZ, X, Y, Z;
@@ -1114,7 +1151,7 @@ public class Meltdown implements Listener {
 			public void run() {
 				
 				if(state == 100) {
-					unFreeze(playername);
+					unFreeze(uuid);
 					cancel();
 					return;
 				}
@@ -1122,9 +1159,9 @@ public class Meltdown implements Listener {
 					if(playerdata.get(player) != null) {
 						if(TeamsManager.getPlayerTeam(player) == team) {
 							//Playr loc
-							X = playerdata.get(playername).get(5);
-							Y = playerdata.get(playername).get(6);
-							Z = playerdata.get(playername).get(7);
+							X = playerdata.get(uuid).get(5);
+							Y = playerdata.get(uuid).get(6);
+							Z = playerdata.get(uuid).get(7);
 							loc = new Location(Bukkit.getWorlds().get(0), X, Y, Z);
 							
 							//Heater loc
@@ -1137,7 +1174,8 @@ public class Meltdown implements Listener {
 							if(Hloc.distance(loc) <= 3) {
 								state++;
 								ls.set(14, state);
-								Bukkit.getPlayer(playername).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§3Vous êtes dégelés à §b" + state + " §3%"));
+								Player p = Bukkit.getPlayer(UUID.fromString(uuid));
+								if(p != null) p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§3Vous êtes dégelés à §b" + state + " §3%")); // != null pr les NPC on sait jamais
 							}
 						}
 					}
@@ -1245,6 +1283,7 @@ public class Meltdown implements Listener {
 					cancel();
 					return;
 				}
+				
 				//Alarm
 			    if(counter == alarm_tA - 60) MDMap.alarmTrigger(room_coordsA);
 			    if(counter == alarm_tB - 60) MDMap.alarmTrigger(room_coordsB);
@@ -1280,6 +1319,7 @@ public class Meltdown implements Listener {
 					
 					// Handle NPC re teleport when close enought to player (<128)
 					for(MeltdownNPC npc : IAs) {
+						
 						Location loc = new Location(p.getWorld(), npc.getNPC().locX(), npc.getNPC().locY(), npc.getNPC().locZ());
 						double distance = p.getLocation().distance(loc);
 						if(distance < 128 && !inViewNPCs.get(p).contains(npc)) {
@@ -1289,6 +1329,11 @@ public class Meltdown implements Listener {
 							
 							NPCManager.showNpcWithoutTabFor(npc.getNPC(), p, null);
 
+						}
+						
+						//Reward
+						if(counter%60== 0) { // Toutes les minutes
+							npc.getNPC().setScore(npc.getNPC().getScore() + 2);
 						}
 					}
 				}

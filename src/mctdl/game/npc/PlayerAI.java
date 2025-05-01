@@ -61,9 +61,13 @@ public class PlayerAI extends EntityPlayer {
 	
 	private double posX, posY, posZ;
 	
+	public int score;
+	
 	public PlayerAI(MinecraftServer minecraftserver, WorldServer worldserver, GameProfile gameprofile, PlayerInteractManager playerinteractmanager) {
 		super(minecraftserver, worldserver, gameprofile, playerinteractmanager);
 		this.yaw = this.getBukkitEntity().getLocation().getYaw();
+		this.pitch = this.getBukkitEntity().getLocation().getPitch();
+		this.score = 0;
 	}
 	
 	public static PlayerAI createNPC(String name, World world, Location location) {
@@ -203,6 +207,10 @@ public class PlayerAI extends EntityPlayer {
     @Override
     public boolean damageEntity(DamageSource damagesource, float f) {
 	    //net.minecraft.server.v1_16_R3.Entity attacker = damagesource.getEntity();
+    	
+    	if(Main.getPlugin(Main.class).getConfig().getString("game").equals("meltdown")) {
+	    	return true;
+    	}
 	
     	// Appliquer les dégâts
         float newHealth = Math.max(0, this.getHealth() - f);
@@ -326,12 +334,14 @@ public class PlayerAI extends EntityPlayer {
     }
     
     public void breakBlock(Location loc) {
-    	Main.getPlugin(Main.class).getServer().getPluginManager().callEvent(new BlockBreakEvent(loc.getBlock(), this.getBukkitEntity()));
+    	Location pLoc = new Location(loc.getWorld(), this.posX, this.posY, this.posZ);
+    	if(pLoc.distance(loc) < 4.5) Main.getPlugin(Main.class).getServer().getPluginManager().callEvent(new BlockBreakEvent(loc.getBlock(), this.getBukkitEntity()));
     }
     
     public void placeBlock(Location loc) {
     	 // Won't prolly work
-    	Main.getPlugin(Main.class).getServer().getPluginManager().callEvent(new PlayerInteractEvent(getBukkitEntity(), Action.RIGHT_CLICK_BLOCK, this.getBukkitEntity().getInventory().getItemInMainHand(), this.getBukkitEntity().getTargetBlock(null, 3), this.getBukkitEntity().getTargetBlock(null, 3).getFace(this.getBukkitEntity().getTargetBlock(null, 3))));
+    	Location pLoc = new Location(loc.getWorld(), this.posX, this.posY, this.posZ);
+    	if(pLoc.distance(loc) < 4.5) Main.getPlugin(Main.class).getServer().getPluginManager().callEvent(new PlayerInteractEvent(getBukkitEntity(), Action.RIGHT_CLICK_BLOCK, this.getBukkitEntity().getInventory().getItemInMainHand(), this.getBukkitEntity().getTargetBlock(null, 3), this.getBukkitEntity().getTargetBlock(null, 3).getFace(this.getBukkitEntity().getTargetBlock(null, 3))));
     }
     
     public void teleport(double x, double y, double z) {
@@ -339,6 +349,10 @@ public class PlayerAI extends EntityPlayer {
 		this.posY = y;
 		this.posZ = z;
     	NPCManager.teleportNPC(this, x, y, z);
+    }
+    
+    public void sneak() {
+    	this.sneak();
     }
     
     public float getYaw() {return this.yaw;}
@@ -359,5 +373,14 @@ public class PlayerAI extends EntityPlayer {
 	
 	public void setZ(double z) {
 		this.posZ = z;
+	}
+	
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+	
+	public int getScore() {
+		return this.score;
 	}
 }

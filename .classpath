@@ -8,5 +8,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="D:/librairies/spigot/spigot-1.16.5.jar"/>
 	<classpathentry kind="lib" path="D:/librairies/spigot/ProtocolLib.jar"/>
+	<classpathentry kind="lib" path="D:/librairies/NTDJL.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -254,8 +254,6 @@ static Main main;
 		TeamsManager.removePlayerTeam(npc.getUniqueIDString());
 		MoneyManager.deleteFromExistence(npc.getUniqueIDString());
 		PlayerData.deleteFromExistence(npc.getUniqueIDString());
-		
-		System.out.println("Test (in NPCManager#destroyNPC) -> items & stats of playerdata " + PlayerData.getPlayersData());
 
 		TeamsManager.removeUUIDToPseudo(npc.getUniqueIDString());
 		
