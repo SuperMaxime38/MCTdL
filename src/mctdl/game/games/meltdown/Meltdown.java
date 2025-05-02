@@ -1005,12 +1005,16 @@ public class Meltdown implements Listener {
 						//Unset on fire
 						pla.setFireTicks(0);
 						Bukkit.broadcastMessage(TeamsManager.getTeamColor(uuid) + " " + pla.getName() + " §ffell in §clava");
+						
+						if(NPCManager.getNpcByUUID(uuid) == null) { // Si c'est un NPC il spectate pas
+							List<String> teamates = TeamsManager.getTeamMembers(TeamsManager.getPlayerTeam(uuid));
+						
+							Spectate.setSpectatingGroup(pla, teamates);
+						
+							infiniteDeathMessage(pla);
+						}
 							
-						List<String> teamates = TeamsManager.getTeamMembers(TeamsManager.getPlayerTeam(uuid));
 						
-						Spectate.setSpectatingGroup(pla, teamates);
-						
-						infiniteDeathMessage(pla);
 					}
 					
 					if (playerdata.get(uuid).get(1).equals(0) || playerdata.get(uuid).get(0).equals(1)) {
@@ -1068,10 +1072,13 @@ public class Meltdown implements Listener {
 					List<String> teamates = TeamsManager.getTeamMembers(TeamsManager.getPlayerTeam(pl));
 					
 					Player p = Bukkit.getPlayer(UUID.fromString(pl));
-					if(p == null) p = NPCManager.getNpcPlayerIfItIs(pl);
-					Spectate.setSpectatingGroup(p, teamates);
 					
-					infiniteDeathMessage(p);
+					if(p != null) { // If it is an NPC we don't care about specating
+						
+						Spectate.setSpectatingGroup(p, teamates);
+						infiniteDeathMessage(p);
+					}
+					
 				}
 			}
 		}
@@ -1311,30 +1318,35 @@ public class Meltdown implements Listener {
 				counter++;
 				time = TimeFormater.getFormatedTime(counter);
 				for (Player p : Bukkit.getOnlinePlayers()) {
-					p.setPlayerListFooter(
+					if(playerdata.containsKey(p.getUniqueId().toString())) {
+						p.setPlayerListFooter(
 							 "§f----------------------------\n"
 							+ "§3Mode de jeu §f: §4Meltdown\n"
 							+ "§6Coins : " + playerdata.get(p.getUniqueId().toString()).get(2) + "\n"
 							+ "§cTemps passé §f: " + time); //Affiche depuis cb de temps la partie à commencée
-					
-					// Handle NPC re teleport when close enought to player (<128)
-					for(MeltdownNPC npc : IAs) {
 						
-						Location loc = new Location(p.getWorld(), npc.getNPC().locX(), npc.getNPC().locY(), npc.getNPC().locZ());
-						double distance = p.getLocation().distance(loc);
-						if(distance < 128 && !inViewNPCs.get(p).contains(npc)) {
-							List<MeltdownNPC> npcs = inViewNPCs.get(p);
-							npcs.add(npc);
-							inViewNPCs.put(p, npcs);
+						
+						// Handle NPC re teleport when close enought to player (<128)
+						for(MeltdownNPC npc : IAs) {
 							
-							NPCManager.showNpcWithoutTabFor(npc.getNPC(), p, null);
+							Location loc = new Location(p.getWorld(), npc.getNPC().locX(), npc.getNPC().locY(), npc.getNPC().locZ());
+							double distance = p.getLocation().distance(loc);
+							if(distance < 128 && !inViewNPCs.get(p).contains(npc)) {
+								List<MeltdownNPC> npcs = inViewNPCs.get(p);
+								npcs.add(npc);
+								inViewNPCs.put(p, npcs);
+								
+								NPCManager.showNpcWithoutTabFor(npc.getNPC(), p, null);
 
+							}
 						}
-						
-						//Reward
-						if(counter%60== 0) { // Toutes les minutes
-							npc.getNPC().setScore(npc.getNPC().getScore() + 2);
-						}
+					}
+					
+				}
+				for(MeltdownNPC npc : IAs) {
+					//Reward
+					if(counter%60== 0) { // Toutes les minutes
+						npc.getNPC().setScore(npc.getNPC().getScore() + 2);
 					}
 				}
 				

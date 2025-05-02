@@ -4,8 +4,8 @@ version: 0.2.11
 main: mctdl.game.Main
 description: MCTdL, Minecraft Tournament Plugin
 api-version: 1.13
-loadafter: [HungerGames, Multiverse-Core]
-depend: [ProtocolLib, WorldEdit, Multiverse-Core]
+loadafter: [HungerGames, Multiverse-Core, NTDJL]
+depend: [ProtocolLib, WorldEdit, Multiverse-Core, NTDJL]
 softdepend: [WorldEdit, Multiverse-Core]
 depend: [ProtocolLib]
 commands:

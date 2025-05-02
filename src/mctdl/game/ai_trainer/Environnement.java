@@ -86,7 +86,7 @@ public class Environnement {
 //		System.out.println("DATA LENGHT : " + datas.length);
 		
 		this.inputs = new float[size+1];
-		System.out.println("Inputs size: " + inputs.length + " | size: " + size);
+		//System.out.println("Inputs size: " + inputs.length + " | size: " + size);
 		
 		int i = 0;
 		for(double rayDistance : rayDistances) {

@@ -1,16 +1,15 @@
 package mctdl.game.ai_trainer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.scheduler.BukkitRunnable;
+import org.ejml.simple.SimpleMatrix;
 
 import mctdl.game.Main;
 import mctdl.game.games.meltdown.Meltdown;
 import mctdl.game.games.meltdown.npc.MeltdownNPC;
 import ntdjl.RL;
 import ntdjl.utils.ActivationFunction;
-import ntdjl.utils.DataHolder;
 
 public class TrainingLoop {
 	
@@ -20,17 +19,22 @@ public class TrainingLoop {
 	
 	int batches;
 	
+	boolean isEnabled;
+	
 	public TrainingLoop(Main main, MCTdLGamemode gamemode, int batches) {
 		this.main = main;
 		this.batches = batches;
+		this.isEnabled = true;
 		
 		switch(gamemode) {
 		case MELTDOWN:
 			
 			int[] structure = {149, 1600, 1600, 2400, 3200, 2400, 1600, 1600, 14};
 			
-			this.rl = new RL(structure, ActivationFunction.GELU, 32);
+			this.rl = new RL(structure, ActivationFunction.GELU, Meltdown.getNPCs().size());
 			this.rl.setTopClones(20, 8, 4);
+			
+			meltdownLoop(1);
 			
 			break;
 		}
@@ -38,8 +42,9 @@ public class TrainingLoop {
 	
 	public void meltdownLoop(int currentBatch) {
 		
-		if(currentBatch >= this.batches) {
+		if(currentBatch >= this.batches || !isEnabled) {
 			rl.saveModel("C:/Users/maxime/Documents/rl");
+			System.out.println("Stopped training at batch " + currentBatch);
 			
 			return;
 		}
@@ -50,25 +55,28 @@ public class TrainingLoop {
 		
 		for(MeltdownNPC npc : Meltdown.getNPCs()) {
 			npc.setModel(this.rl.nextAgent());
+			//System.out.println("NPC " + npc.getNPC().getName() + " got a model !");
 		}
+		
+		Meltdown.enable();
+		System.out.println("Batch " + currentBatch + " started");
 		
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				if(!Meltdown.isEnabled()) {
+				if(!Meltdown.isEnabled() || !isEnabled) {
+					System.out.println("Meltdown game ended");
 					cancel();
 				}
 				
 				for(MeltdownNPC npc : Meltdown.getNPCs()) {
-					DataHolder datas = new DataHolder();
-					ArrayList<Double> inputs = new ArrayList<Double>();
-					for(float data : npc.getEnvironnement().datas) {
-						String dt = String.valueOf(data);
-						inputs.add(Double.parseDouble(dt));
-					}
+					List<Integer> pDatas = Meltdown.getRawPlayerDatas(npc.getNPC().getUniqueIDString());
 					
-					datas.addData(inputs);
-					List<Float> actions = npc.getModel().predictList(datas.convertToMatrix());
+					if(pDatas.get(0) == 0 || pDatas.get(1) == 1) continue; // S'il est mort ou gelé on s'en fout
+					
+					npc.getEnvironnement().update();
+					SimpleMatrix input = new SimpleMatrix(npc.getEnvironnement().inputs);
+					List<Float> actions = npc.getModel().predictList(input);
 					
 					int selectedAction = 0;
 					float maxVal = actions.get(0);
@@ -128,13 +136,21 @@ public class TrainingLoop {
 				
 			}
 			
-		}.runTaskTimer(main, 0, 4);
+		}.runTaskTimer(main, 201, 10);
 		
+		for(MeltdownNPC npc : Meltdown.getNPCs()) {
+			int score = npc.getNPC().getScore();
+			rl.setScore(npc.getModel(), score);
+		}
 
 		rl.nextGeneration();
 		currentBatch++;
 		
 		meltdownLoop(currentBatch);
+	}
+	
+	public void forceDisable() {
+		this.isEnabled = false;
 	}
 	
 }

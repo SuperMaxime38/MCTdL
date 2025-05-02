@@ -10,6 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import mctdl.game.Main;
+import mctdl.game.ai_trainer.MCTdLGamemode;
+import mctdl.game.ai_trainer.TrainingLoop;
 import mctdl.game.games.meltdown.npc.MeltdownNPC;
 import mctdl.game.npc.NPCManager;
 import mctdl.game.npc.PlayerAI;
@@ -19,6 +21,8 @@ import mctdl.game.utils.objects.Canon;
 public class TestCommand implements CommandExecutor{
 	
 	List<PlayerAI> tests;
+	
+	TrainingLoop loop;
 	
 	static Main main;
 	public TestCommand(Main main) {
@@ -45,19 +49,17 @@ public class TestCommand implements CommandExecutor{
 				tests.add(npc.getNPC());
 				
 				return true;
-//			case "env":
-//				MeltdownNPC npc2 = new MeltdownNPC(main, "red");
-//				tests.add(npc2.getNPC());
-//				Environnement env = new Environnement(npc2.getNPC());
-//				new BukkitRunnable() {
-//
-//					@Override
-//					public void run() {
-//						if(main.getConfig().getString("game").equals("meltdown")) env.update();
-//					}
-//					
-//				}.runTaskTimer(main,60, 60);
-//				return true;
+			case "train":
+				System.out.println("Starting training...");
+				s.sendMessage("Starting training...");
+				loop = new TrainingLoop(main, MCTdLGamemode.MELTDOWN, 10);
+				
+				return true;
+			
+			
+			case "stop-train":
+				
+				return true;
 			}
 		}
 		
