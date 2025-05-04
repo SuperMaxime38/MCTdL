@@ -53,6 +53,8 @@ public class NPCManager {
 
 //Liste des textures
 static HashMap<String, List<String>> textures = new HashMap<String, List<String>>();
+
+public static HashMap<Player, List<EntityPlayer>> inViewNPCs = new HashMap<Player, List<EntityPlayer>>();
 	
 
 static List<EntityPlayer> npcss = new ArrayList<>();
@@ -251,8 +253,6 @@ static Main main;
 		TeamsManager.removePlayerTeam(npc.getUniqueIDString());
 		MoneyManager.deleteFromExistence(npc.getUniqueIDString());
 		PlayerData.deleteFromExistence(npc.getUniqueIDString());
-		
-		System.out.println("Test (in NPCManager#destroyNPC) -> items & stats of playerdata " + PlayerData.getPlayersData());
 
 		TeamsManager.removeUUIDToPseudo(npc.getUniqueIDString());
 		
@@ -304,6 +304,8 @@ static Main main;
 	 public static void teleportNPC(EntityPlayer npc, double x, double y, double z) {
 
         npc.setLocation(x, y, z, npc.yaw, npc.pitch);
+        Location loc = new Location(Bukkit.getWorld("world"), x, y, z);
+        if(!loc.getChunk().isLoaded()) loc.getChunk().load();
         npc.getBukkitEntity().teleport(new Location(Bukkit.getWorld("world"), x, y, z));
 //      npc.enderTeleportTo(x, y, z);
         Packet<?> packet = new PacketPlayOutEntityTeleport(npc);
@@ -461,5 +463,13 @@ static Main main;
 	        textures.put(name, data); //Changer pr un uuid
 	        
 	        return data;
+	}
+
+	public static HashMap<Player, List<EntityPlayer>> getInViewNPCs() {
+		return inViewNPCs;
+	}
+
+	public static void setInViewNPCs(HashMap<Player, List<EntityPlayer>> inViewNPCs) {
+		NPCManager.inViewNPCs = inViewNPCs;
 	}
 }

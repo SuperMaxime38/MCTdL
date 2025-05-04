@@ -1,6 +1,7 @@
 package mctdl.game.games.meltdown;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -155,6 +156,8 @@ public class MDMap {
 			
 			new BukkitRunnable() {
 				
+				List<Material> types = Arrays.asList(Material.AIR, Material.GOLD_BLOCK, Material.RED_TERRACOTTA, Material.BLUE_TERRACOTTA, Material.GREEN_TERRACOTTA, Material.YELLOW_TERRACOTTA, Material.PURPLE_TERRACOTTA, Material.LIGHT_BLUE_TERRACOTTA, Material.ORANGE_TERRACOTTA, Material.BLACK_TERRACOTTA);
+				
 				@Override
 				public void run() {
 					if(!main.getConfig().getString("game").equals("meltdown")) {
@@ -176,14 +179,16 @@ public class MDMap {
 						for(int x = -1; x < 2; x++) {
 
 							Location neighbor = new Location(world, X + x,i4, Z);
-							if(!world.getBlockAt(neighbor).getType().equals(Material.AIR)) { // les blocks voisins de se qui ont fondu se transfoment en coal block
+							if(!types.contains(world.getBlockAt(neighbor).getType())) { // les blocks voisins de se qui ont fondu se transfoment en coal block
 								world.getBlockAt(neighbor).setType(Material.BLACKSTONE);
+								//setBlockInNativeWorld(world, neighbor.getBlockX(), neighbor.getBlockY(), neighbor.getBlockZ(), Material.BLACKSTONE, true);
 							}
 						}
 						for(int z = -1; z < 2; z++) {
-							Location neighbor = new Location(world, X,i4, Z);
-							if(!world.getBlockAt(neighbor).getType().equals(Material.AIR)) { // les blocks voisins de se qui ont fondu se transfoment en coal block
+							Location neighbor = new Location(world, X,i4, Z+z);
+							if(!types.contains(world.getBlockAt(neighbor).getType())) { // les blocks voisins de se qui ont fondu se transfoment en coal block
 								world.getBlockAt(neighbor).setType(Material.BLACKSTONE);
+								//setBlockInNativeWorld(world, neighbor.getBlockX(), neighbor.getBlockY(), neighbor.getBlockZ(), Material.BLACKSTONE, true);
 							}
 						}
 						
@@ -211,4 +216,17 @@ public class MDMap {
 	public static List<Location> getAlarmsLocs() {
 		return alarms;
 	}
+	
+//	public static void setBlockInNativeWorld(World world,
+//            int x, int y, int z,
+//            Material mat, boolean applyPhysics) {
+//			net.minecraft.server.v1_16_R3.World nmsWorld = ((CraftWorld) world).getHandle();
+//			
+//			nmsWorld.setTypeAndData(new BlockPosition(x, y, z), fromMaterial(mat), applyPhysics ? 3 : 2);
+//	}
+//	
+//	public static IBlockData fromMaterial(Material m) {
+//	    net.minecraft.server.v1_16_R3.Block nmsBlock = CraftMagicNumbers.getBlock(m);
+//	    return nmsBlock.getBlockData();
+//	}
  }

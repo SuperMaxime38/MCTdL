@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -17,6 +18,7 @@ import org.bukkit.util.Vector;
 
 import mctdl.game.Main;
 import mctdl.game.games.meltdown.Meltdown;
+import mctdl.game.games.meltdown.MeltdownFiles;
 import mctdl.game.npc.NPCManager;
 import mctdl.game.npc.PlayerAI;
 import mctdl.game.teams.TeamsManager;
@@ -37,6 +39,8 @@ public class Environnement {
 	private final int dividingCoef = 10; // plus les données sont variées plus le modèle galère, on va diviser les distances par ce nombre pour réduir cet effet
 	
 	
+	private Location meltdownCenter;
+	
 	float[] datas;
 	
 	float[] inputs;
@@ -55,6 +59,11 @@ public class Environnement {
 		
 		this.ennemies = new ArrayList<Pair>();
 		this.allies = new ArrayList<Pair>();
+		
+		FileConfiguration datas = MeltdownFiles.checkMap(Main.getPlugin(Main.class));
+		int X = datas.getInt("schemX");
+		int Z = datas.getInt("schemZ");
+		this.meltdownCenter = new Location(world, X, 20, Z);
 	}
 	
 	public void update() {
@@ -69,7 +78,12 @@ public class Environnement {
 		this.updatePlayersDistances();
 		this.updateGamesDatas();
 		
-		int size = rayDistances.size() + terrain.size() + ennemies.size() + allies.size() + datas.length;
+		int size = rayDistances.size() + terrain.size() + ennemies.size()*2 + allies.size()*2 + datas.length;
+//		System.out.println("ray length: " + rayDistances.size());
+//		System.out.println("terrain length: " + terrain.size());
+//		System.out.println("ennemies length: " + ennemies.size());
+//		System.out.println("allies length: " + allies.size());
+//		System.out.println("DATA LENGHT : " + datas.length);
 		
 		this.inputs = new float[size+1];
 		//System.out.println("Inputs size: " + inputs.length + " | size: " + size);
@@ -91,7 +105,7 @@ public class Environnement {
 			this.inputs[i] = (float) pair.getKey();
 			this.inputs[i+1] = (float) pair.getValue();
 			
-			System.out.println(" dist | wall: " + pair.getKey() + " | " + pair.getValue());
+			//System.out.println(" dist | wall: " + pair.getKey() + " | " + pair.getValue());
 			
 			i += 2;
 		}
@@ -110,7 +124,18 @@ public class Environnement {
 			i++;
 		}
 		
-		System.out.println(" inputs: " + Arrays.toString(inputs));
+//		if(Meltdown.isEnabled()) {
+//			for(MeltdownNPC npc : Meltdown.getNPCs()) {
+//				if(npc.getNPC().equals(this.player)) {
+//					System.out.println(" inputs: " + Arrays.toString(inputs));
+//				}
+//			}
+//		}
+		//System.out.println(" inputs: " + Arrays.toString(inputs));
+	}
+	
+	public float[] getInputs() {
+		return this.inputs;
 	}
 	
 	public void updatePlayersDistances() {
@@ -129,7 +154,7 @@ public class Environnement {
 					if(p != null) {// Maybe an offline player
 					
 						if(Meltdown.getRawPlayerDatas(uuid).get(1) ==1 || Meltdown.getRawPlayerDatas(uuid).get(0) == 0) { // Frozen / dead
-							this.ennemies.add(new Pair(Float.MAX_VALUE, 1f));
+							this.ennemies.add(new Pair(999f, 1f));
 						} else {
 							Location loc = new Location(world, this.player.locX(), this.player.locY(), this.player.locZ());
 							float dist = (float) p.getLocation().distance(loc) / dividingCoef;
@@ -164,7 +189,11 @@ public class Environnement {
 							Location loc = new Location(world, this.player.locX(), this.player.locY(), this.player.locZ());
 							float dist = (float) p.getLocation().distance(loc) / dividingCoef;
 							
-							this.allies.add(new Pair(dist, getAllyState(uuid)));
+							int allyState = (int) getAllyState(uuid);
+							String st = String.valueOf(allyState);
+							float allyStateFloat = Float.parseFloat(st);
+							
+							this.allies.add(new Pair(dist, allyStateFloat));
 						}
 					}
 					
@@ -202,7 +231,7 @@ public class Environnement {
 		case "lobby":
 			return;
 		case "meltdown":
-			this.datas = new float[5];
+			this.datas = new float[6];
 			int hasPickaxe = Meltdown.getRawPlayerDatas(uuid).get(11);
 			int cooldown = Meltdown.getRawPlayerDatas(uuid).get(13);
 			if(hasPickaxe==1) {
@@ -216,6 +245,10 @@ public class Environnement {
 			int heaterY = Meltdown.getRawPlayerDatas(uuid).get(9);
 			int heaterZ = Meltdown.getRawPlayerDatas(uuid).get(10);
 			int heaterCD = Meltdown.getRawPlayerDatas(uuid).get(12);
+			
+
+			Location pLoc = new Location(world, this.player.getX(), this.player.getY(), this.player.getZ());
+			
 			if(heaterX==0) { // Pas placé
 				if(heaterCD == 0) { //pas de cooldown
 					this.datas[1] = 1;
@@ -224,11 +257,10 @@ public class Environnement {
 				}
 				
 				//Si pas placé distance du heater infinie
-				this.datas[2] = Float.MAX_VALUE;
+				this.datas[2] = 999f;
 				
 			} else {
 				this.datas[1] = 0;
-				Location pLoc = new Location(world, this.player.locX(), this.player.locY(), this.player.locZ());
 				Location hLoc = new Location(world, heaterX, heaterY, heaterZ);
 				this.datas[2] = (float) pLoc.distance(hLoc);
 			}
@@ -237,10 +269,12 @@ public class Environnement {
 			
 			Location gold = findNearestBlock(new Location(world, this.player.getX(), this.player.getY(), this.player.getZ()), Material.GOLD_BLOCK, 32);
 			if(gold == null) {
-				this.datas[4] = Float.MAX_VALUE;
+				this.datas[4] = 999f;
 			} else {
 				this.datas[4] = (float) gold.distance(new Location(world, this.player.getX(), this.player.getY(), this.player.getZ())) / dividingCoef;
 			}
+			
+			this.datas[5] = (float) pLoc.distance(meltdownCenter) / dividingCoef;
 			
 			return;
 		case "nexus":
@@ -250,7 +284,7 @@ public class Environnement {
 	
 	private float nearestArrowDistance() {
 		
-		float distance = Float.MAX_VALUE;
+		float distance = 999f;
 		Location pLoc = new Location(world, this.player.locX(), this.player.locY(), this.player.locZ());
 		
 		for(Entity e : world.getEntities()) {
@@ -264,7 +298,7 @@ public class Environnement {
 		return distance;
 	}
 	
-	private Location findNearestBlock(Location loc, Material material, int maxRadius) {
+	public Location findNearestBlock(Location loc, Material material, int maxRadius) {
 	    int playerX = loc.getBlockX();
 	    int playerY = loc.getBlockY();
 	    int playerZ = loc.getBlockZ();

@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import mctdl.game.Main;
+import mctdl.game.teams.TeamsManager;
 
 public class MDCommand implements CommandExecutor{
 	
@@ -112,22 +113,22 @@ public class MDCommand implements CommandExecutor{
 				s.sendMessage(Meltdown.getRawPlayerDatas(args[1]).toString());
 			}
 			if(args[0].equals("freeze")) {
-				p = Bukkit.getPlayer(args[1]);
-				if(p == null) {
+				String uuid = TeamsManager.getUUIDByPseudo(args[1]).toString();
+				if(TeamsManager.getPlayerTeam(uuid).equals("none")) {
 					s.sendMessage("Unknown player");
 					return true;
 				}
-				System.out.println("Freezing test : " + p.getName());
-				Meltdown.iceCube(p.getName());
+				System.out.println("Freezing test : " + args[1]);
+				Meltdown.iceCube(uuid);
 				return true;
 			}
 			if(args[0].equals("unfreeze")) {
-				p = Bukkit.getPlayer(args[1]);
-				if(p == null) {
+				String uuid = TeamsManager.getUUIDByPseudo(args[1]).toString();
+				if(TeamsManager.getPlayerTeam(uuid).equals("none")) {
 					s.sendMessage("Unknown player");
 					return true;
 				}
-				Meltdown.unFreeze(p.getName());
+				Meltdown.unFreeze(uuid);
 				return true;
 			}
 			if(args[0].equals("setgen")) {

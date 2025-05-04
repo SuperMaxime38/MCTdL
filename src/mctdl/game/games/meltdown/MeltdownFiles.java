@@ -69,27 +69,27 @@ public class MeltdownFiles {
 	        	datas.set("spawn.orange", spawn);
 	        	
 	        	spawn = new ArrayList<>();
-	        	spawn.add(561);spawn.add(19);spawn.add(26);spawn.add(-90); //Last is yaw
+	        	spawn.add(561);spawn.add(19);spawn.add(26);spawn.add(180); //Last is yaw
 	        	datas.set("spawn.yellow", spawn);
 	        	
 	        	spawn = new ArrayList<>();
-	        	spawn.add(653);spawn.add(19);spawn.add(26);spawn.add(-90); //Last is yaw
+	        	spawn.add(653);spawn.add(19);spawn.add(26);spawn.add(180); //Last is yaw
 	        	datas.set("spawn.green", spawn);
 	        	
 	        	spawn = new ArrayList<>();
-	        	spawn.add(717);spawn.add(19);spawn.add(-37);spawn.add(-90); //Last is yaw
+	        	spawn.add(717);spawn.add(19);spawn.add(-37);spawn.add(90); //Last is yaw
 	        	datas.set("spawn.aqua", spawn);
 	        	
 	        	spawn = new ArrayList<>();
-	        	spawn.add(717);spawn.add(19);spawn.add(-129);spawn.add(-90); //Last is yaw
+	        	spawn.add(717);spawn.add(19);spawn.add(-129);spawn.add(90); //Last is yaw
 	        	datas.set("spawn.blue", spawn);
 	        	
 	        	spawn = new ArrayList<>();
-	        	spawn.add(653);spawn.add(19);spawn.add(-193);spawn.add(-90); //Last is yaw
+	        	spawn.add(653);spawn.add(19);spawn.add(-193);spawn.add(0); //Last is yaw
 	        	datas.set("spawn.purple", spawn);
 	        	
 	        	spawn = new ArrayList<>();
-	        	spawn.add(561);spawn.add(19);spawn.add(-193);spawn.add(-90); //Last is yaw
+	        	spawn.add(561);spawn.add(19);spawn.add(-193);spawn.add(0); //Last is yaw
 	        	datas.set("spawn.black", spawn);
 	        	
 	        	//Times
@@ -546,7 +546,7 @@ public class MeltdownFiles {
 
 	}
 	
-	static FileConfiguration checkMap(Main main) {
+	public static FileConfiguration checkMap(Main main) {
 		String map = main.getConfig().getString("games.meltdown.map");
 		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "maps");
 		File f = new File(userdata, File.separator + map + ".yml");

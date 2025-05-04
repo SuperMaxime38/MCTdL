@@ -67,7 +67,7 @@ public class Ray {
 			
 			Block b = world.getBlockAt(current.getBlockX(), current.getBlockY(), current.getBlockZ());
 			
-			world.spawnParticle(Particle.FLAME, new Location(world, current.getX(), current.getY(), current.getZ()), 3, 0.01, 0.01, 0.01, -0.0005);
+			//world.spawnParticle(Particle.FLAME, new Location(world, current.getX(), current.getY(), current.getZ()), 3, 0.01, 0.01, 0.01, -0.0005);
 			
 			if(!Environnement.getTransparentBlocks().contains(b.getType())) {
 				return true;
@@ -75,6 +75,22 @@ public class Ray {
 		}
 		
 		return false;
+	}
+	
+	public Block getTargetedBlock(double maxDistance) {
+		Vector current = this.origin.clone();
+		
+		while(current.distance(this.origin) < maxDistance) {
+			current.add(this.direction);
+			
+			Block b = world.getBlockAt(current.getBlockX(), current.getBlockY(), current.getBlockZ());
+			world.spawnParticle(Particle.FLAME, new Location(world, current.getX(), current.getY(), current.getZ()), 3, 0.01, 0.01, 0.01, -0.0005);
+			
+			if(!Environnement.getTransparentBlocks().contains(b.getType())) {
+				return b;
+			}
+		}
+		return new Location(world, current.getX(), current.getY(), current.getZ()).getBlock();
 	}
 
 }
