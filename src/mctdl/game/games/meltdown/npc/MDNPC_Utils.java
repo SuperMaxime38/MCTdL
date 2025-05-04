@@ -24,7 +24,7 @@ public class MDNPC_Utils {
 		
 		red.addAll(Arrays.asList("Star_Lord", "Lorem_Impsum", "Red_Steel_Beam", "Fireplace"));
 		blue.addAll(Arrays.asList("Fat Seal", "Sea_You_Soon", "Titanic_Driver", "Lipton"));
-		green.addAll(Arrays.asList("Grass_Toucher", "Géant_Vert", "JaimeLesPommes", "Harry Coteur"));
+		green.addAll(Arrays.asList("Grass_Toucher", "Géant_Vert", "JaimeLesPommes", "Harry_Coteur"));
 		yellow.addAll(Arrays.asList("YellowSnow", "ShinyMe", "Sparkles", "SunWeightedGuy"));
 		purple.addAll(Arrays.asList("Jaded", "Crystalline", "PASDINSPI1", "PASDINSPI2"));
 		aqua.addAll(Arrays.asList("RapinDolphin", "Aqualand", "SlipMan", "DrinkWater"));

@@ -29,7 +29,7 @@ public class TdLCommand implements CommandExecutor{
 
 	List<String> red = new ArrayList<String>(Arrays.asList("Star_Lord", "Lorem_Impsum", "Red_Steel_Beam", "Fireplace"));
 	List<String> blue = new ArrayList<String>(Arrays.asList("Fat_Seal", "Sea_You_Soon", "Titanic_Driver", "Lipton"));
-	List<String> green = new ArrayList<String>(Arrays.asList("Grass_Toucher", "Géant_Vert", "JaimeLesPommes", "Harry Coteur"));
+	List<String> green = new ArrayList<String>(Arrays.asList("Grass_Toucher", "Géant_Vert", "JaimeLesPommes", "Harry_Coteur"));
 	List<String> yellow = new ArrayList<String>(Arrays.asList("YellowSnow", "ShinyMe", "Sparkles", "SunWeightedGuy"));
 	List<String> purple = new ArrayList<String>(Arrays.asList("Jaded", "Crystalline", "PASDINSPI1", "PASDINSPI2"));
 	List<String> aqua = new ArrayList<String>(Arrays.asList("RapinDolphin", "Aqualand", "SlipMan", "DrinkWater"));
@@ -135,6 +135,7 @@ public class TdLCommand implements CommandExecutor{
 				s.sendMessage("Current Tick : " + Time.getCurrentTick());
 			}
 			if(args[0].equals("fillteams")) {
+				Meltdown.clearNPCs();
 				for(String team : TeamsManager.getNonEmptyTeams()) {
 					s.sendMessage("Filling team " + team);
 					for(int i = 4 - TeamsManager.getTeamMembers(team).size(); i > 0; i--) {
@@ -163,11 +164,11 @@ public class TdLCommand implements CommandExecutor{
 
 			if(args[0].equals("fillteams")) {
 				if(args[1].equals("-a")) {
+					Meltdown.clearNPCs();
 					for(String team : Arrays.asList("red", "blue", "green", "yellow", "purple", "aqua", "orange", "black")) {
 						s.sendMessage("Filling team " + team);
 						for(int i = 4 - TeamsManager.getTeamMembers(team).size(); i > 0; i--) {
 							MeltdownNPC npc = new MeltdownNPC(main, nameStuff(team), team);
-							Meltdown.addNPC(npc);
 							s.sendMessage("Added " + npc.getNPC().getName());
 						}
 					}

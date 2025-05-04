@@ -1,6 +1,5 @@
 package mctdl.game.listeners;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,7 +18,6 @@ import mctdl.game.tablist.TabManager;
 import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.GameVoting;
 import mctdl.game.utils.PlayerData;
-import net.minecraft.server.v1_16_R3.EntityPlayer;
 
 public class Join implements Listener{
 	

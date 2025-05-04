@@ -6,7 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import mctdl.game.Main;
 import mctdl.game.ai_trainer.Environnement;
@@ -16,6 +16,7 @@ import mctdl.game.npc.PlayerAI;
 import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.GameVoting;
 import mctdl.game.utils.PlayerData;
+import mctdl.game.utils.Ray;
 import ntdjl.NN;
 
 public class MeltdownNPC {
@@ -31,7 +32,7 @@ public class MeltdownNPC {
 	
 	public MeltdownNPC(Main main, String name, String team) {
 		
-		this.npc = PlayerAI.createNPC(name, Bukkit.getWorlds().get(0), new Location(Bukkit.getWorlds().get(0), 8, 6, 8));
+		this.npc = PlayerAI.createNPC(main, name, Bukkit.getWorlds().get(0), new Location(Bukkit.getWorlds().get(0), 8, 6, 8));
 		this.main = main;
 		this.team = team;
 		
@@ -43,18 +44,25 @@ public class MeltdownNPC {
 		registerIntoTeam();
 		
 		this.env = new Environnement(npc);
-		loop();
 	}
 	
-	public void loop() {
-		new BukkitRunnable() {
-
-			@Override
-			public void run() {
-				if(main.getConfig().getString("game").equals("meltdown")) env.update();
-			}
-			
-		}.runTaskTimer(main, 0, 100);
+	/**
+	 * Cast a regular player into a NPC
+	 * @param main
+	 */
+	public MeltdownNPC(Main main, PlayerAI p) {
+		this.npc = p;
+		this.main = main;
+		this.team = TeamsManager.getPlayerTeam(p.getUniqueIDString());
+		
+		Meltdown.addNPC(this);
+		
+		model = new NN();
+		
+		//fakeJoin();
+		//registerIntoTeam();
+		
+		this.env = new Environnement(npc);
 	}
 	
 	public PlayerAI getNPC() {
@@ -66,7 +74,6 @@ public class MeltdownNPC {
 		Player p = npc.getBukkitEntity();
 		
 		//p.setFoodLevel(20);
-		System.out.println("main config stuff " + main.getConfig().getString("game"));
 		String game = main.getConfig().getString("game");
 		
 		HashMap<String, Integer> balances = MoneyManager.getRegsPlayer();
@@ -130,15 +137,26 @@ public class MeltdownNPC {
 	}
 	
 	public void jump() {
-		this.npc.jump();
+		this.npc.walk(PlayerAI.JUMP);
 	}
 	
 	public void sneak() {
 		this.npc.sneak();
 	}
 	
+	public void run() {
+		this.npc.sprint();
+	}
+	public void stopRunning() {
+		this.npc.unSprint();
+	}
+	
 	public void placeHeater() {
-		Meltdown.placeHeaterForNpc(this);
+		try {
+			Meltdown.placeHeaterForNpc(this);
+		} catch(IllegalStateException e) {
+		}
+		
 	}
 	
 	public void claimPickaxe() {
@@ -146,29 +164,50 @@ public class MeltdownNPC {
 	}
 	
 	public void breakBlock() {
-		Block b = this.npc.getBukkitEntity().getTargetBlock(null, 5);
-		this.npc.breakBlock(b.getLocation());
+		try {
+			Block b = this.npc.getBukkitEntity().getTargetBlock(null, 5);
+			this.npc.breakBlock(b.getLocation());
+		} catch(IllegalStateException e) {
+		}
+		
 	}
 	
 	public void shoot() {
 		Location lc = new Location(this.npc.getBukkitEntity().getWorld(), this.npc.getX(), this.npc.getY(), this.npc.getZ(), this.npc.getYaw(), this.npc.getPitch());
 		this.npc.shoot(lc.getDirection());
 	}
-	
+
 	public void addYaw() {
 		this.npc.rotate(this.npc.getYaw() + 1, this.npc.getPitch());
 	}
 	
+	public void addMoreYaw() {
+		this.npc.rotate(this.npc.getYaw() + 10, this.npc.getPitch());
+	}
+
 	public void removeYaw() {
 		this.npc.rotate(this.npc.getYaw() - 1, this.npc.getPitch());
 	}
-	
+	public void removeMoreYaw() {
+		this.npc.rotate(this.npc.getYaw() - 10, this.npc.getPitch());
+	}
+
 	public void addPitch() {
 		this.npc.rotate(this.npc.getYaw(), this.npc.getPitch() + 1);
 	}
-	
+	public void addMorePitch() {
+		this.npc.rotate(this.npc.getYaw(), this.npc.getPitch() + 10);
+	}
+
 	public void removePitch() {
 		this.npc.rotate(this.npc.getYaw(), this.npc.getPitch() - 1);
+	}
+	public void removeMorePitch() {
+		this.npc.rotate(this.npc.getYaw(), this.npc.getPitch() - 10);
+	}
+
+	public void unSneak() {
+		this.npc.unSneak();
 	}
 	
 }

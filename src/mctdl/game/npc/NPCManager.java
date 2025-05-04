@@ -29,7 +29,6 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.datafixers.util.Pair;
 
 import mctdl.game.Main;
-import mctdl.game.games.meltdown.npc.MeltdownNPC;
 import mctdl.game.money.MoneyManager;
 import mctdl.game.tablist.TabManager;
 import mctdl.game.teams.TeamsManager;
@@ -305,6 +304,8 @@ static Main main;
 	 public static void teleportNPC(EntityPlayer npc, double x, double y, double z) {
 
         npc.setLocation(x, y, z, npc.yaw, npc.pitch);
+        Location loc = new Location(Bukkit.getWorld("world"), x, y, z);
+        if(!loc.getChunk().isLoaded()) loc.getChunk().load();
         npc.getBukkitEntity().teleport(new Location(Bukkit.getWorld("world"), x, y, z));
 //      npc.enderTeleportTo(x, y, z);
         Packet<?> packet = new PacketPlayOutEntityTeleport(npc);

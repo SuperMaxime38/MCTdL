@@ -36,10 +36,12 @@ import mctdl.game.games.meltdown.MeltdownFiles;
 import mctdl.game.games.nexus.Nexus;
 import mctdl.game.games.nexus.NexusCommand;
 import mctdl.game.games.nexus.NexusFiles;
+import mctdl.game.listeners.ChunkUnload;
 import mctdl.game.listeners.Damage;
 import mctdl.game.listeners.Interact;
 import mctdl.game.listeners.Join;
 import mctdl.game.listeners.Move;
+import mctdl.game.listeners.ProjectileHit;
 import mctdl.game.money.MoneyManager;
 import mctdl.game.npc.NPCCommandCompleter;
 import mctdl.game.npc.NPCManager;
@@ -163,6 +165,8 @@ public class Main extends JavaPlugin{
 		getServer().getPluginManager().registerEvents(new Interact(this), this);
 		getServer().getPluginManager().registerEvents(new Move(this), this);
 		getServer().getPluginManager().registerEvents(new Spectate(this), this);
+		getServer().getPluginManager().registerEvents(new ChunkUnload(), this);
+		getServer().getPluginManager().registerEvents(new ProjectileHit(this), this);
 		
 		
 		//Lobby Games----------------------------------------------------------------

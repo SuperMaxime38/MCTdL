@@ -15,6 +15,7 @@ import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.TrapDoor;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
@@ -140,7 +141,7 @@ public class Meltdown implements Listener {
 			//Check if npc
 			EntityPlayer npc = NPCManager.getNpcByUUID(uuid);
 			if(npc != null) {
-				delayedNPCTeleport(npc, tp.get(0), tp.get(1), tp.get(2));
+				delayedNPCTeleport(npc, tp.get(0), tp.get(1), tp.get(2), tp.get(3), 0);
 			} else {
 				Player p = Bukkit.getPlayer(UUID.fromString(uuid));
 				p.teleport(new Location(Bukkit.getWorlds().get(0), tp.get(0), tp.get(1), tp.get(2), tp.get(3), 0)); 
@@ -157,13 +158,14 @@ public class Meltdown implements Listener {
 		}
 	}
 	
-	public static void delayedNPCTeleport(EntityPlayer npc, int x, int y, int z) {
+	public static void delayedNPCTeleport(EntityPlayer npc, int x, int y, int z, int yaw, int pitch) {
 		new BukkitRunnable() {
 
 			@Override
 			public void run() {
 				//NPCManager.teleportNPC(npc, x, y, z);
 				((PlayerAI) npc).teleport(x, y, z);
+				((PlayerAI) npc).rotate(yaw, pitch);
 				System.out.println("TELEPORT NPC");
 			}
 			
@@ -288,6 +290,10 @@ public class Meltdown implements Listener {
 	
 	public static void removeNPC(MeltdownNPC npc) {
 		IAs.remove(npc);
+	}
+	
+	public static void clearNPCs() {
+		IAs.clear();
 	}
 
 	public static void applyMoneyWon() {
@@ -758,14 +764,14 @@ public class Meltdown implements Listener {
 		Block block = npc.getNPC().getBukkitEntity().getTargetBlock(null, 5);
 		Location loc = block.getLocation().add(0, 1, 0);
 		
-		if(datas.get(0)== 1 && datas.get(1) == 1 && datas.get(8) == 0 && datas.get(12) == 0 && !banned.contains(loc)) { // Peut placer le heater
-			Material bt = block.getType();
+		if(datas.get(0)== 1 && datas.get(1) == 0 && datas.get(8) == 0 && datas.get(12) == 0 && !banned.contains(loc)) { // Peut placer le heater
+			Material bt = loc.getBlock().getType();
 			playerdata.get(uuid).set(8, loc.getBlockX());
 			playerdata.get(uuid).set(9, loc.getBlockY());
 			playerdata.get(uuid).set(10, loc.getBlockZ());
 
 			// Particles
-			particleEffect(loc, bt, block);
+			particleEffect(loc, bt, loc.getBlock());
 			
 			loc.getBlock().setType(getHeaterForTeam(TeamsManager.getPlayerTeam(npc.getNPC().getUniqueIDString())));
 		}
@@ -873,7 +879,7 @@ public class Meltdown implements Listener {
 		Player shooter = (Player) arrow.getShooter();
 		Player p = (Player) e.getEntity();
 
-		shootingChecker(shooter, p);
+		shootingChecker(shooter.getUniqueId().toString(), p);
 	}
 	
 	//Check if player shot is NPC
@@ -881,12 +887,9 @@ public class Meltdown implements Listener {
 	public static void onNPCShoot(ProjectileHitEvent e) {
 		if(!enable) return;
 		if(!(e.getEntity() instanceof Arrow)) return;
-		EntityPlayer npc;
-		try {
-			npc = NPCManager.getNpcByUUID(e.getHitEntity().getUniqueId().toString());
-		} catch (NullPointerException e1) {
-			return;
-		}
+		if(e.getHitEntity() == null) return;
+		EntityPlayer npc = NPCManager.getNpcByUUID(e.getHitEntity().getUniqueId().toString());;
+		if(npc == null) return;
 		
 		// If this reaches this point, it means that the player shot an NPC
 		Arrow arrow = (Arrow) e.getEntity();
@@ -894,19 +897,20 @@ public class Meltdown implements Listener {
 		
 		e.setCancelled(true);
 		
-		shootingChecker((Player) arrow.getShooter(), npc.getBukkitEntity());
+		CraftPlayer pl = (CraftPlayer) arrow.getShooter();
+		shootingChecker(pl.getUniqueId().toString(), npc.getBukkitEntity());
 		
 	}
 	
 	
 	//Shooting checker
-	public static void shootingChecker(Player shooter, Player p) {
-		if (TeamsManager.getPlayerTeam(shooter.getUniqueId().toString()).equals(TeamsManager.getPlayerTeam(p.getUniqueId().toString())))
+	public static void shootingChecker(String shooterUUID, Player p) {
+		if (TeamsManager.getPlayerTeam(shooterUUID).equals(TeamsManager.getPlayerTeam(p.getUniqueId().toString())))
 			return;
 		
 		HashMap<String, String> teams = TeamsManager.getOnlinePlayers();
 		
-		List<Integer> shooterData = playerdata.get(shooter.getUniqueId().toString());
+		List<Integer> shooterData = playerdata.get(shooterUUID);
 		List<Integer> pData = playerdata.get(p.getUniqueId().toString());
 
 		int sgold = shooterData.get(2);
@@ -915,6 +919,8 @@ public class Meltdown implements Listener {
 		skills = skills + 1;
 		shooterData.set(3, skills);
 		
+		Player shooter = Bukkit.getPlayer(shooterUUID);
+		if(shooter == null) shooter = NPCManager.getNpcPlayerIfItIs(shooterUUID);
 		shooter.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§4KILL §6+" + money_per_kill + " Coins"));
 
 		int pgold = pData.get(2);
@@ -1034,6 +1040,17 @@ public class Meltdown implements Listener {
 				if (anotherTeam == false) { // si yen a pas alors c'est fin de game
 					Bukkit.broadcastMessage("§6L'équipe des " + TeamsManager.getTeamColorByTeam(refTeam)
 							+ TeamsManager.getTeamNameByTeam(refTeam) + " §6a gagné !");
+					
+					for(String uuid : playerdata.keySet()) {
+						if(playerdata.get(uuid).get(0).equals(1) && playerdata.get(uuid).get(0).equals(0)) { // Prolly the last players alive
+							for(MeltdownNPC npc : Meltdown.IAs) {
+								if(npc.getNPC().getUniqueIDString().equals(uuid)) {
+									npc.getNPC().setScore(npc.getNPC().getScore() + 50);
+								}
+							}
+						}
+					}
+					
 					applyMoneyWon();
 					disable(main);
 				}
@@ -1085,6 +1102,13 @@ public class Meltdown implements Listener {
 		if (anotherTeam == false) { // si yen a pas alors c'est fin de game
 			Bukkit.broadcastMessage("§6L'équipe des " + TeamsManager.getTeamColor(player)
 					+ TeamsManager.getTeamName(player) + " §6a gagné !");
+			
+
+			for(MeltdownNPC npc : Meltdown.IAs) {
+				if(npc.getNPC().getUniqueIDString().equals(player)) {
+					npc.getNPC().setScore(npc.getNPC().getScore() + 50);
+				}
+			}
 			applyMoneyWon();
 			disable(main);
 		}
@@ -1345,8 +1369,8 @@ public class Meltdown implements Listener {
 				}
 				for(MeltdownNPC npc : IAs) {
 					//Reward
-					if(counter%60== 0) { // Toutes les minutes
-						npc.getNPC().setScore(npc.getNPC().getScore() + 2);
+					if(counter%30 == 0 && playerdata.get(npc.getNPC().getUniqueIDString()).get(0) == 1 && playerdata.get(npc.getNPC().getUniqueIDString()).get(1) == 0) { // Toutes les 30s
+						npc.getNPC().setScore(npc.getNPC().getScore() + 1);
 					}
 				}
 				

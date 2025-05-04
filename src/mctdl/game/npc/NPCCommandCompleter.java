@@ -1,6 +1,7 @@
 package mctdl.game.npc;
 
 import java.util.List;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;

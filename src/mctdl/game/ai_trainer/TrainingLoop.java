@@ -1,5 +1,6 @@
 package mctdl.game.ai_trainer;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.bukkit.scheduler.BukkitRunnable;
@@ -18,7 +19,7 @@ public class TrainingLoop {
 	RL rl;
 	
 	int batches;
-	
+
 	boolean isEnabled;
 	
 	public TrainingLoop(Main main, MCTdLGamemode gamemode, int batches) {
@@ -29,10 +30,15 @@ public class TrainingLoop {
 		switch(gamemode) {
 		case MELTDOWN:
 			
-			int[] structure = {149, 1600, 1600, 2400, 3200, 2400, 1600, 1600, 14};
+			int[] structure = {149, 1000, 1400, 1600, 2200, 1600, 1200, 900, 19}; // reduced size bcs too much for my computer ;-;
 			
-			this.rl = new RL(structure, ActivationFunction.GELU, Meltdown.getNPCs().size());
+			this.rl = new RL(structure, ActivationFunction.SIGMOID, Meltdown.getNPCs().size());
 			this.rl.setTopClones(20, 8, 4);
+			try {
+				this.rl.loadModel("C:/Users/maxime/Documents/rl+MD"); // Try to load model if it exists
+			} catch (ClassNotFoundException e) {
+			} catch (IOException e) {
+			}
 			
 			meltdownLoop(1);
 			
@@ -43,30 +49,50 @@ public class TrainingLoop {
 	public void meltdownLoop(int currentBatch) {
 		
 		if(currentBatch >= this.batches || !isEnabled) {
-			rl.saveModel("C:/Users/maxime/Documents/rl");
+			rl.saveModel("C:/Users/maxime/Documents/rl+MD");
 			System.out.println("Stopped training at batch " + currentBatch);
+			
+			//Releasing RAM
+			for(MeltdownNPC npc : Meltdown.getNPCs()) {
+				npc.setModel(null);
+			}
+			
+			this.rl = null;
+			System.gc();
 			
 			return;
 		}
 		
 		if(currentBatch%10 == 0) {
-			rl.saveModel("C:/Users/maxime/Documents/rl");
+			rl.saveModel("C:/Users/maxime/Documents/rl+MD");
 		}
-		
 		for(MeltdownNPC npc : Meltdown.getNPCs()) {
 			npc.setModel(this.rl.nextAgent());
-			//System.out.println("NPC " + npc.getNPC().getName() + " got a model !");
 		}
 		
 		Meltdown.enable();
 		System.out.println("Batch " + currentBatch + " started");
-		
+
+		int curBatch = currentBatch;
 		new BukkitRunnable() {
+			
+			int counter = 0;
+			
 			@Override
 			public void run() {
 				if(!Meltdown.isEnabled() || !isEnabled) {
 					System.out.println("Meltdown game ended");
+					
+					for(MeltdownNPC npc : Meltdown.getNPCs()) {
+						int score = npc.getNPC().getScore();
+						rl.setScore(npc.getModel(), score);
+					}
+
+					rl.nextGeneration();
+					System.gc(); // Releasing RAM
+					meltdownLoop(curBatch+1);
 					cancel();
+					return;
 				}
 				
 				for(MeltdownNPC npc : Meltdown.getNPCs()) {
@@ -75,7 +101,7 @@ public class TrainingLoop {
 					if(pDatas.get(0) == 0 || pDatas.get(1) == 1) continue; // S'il est mort ou gelé on s'en fout
 					
 					npc.getEnvironnement().update();
-					SimpleMatrix input = new SimpleMatrix(npc.getEnvironnement().inputs);
+					SimpleMatrix input = new SimpleMatrix(npc.getEnvironnement().getInputs());
 					List<Float> actions = npc.getModel().predictList(input);
 					
 					int selectedAction = 0;
@@ -86,6 +112,11 @@ public class TrainingLoop {
 							maxVal = actions.get(i);
 							selectedAction = i;
 						}
+					}
+					
+					if(Meltdown.getNPCs().get(0).equals(npc) && counter % 10 == 0) {
+						System.out.println("NPC: "+ npc.getNPC().getName() + " Selected action : " + selectedAction);
+						counter = 0;
 					}
 					
 					switch(selectedAction) {
@@ -105,48 +136,55 @@ public class TrainingLoop {
 						npc.jump();
 						break;
 					case 5:
-						npc.sneak();
-						break;
-					case 6:
 						npc.placeHeater();;
 						break;
-					case 7:
+					case 6:
 						npc.claimPickaxe();
 						break;
-					case 8:
+					case 7:
 						npc.breakBlock();
 						break;
-					case 9:
+					case 8:
 						npc.shoot();
 						break;
-					case 10:
+					case 9:
 						npc.addYaw();
 						break;
-					case 11:
+					case 10:
 						npc.removeYaw();
 						break;
-					case 12:
+					case 11:
 						npc.addPitch();
 						break;
-					case 13:
+					case 12:
 						npc.removePitch();
 						break;
+					case 13:
+						npc.addMoreYaw();
+						break;
+					case 14:
+						npc.removeMoreYaw();
+						break;
+					case 15:
+						npc.addMorePitch();
+						break;
+					case 16:
+						npc.removeMorePitch();
+						break;
+					case 17:
+						npc.run();
+						break;
+					case 18:
+						npc.stopRunning();
+						break;
 					}
+					
+					counter++;
 				}
 				
 			}
 			
-		}.runTaskTimer(main, 201, 10);
-		
-		for(MeltdownNPC npc : Meltdown.getNPCs()) {
-			int score = npc.getNPC().getScore();
-			rl.setScore(npc.getModel(), score);
-		}
-
-		rl.nextGeneration();
-		currentBatch++;
-		
-		meltdownLoop(currentBatch);
+		}.runTaskTimer(main, 300, 3);
 	}
 	
 	public void forceDisable() {

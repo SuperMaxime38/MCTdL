@@ -124,7 +124,18 @@ public class Environnement {
 			i++;
 		}
 		
+//		if(Meltdown.isEnabled()) {
+//			for(MeltdownNPC npc : Meltdown.getNPCs()) {
+//				if(npc.getNPC().equals(this.player)) {
+//					System.out.println(" inputs: " + Arrays.toString(inputs));
+//				}
+//			}
+//		}
 		//System.out.println(" inputs: " + Arrays.toString(inputs));
+	}
+	
+	public float[] getInputs() {
+		return this.inputs;
 	}
 	
 	public void updatePlayersDistances() {
@@ -143,7 +154,7 @@ public class Environnement {
 					if(p != null) {// Maybe an offline player
 					
 						if(Meltdown.getRawPlayerDatas(uuid).get(1) ==1 || Meltdown.getRawPlayerDatas(uuid).get(0) == 0) { // Frozen / dead
-							this.ennemies.add(new Pair(Float.MAX_VALUE, 1f));
+							this.ennemies.add(new Pair(999f, 1f));
 						} else {
 							Location loc = new Location(world, this.player.locX(), this.player.locY(), this.player.locZ());
 							float dist = (float) p.getLocation().distance(loc) / dividingCoef;
@@ -246,7 +257,7 @@ public class Environnement {
 				}
 				
 				//Si pas placé distance du heater infinie
-				this.datas[2] = Float.MAX_VALUE;
+				this.datas[2] = 999f;
 				
 			} else {
 				this.datas[1] = 0;
@@ -258,7 +269,7 @@ public class Environnement {
 			
 			Location gold = findNearestBlock(new Location(world, this.player.getX(), this.player.getY(), this.player.getZ()), Material.GOLD_BLOCK, 32);
 			if(gold == null) {
-				this.datas[4] = Float.MAX_VALUE;
+				this.datas[4] = 999f;
 			} else {
 				this.datas[4] = (float) gold.distance(new Location(world, this.player.getX(), this.player.getY(), this.player.getZ())) / dividingCoef;
 			}
@@ -273,7 +284,7 @@ public class Environnement {
 	
 	private float nearestArrowDistance() {
 		
-		float distance = Float.MAX_VALUE;
+		float distance = 999f;
 		Location pLoc = new Location(world, this.player.locX(), this.player.locY(), this.player.locZ());
 		
 		for(Entity e : world.getEntities()) {
