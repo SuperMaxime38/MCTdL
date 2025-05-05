@@ -299,7 +299,7 @@ public class PlayerAI extends EntityPlayer {
 			computeVelocity(this.yaw + 90);
 			break;
 		case JUMP:
-			if(!this.isOnGround()) return;
+			if(!this.isOnGround() || this.isBurning()) return;
 			this.jump();
 			break;
     	}

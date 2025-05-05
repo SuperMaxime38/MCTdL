@@ -41,6 +41,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import mctdl.game.Main;
+import mctdl.game.ai_trainer.Environnement;
 import mctdl.game.games.meltdown.npc.MeltdownNPC;
 import mctdl.game.money.MoneyManager;
 import mctdl.game.npc.NPCManager;
@@ -58,6 +59,8 @@ public class Meltdown implements Listener {
 
 	static boolean enable = false;
 	static Main main;
+	
+	public static int counter = 0;
 
 
 	// Random datas
@@ -94,6 +97,9 @@ public class Meltdown implements Listener {
 		money_per_death = main.getConfig().getInt("games.meltdown.money.deaths");
 		money_per_final = main.getConfig().getInt("games.meltdown.money.final-kill");
 		money_for_eliminated = main.getConfig().getInt("games.meltdown.money.eliminated");
+		
+
+		counter = 0; // Var used for gameTimer (super important)
 		
 		boolean isMapGenerated = MeltdownFiles.isMapGenerated(main);
 		if (isMapGenerated == false) {
@@ -762,7 +768,9 @@ public class Meltdown implements Listener {
 		List<Location> banned = MDMap.getBannedLocs();
 
 		Block block = npc.getNPC().getBukkitEntity().getTargetBlock(null, 5);
+		if(Environnement.getTransparentBlocks().contains(block.getType())) return;
 		Location loc = block.getLocation().add(0, 1, 0);
+		if(loc.getBlock().getType() != Material.AIR) return;
 		
 		if(datas.get(0)== 1 && datas.get(1) == 0 && datas.get(8) == 0 && datas.get(12) == 0 && !banned.contains(loc)) { // Peut placer le heater
 			Material bt = loc.getBlock().getType();
@@ -1283,7 +1291,6 @@ public class Meltdown implements Listener {
 			List<Integer> room_coordsE = MeltdownFiles.getRoomCoords(main, "E");
 			List<Integer> room_coordsM = MeltdownFiles.getRoomCoords(main, "M");
 			
-			int counter = 0;
 			int alarm_tA = room_times.get(0); //Récupère le temps A
 			int alarm_tB = room_times.get(1); //Récupère le temps B
 			int alarm_tC = room_times.get(2); //Récupère le temps C
