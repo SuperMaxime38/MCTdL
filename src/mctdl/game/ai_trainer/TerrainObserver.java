@@ -41,6 +41,20 @@ public class TerrainObserver {
 				}
 			}
 		}
+		for(int x = -radius/2; x < radius/2; x++) {
+			for(int z = -radius/2; z < radius/2; z++) {
+				int X = x + (int) player.getX();
+				int Z = z + (int) player.getZ();
+				int Y = (int) player.getY() - 2;
+				Block b = world.getBlockAt(X, Y, Z);
+				
+				if(Environnement.getTransparentBlocks().contains(b.getType())) {
+					blocks.add(0.0);
+				} else {
+					blocks.add(1.0);
+				}
+			}
+		}
 		
 		return blocks;
 	}

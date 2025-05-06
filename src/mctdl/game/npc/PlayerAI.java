@@ -49,7 +49,8 @@ public class PlayerAI extends EntityPlayer {
 	public static final int WALK_RIGHT = 3;
 	public static final int JUMP = 4;
 	public static final double ARROW_SPEED = 3.0;
-	private final double speed = 0.21585850519;
+	private final double max_speed = 0.21585850519;
+	private double speed = max_speed;
 	//private final double jumpSpeed = 0.42;
 	private final double runMult = 1.3;
 	private final double sneakMult = 0.3;
@@ -285,6 +286,11 @@ public class PlayerAI extends EntityPlayer {
     }
     
     public void walk(int direction) {
+    	if(!this.isOnGround() ) {
+    		this.speed = 0.5*this.max_speed;
+    	} else {
+    		this.speed = this.max_speed;
+    	}
     	switch(direction) {
     	case WALK_FORWARD:
     		computeVelocity(this.yaw);

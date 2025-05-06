@@ -797,6 +797,7 @@ public class Meltdown implements Listener {
 			@Override
 			public void run() {
 				if (bt != b.getType())
+					System.out.println("Heater removed at " + loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ());
 					cancel();
 				if (!enable)
 					cancel();

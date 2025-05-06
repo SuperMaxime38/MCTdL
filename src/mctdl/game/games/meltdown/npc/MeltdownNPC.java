@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 import mctdl.game.Main;
 import mctdl.game.ai_trainer.Environnement;
@@ -16,7 +15,6 @@ import mctdl.game.npc.PlayerAI;
 import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.GameVoting;
 import mctdl.game.utils.PlayerData;
-import mctdl.game.utils.Ray;
 import ntdjl.NN;
 
 public class MeltdownNPC {
@@ -44,6 +42,7 @@ public class MeltdownNPC {
 		registerIntoTeam();
 		
 		this.env = new Environnement(npc);
+		this.npc.sprint();
 	}
 	
 	/**

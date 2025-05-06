@@ -30,7 +30,7 @@ public class TrainingLoop {
 		switch(gamemode) {
 		case MELTDOWN:
 			
-			int[] structure = {150, 1200, 1600, 1800, 2600, 1600, 1400, 1000, 18}; // reduced size bcs too much for my computer ;-;
+			int[] structure = {332, 2000, 2100, 2200, 2400, 1600, 1200, 1200, 16}; // reduced size bcs too much for my computer ;-;
 			
 			this.rl = new RL(structure, ActivationFunction.SIGMOID, Meltdown.getNPCs().size());
 			this.rl.setTopClones(20, 8, 4);
@@ -169,12 +169,6 @@ public class TrainingLoop {
 					case 15:
 						npc.removeMorePitch();
 						break;
-					case 16:
-						npc.run();
-						break;
-					case 17:
-						npc.stopRunning();
-						break;
 					}
 					
 					//counter++;
@@ -182,7 +176,7 @@ public class TrainingLoop {
 				
 			}
 			
-		}.runTaskTimer(main, 300, 2);
+		}.runTaskTimer(main, 300, 4);
 	}
 	
 	public void forceDisable() {

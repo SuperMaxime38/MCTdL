@@ -104,9 +104,9 @@ public class MeltdownFiles {
 	        	
 	        	//door
 	        	datas.set("times.door.1", 30);
-	        	datas.set("times.door.2", 90);
-	        	datas.set("times.door.3", 140);
-	        	datas.set("times.door.4", 240);
+	        	datas.set("times.door.2", 60);
+	        	datas.set("times.door.3", 90);
+	        	datas.set("times.door.4", 200);
 	        	datas.set("times.door.5", 300);
 	        	
 	        	

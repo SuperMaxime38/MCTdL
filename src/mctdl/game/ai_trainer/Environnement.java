@@ -43,7 +43,10 @@ public class Environnement {
 	
 	float[] datas;
 	
+	float[] current_inputs;
 	float[] inputs;
+	
+	float[] previous;
 
 	public static final List<Material> transparentBlocks = Arrays.asList(Material.AIR, Material.LADDER, Material.WATER, Material.LAVA);
 	
@@ -67,6 +70,9 @@ public class Environnement {
 	}
 	
 	public void update() {
+		
+		if(current_inputs != null) this.previous = Arrays.copyOf(current_inputs, current_inputs.length);
+		
 		this.rayDistances.clear();
 		this.terrain.clear();
 		
@@ -85,25 +91,25 @@ public class Environnement {
 //		System.out.println("allies length: " + allies.size());
 //		System.out.println("DATA LENGHT : " + datas.length);
 		
-		this.inputs = new float[size+1];
+		this.current_inputs = new float[size+1];
 		//System.out.println("Inputs size: " + inputs.length + " | size: " + size);
 		
 		int i = 0;
 		for(double rayDistance : rayDistances) {
-			this.inputs[i] = (float) rayDistance;
+			this.current_inputs[i] = (float) rayDistance;
 			i++;
 		}
 		//System.out.println("index: " + i);
 		
 		for(double terrain : this.terrain) {
-			this.inputs[i] = (float) terrain;
+			this.current_inputs[i] = (float) terrain;
 			i++;
 		}
 		//System.out.println("index: " + i);
 		
 		for(Pair pair : this.ennemies) {
-			this.inputs[i] = (float) pair.getKey();
-			this.inputs[i+1] = (float) pair.getValue();
+			this.current_inputs[i] = (float) pair.getKey();
+			this.current_inputs[i+1] = (float) pair.getValue();
 			
 			//System.out.println(" dist | wall: " + pair.getKey() + " | " + pair.getValue());
 			
@@ -112,17 +118,36 @@ public class Environnement {
 		//System.out.println("index: " + i);
 		
 		for(Pair pair : this.allies) {
-			this.inputs[i] = (float) pair.getKey();
-			this.inputs[i+1] = (float) pair.getValue();
+			this.current_inputs[i] = (float) pair.getKey();
+			this.current_inputs[i+1] = (float) pair.getValue();
 			i += 2;
 		}
 		//System.out.println("index: " + i);
 		
 		for(int j = 0; j < datas.length; j++) {
 			//System.out.println("Index i|j: " + i + " | " + j);
-			this.inputs[i] = datas[j];
+			this.current_inputs[i] = datas[j];
 			i++;
 		}
+		
+		if(previous != null) {
+			this.inputs = new float[current_inputs.length + previous.length];
+			for(int j = 0; j < previous.length; j++) {
+				inputs[j] = previous[j];
+			}
+			for(int j = 0; j < current_inputs.length; j++) {
+				inputs[j+previous.length] = current_inputs[j];
+			}
+		} else {
+			this.inputs = new float[current_inputs.length*2];
+			for(int j = 0; j < current_inputs.length; j++) {
+				inputs[j] = current_inputs[j];
+			}
+			for(int j = 0; j < current_inputs.length; j++) {
+				inputs[j+current_inputs.length] = current_inputs[j];
+			}
+		}
+		
 		
 //		if(Meltdown.isEnabled()) {
 //			for(MeltdownNPC npc : Meltdown.getNPCs()) {
