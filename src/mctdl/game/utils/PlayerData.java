@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import mctdl.game.Main;
-import mctdl.game.games.lobby.PouleZooka;
+import mctdl.game.games.lobby.items.PouleZooka;
 
 public class PlayerData {
 	

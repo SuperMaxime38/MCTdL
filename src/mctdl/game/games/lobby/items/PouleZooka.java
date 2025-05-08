@@ -1,4 +1,4 @@
-package mctdl.game.games.lobby;
+package mctdl.game.games.lobby.items;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +19,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -61,11 +60,11 @@ public class PouleZooka implements Listener{
 		return item;
 	}
 	
-	
-	//Interaction NPC
-	@EventHandler
-	public static void npcInteract(PlayerInteractAtEntityEvent e) {
-	}
+//	
+//	//Interaction NPC
+//	@EventHandler
+//	public static void npcInteract(PlayerInteractAtEntityEvent e) {
+//	}
 	
 	
 	//Bazooka Intercation
@@ -128,8 +127,10 @@ public class PouleZooka implements Listener{
 							}
 						}
 						
-						poule.setVelocity(poule.getVelocity().add(new Vector(direction.getX()/10*acceleration, -acceleration, direction.getZ()/10*acceleration)));
-						acceleration += 0.0040;
+						//poule.setVelocity(poule.getVelocity().add(new Vector(direction.getX()/10*acceleration, -acceleration, direction.getZ()/10*acceleration)));
+						poule.setVelocity(poule.getVelocity().add(new Vector(direction.getX()/16, (direction.getY()/16)-acceleration, direction.getZ()/16)));
+						//acceleration += 0.0040;
+						acceleration += 0.0150;
 						
 						//Particles
 						poule.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, poule.getLocation(), 1, 0.25, 0.25, 0.25, -0.0005);

@@ -9,7 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import mctdl.game.games.lobby.PouleZooka;
+import mctdl.game.games.lobby.items.NuclearRollerSkates;
+import mctdl.game.games.lobby.items.PouleZooka;
 import mctdl.game.games.meltdown.Meltdown;
 import mctdl.game.utils.PlayerData;
 import mctdl.game.utils.objects.Canon;
@@ -88,6 +89,9 @@ public class ItemGiver implements CommandExecutor{
 			break;
 		case POULEZOOKA:
 			it = PouleZooka.getBazooka();
+			break;
+		case NUCLEAR_ROLLERS:
+			it = NuclearRollerSkates.getItem();
 			break;
 		
 		//MELTDOWN
@@ -245,6 +249,7 @@ public class ItemGiver implements CommandExecutor{
 		SUPPORTER_ORANGE,
 		SUPPORTER_BLACK,
 		POULEZOOKA,
+		NUCLEAR_ROLLERS,
 		
 		//Meltdown items
 		MD_FREEZING_GUN,

@@ -29,7 +29,8 @@ import mctdl.game.dev.ItemGiverCompleter;
 import mctdl.game.games.deathswap.DeathSwap;
 import mctdl.game.games.deathswap.DeathSwapCommand;
 import mctdl.game.games.lobby.LobbyJump;
-import mctdl.game.games.lobby.PouleZooka;
+import mctdl.game.games.lobby.items.NuclearRollerSkates;
+import mctdl.game.games.lobby.items.PouleZooka;
 import mctdl.game.games.meltdown.MDCommand;
 import mctdl.game.games.meltdown.Meltdown;
 import mctdl.game.games.meltdown.MeltdownFiles;
@@ -58,11 +59,14 @@ import mctdl.game.utils.objects.riffles.AssaultRiffle;
 public class Main extends JavaPlugin{
 
 	Main main = this;
+	public static String game;
 	
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();
 		new Time(this);
+		
+		game = "lobby";
 		
 		//Gamerules
 		Bukkit.getWorlds().get(0).setGameRule(GameRule.KEEP_INVENTORY, false);
@@ -176,6 +180,8 @@ public class Main extends JavaPlugin{
 		getServer().getPluginManager().registerEvents(new Canon(this), this);
 			// --> PouleZooka
 		getServer().getPluginManager().registerEvents(new PouleZooka(this), this);
+		    // --> Nuclear Roller Skates
+		getServer().getPluginManager().registerEvents(new NuclearRollerSkates(), this);
 		
 		//Other-----------------------------------------------------------------------
 		//Commands -->

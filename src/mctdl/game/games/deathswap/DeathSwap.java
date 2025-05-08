@@ -92,6 +92,9 @@ public class DeathSwap implements Listener {
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv tp " + TeamsManager.getPseudo(player) + " " + worldname);
 			//Teleport script to make them distant one from another
 		}
+		
+		main.getConfig().set("game", "deathswap");
+		Main.game = "deathswap";
 	}
 	
 	public static void disable() {
@@ -107,6 +110,9 @@ public class DeathSwap implements Listener {
 			p.getInventory().clear();
 			
 			PlayerData.registerPlayer(p);
+			
+			main.getConfig().set("game", "lobby");
+			Main.game = "lobby";
 		}
 	}
 	

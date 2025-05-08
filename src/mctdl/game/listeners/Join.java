@@ -31,6 +31,7 @@ public class Join implements Listener{
 		Player p = e.getPlayer();
 		p.setFoodLevel(20);
 		p.setDisplayName(TeamsManager.getTeamColor(p.getUniqueId().toString()) + p.getName() + ChatColor.WHITE);
+		p.setAllowFlight(true);
 		String game = main.getConfig().getString("game");
 		
 		HashMap<String, Integer> balances = MoneyManager.getRegsPlayer();

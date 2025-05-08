@@ -71,6 +71,7 @@ public class Nexus implements Listener{
 	
 	public static void start(boolean adminMode) {
 		main.getConfig().set("game", "nexus");
+		Main.game = "nexus";
 		main.saveConfig();
 		List<String> bt = BaltopCommand.getTeamClassement();
 
@@ -227,6 +228,7 @@ public class Nexus implements Listener{
 	public static void stop() {
 		enabled = false;
 		main.getConfig().set("game", "lobby");
+		Main.game = "lobby";
 		main.saveConfig();
 		
 		teams = new ArrayList<>();

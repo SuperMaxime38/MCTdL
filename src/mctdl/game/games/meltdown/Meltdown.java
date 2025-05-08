@@ -222,6 +222,7 @@ public class Meltdown implements Listener {
 		gameTimer();
 		enable = true;
 		main.getConfig().set("game", "meltdown");
+		Main.game = "meltdown";
 		main.saveDefaultConfig();
 
 		victoryChecker();
@@ -269,6 +270,7 @@ public class Meltdown implements Listener {
 		playerdata.clear();
 		enable = false;
 		main.getConfig().set("game", "lobby");
+		Main.game = "lobby";
 		main.saveDefaultConfig();
 		FileConfiguration map = MeltdownFiles.checkMap(main);
 		map.set("isMapGenerated", false);
@@ -883,8 +885,6 @@ public class Meltdown implements Listener {
 	@EventHandler
 	public static void onShoot(EntityDamageByEntityEvent e) {
 		
-		System.out.println("EntityDamaged called (Meltdown#onShoot)");
-		
 		if (!enable)
 			return;
 
@@ -910,7 +910,6 @@ public class Meltdown implements Listener {
 	//Check if player shot is NPC
 	@EventHandler
 	public static void onNPCShoot(ProjectileHitEvent e) {
-		System.out.println("ProjectileHit called (Meltdown#onNPCShoot)");
 		if(!enable) return;
 		if(!(e.getEntity() instanceof Arrow)) return;
 		if(e.getHitEntity() == null) return;
