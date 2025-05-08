@@ -342,6 +342,7 @@ static Main main;
 	            connection.sendPacket(packet);
 	            rotateNPC(npc, loc.getYaw(), loc.getPitch(), p);
 	        }
+		}
 >>>>>>> Stashed changes
 	 
 	 public static void renderNpcForPlayer(EntityPlayer npc, Player p) {
