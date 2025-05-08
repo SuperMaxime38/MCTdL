@@ -15,6 +15,10 @@ import mctdl.game.npc.PlayerAI;
 import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.GameVoting;
 import mctdl.game.utils.PlayerData;
+<<<<<<< Updated upstream
+=======
+import mctdl.game.utils.Ray;
+>>>>>>> Stashed changes
 import ntdjl.NN;
 
 public class MeltdownNPC {
@@ -91,7 +95,11 @@ public class MeltdownNPC {
 			MoneyManager.setPlayerPoutres(p.getUniqueId().toString(), 0);
 		}
 		if(game.equals("lobby")) {
+<<<<<<< Updated upstream
 			this.npc.teleport(8, 6, 8);
+=======
+			this.npc.teleport(8, 6, 8, 0, 0);
+>>>>>>> Stashed changes
 			PlayerData.registerPlayer(p);
 		}
 		
@@ -164,7 +172,12 @@ public class MeltdownNPC {
 	
 	public void breakBlock() {
 		try {
+<<<<<<< Updated upstream
 			Block b = this.npc.getBukkitEntity().getTargetBlock(null, 5);
+=======
+			Ray ray = new Ray(npc.getBukkitEntity().getWorld(), npc.getLoc().toVector(), npc.getLoc().getDirection());
+			Block b = ray.getTargetedBlock(5);
+>>>>>>> Stashed changes
 			this.npc.breakBlock(b.getLocation());
 		} catch(IllegalStateException e) {
 		}

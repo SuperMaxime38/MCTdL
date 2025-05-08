@@ -365,11 +365,19 @@ public class PlayerAI extends EntityPlayer {
     	if(pLoc.distance(loc) < 4.5) main.getServer().getPluginManager().callEvent(new PlayerInteractEvent(getBukkitEntity(), Action.RIGHT_CLICK_BLOCK, this.getBukkitEntity().getInventory().getItemInMainHand(), this.getBukkitEntity().getTargetBlock(null, 3), this.getBukkitEntity().getTargetBlock(null, 3).getFace(this.getBukkitEntity().getTargetBlock(null, 3))));
     }
     
+<<<<<<< Updated upstream
     public void teleport(double x, double y, double z) {
 		this.posX = x;
 		this.posY = y;
 		this.posZ = z;
     	NPCManager.teleportNPC(this, x, y, z);
+=======
+    public void teleport(double x, double y, double z, float yaw, float pitch) {
+		this.posX = x;
+		this.posY = y;
+		this.posZ = z;
+    	NPCManager.teleportNPC(this, x, y, z, yaw, pitch);
+>>>>>>> Stashed changes
     }
     
     public void sneak() {
@@ -396,6 +404,13 @@ public class PlayerAI extends EntityPlayer {
 	public double getY() {return this.posY;}
 	public double getZ() {return this.posZ;}
 	
+<<<<<<< Updated upstream
+=======
+	public Location getLoc() {
+		return new Location(this.getBukkitEntity().getWorld(), this.posX, this.posY, this.posZ, this.yaw, this.pitch);
+	}
+	
+>>>>>>> Stashed changes
 	public void setX(double x) {
 		this.posX = x;
 	}

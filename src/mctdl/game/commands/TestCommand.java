@@ -154,6 +154,10 @@ public class TestCommand implements CommandExecutor{
 				for(MeltdownNPC ai : Meltdown.getNPCs()) {
 					if(ai.getNPC().getName().equals(args[1])) {
 						ai.placeHeater();
+<<<<<<< Updated upstream
+=======
+						System.out.println("Placed heater");
+>>>>>>> Stashed changes
 						return true;
 					}
 				}
