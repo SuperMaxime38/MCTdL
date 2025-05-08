@@ -15,10 +15,6 @@ import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.TrapDoor;
 import org.bukkit.configuration.file.FileConfiguration;
-<<<<<<< Updated upstream
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
-=======
->>>>>>> Stashed changes
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
@@ -150,11 +146,7 @@ public class Meltdown implements Listener {
 			List<Integer> tp = MeltdownFiles.getSpawnCoords(main, TeamsManager.getPlayerTeam(uuid));
 			
 			//Check if npc
-<<<<<<< Updated upstream
-			EntityPlayer npc = NPCManager.getNpcByUUID(uuid);
-=======
 			PlayerAI npc = (PlayerAI) NPCManager.getNpcByUUID(uuid);
->>>>>>> Stashed changes
 			if(npc != null) {
 				delayedNPCTeleport(npc, tp.get(0), tp.get(1), tp.get(2), tp.get(3), 0);
 			} else {
@@ -173,22 +165,13 @@ public class Meltdown implements Listener {
 		}
 	}
 	
-<<<<<<< Updated upstream
-	public static void delayedNPCTeleport(EntityPlayer npc, int x, int y, int z, int yaw, int pitch) {
-=======
 	public static void delayedNPCTeleport(PlayerAI npc, int x, int y, int z, int yaw, int pitch) {
->>>>>>> Stashed changes
 		new BukkitRunnable() {
 
 			@Override
 			public void run() {
 				//NPCManager.teleportNPC(npc, x, y, z);
-<<<<<<< Updated upstream
-				((PlayerAI) npc).teleport(x, y, z);
-				((PlayerAI) npc).rotate(yaw, pitch);
-=======
 				npc.teleport(x, y, z, yaw, pitch);
->>>>>>> Stashed changes
 				System.out.println("TELEPORT NPC");
 			}
 			
@@ -262,12 +245,8 @@ public class Meltdown implements Listener {
 							@Override
 							public void run() {
 								//NPCManager.teleportNPC(NPCManager.getNpcByUUID(uuid), 8, 6, 8);
-<<<<<<< Updated upstream
-								((PlayerAI) NPCManager.getNpcByUUID(uuid)).teleport(8, 6, 8);
-=======
 								PlayerAI npc = (PlayerAI) NPCManager.getNpcByUUID(uuid);
 								npc.teleport(8, 6, 8, npc.getYaw(), npc.getPitch());
->>>>>>> Stashed changes
 							}
 							
 						}.runTaskLater(main, 5);
@@ -296,11 +275,8 @@ public class Meltdown implements Listener {
 		MeltdownFiles.saveDatas(map, main);
 		
 		TabManager.updateTabList(); // Display new scores
-<<<<<<< Updated upstream
-=======
 		
 		System.gc();
->>>>>>> Stashed changes
 	}
 
 	public static boolean isEnabled() {
@@ -794,40 +770,25 @@ public class Meltdown implements Listener {
 		
 		List<Location> banned = MDMap.getBannedLocs();
 
-<<<<<<< Updated upstream
-		Block block = npc.getNPC().getBukkitEntity().getTargetBlock(null, 5);
-=======
 		Ray ray = new Ray(npc.getNPC().getBukkitEntity().getWorld(), npc.getNPC().getLoc().toVector(), npc.getNPC().getLoc().getDirection());
 		//Block block = npc.getNPC().getBukkitEntity().getTargetBlock(null, 5);
 		Block block = ray.getTargetedBlock(5);
 		
 		System.out.println("Targeted block: " + block.getType() + " at " + block.getX() + " " + block.getY() + " " + block.getZ());
 		
->>>>>>> Stashed changes
 		if(Environnement.getTransparentBlocks().contains(block.getType())) return;
 		Location loc = block.getLocation().add(0, 1, 0);
 		if(loc.getBlock().getType() != Material.AIR) return;
 		
 		if(datas.get(0)== 1 && datas.get(1) == 0 && datas.get(8) == 0 && datas.get(12) == 0 && !banned.contains(loc)) { // Peut placer le heater
-<<<<<<< Updated upstream
-			Material bt = loc.getBlock().getType();
-=======
->>>>>>> Stashed changes
 			playerdata.get(uuid).set(8, loc.getBlockX());
 			playerdata.get(uuid).set(9, loc.getBlockY());
 			playerdata.get(uuid).set(10, loc.getBlockZ());
 
-<<<<<<< Updated upstream
-			// Particles
-			particleEffect(loc, bt, loc.getBlock());
-			
-			loc.getBlock().setType(getHeaterForTeam(TeamsManager.getPlayerTeam(npc.getNPC().getUniqueIDString())));
-=======
 			loc.getBlock().setType(getHeaterForTeam(TeamsManager.getPlayerTeam(npc.getNPC().getUniqueIDString())));
 			
 			// Particles
 			particleEffect(loc, loc.getBlock().getType(), loc.getBlock());
->>>>>>> Stashed changes
 		}
 	}
 
@@ -922,11 +883,8 @@ public class Meltdown implements Listener {
 	@EventHandler
 	public static void onShoot(EntityDamageByEntityEvent e) {
 		
-<<<<<<< Updated upstream
-=======
 		System.out.println("EntityDamaged called (Meltdown#onShoot)");
 		
->>>>>>> Stashed changes
 		if (!enable)
 			return;
 
@@ -946,32 +904,12 @@ public class Meltdown implements Listener {
 		Player shooter = (Player) arrow.getShooter();
 		Player p = (Player) e.getEntity();
 
-<<<<<<< Updated upstream
-		shootingChecker(shooter.getUniqueId().toString(), p);
-=======
 		shootingChecker(shooter.getUniqueId().toString(), p.getUniqueId().toString());
->>>>>>> Stashed changes
 	}
 	
 	//Check if player shot is NPC
 	@EventHandler
 	public static void onNPCShoot(ProjectileHitEvent e) {
-<<<<<<< Updated upstream
-		if(!enable) return;
-		if(!(e.getEntity() instanceof Arrow)) return;
-		if(e.getHitEntity() == null) return;
-		EntityPlayer npc = NPCManager.getNpcByUUID(e.getHitEntity().getUniqueId().toString());;
-		if(npc == null) return;
-		
-		// If this reaches this point, it means that the player shot an NPC
-		Arrow arrow = (Arrow) e.getEntity();
-		if(!(arrow.getShooter() instanceof Player)) return;
-		
-		e.setCancelled(true);
-		
-		CraftPlayer pl = (CraftPlayer) arrow.getShooter();
-		shootingChecker(pl.getUniqueId().toString(), npc.getBukkitEntity());
-=======
 		System.out.println("ProjectileHit called (Meltdown#onNPCShoot)");
 		if(!enable) return;
 		if(!(e.getEntity() instanceof Arrow)) return;
@@ -986,33 +924,23 @@ public class Meltdown implements Listener {
 		e.getEntity().remove();
 		
 		shootingChecker(shooter.getUniqueId().toString(), victim.getUniqueId().toString());
->>>>>>> Stashed changes
 		
 	}
 	
 	
 	//Shooting checker
-<<<<<<< Updated upstream
-	public static void shootingChecker(String shooterUUID, Player p) {
-		if (TeamsManager.getPlayerTeam(shooterUUID).equals(TeamsManager.getPlayerTeam(p.getUniqueId().toString())))
-=======
 	public static void shootingChecker(String shooterUUID, String shotUUID) {
 		if (!playerdata.containsKey(shooterUUID))
 			return;
 		if (!playerdata.containsKey(shotUUID))
 			return;
 		if (TeamsManager.getPlayerTeam(shooterUUID).equals(TeamsManager.getPlayerTeam(shotUUID)))
->>>>>>> Stashed changes
 			return;
 		
 		HashMap<String, String> teams = TeamsManager.getOnlinePlayers();
 		
 		List<Integer> shooterData = playerdata.get(shooterUUID);
-<<<<<<< Updated upstream
-		List<Integer> pData = playerdata.get(p.getUniqueId().toString());
-=======
 		List<Integer> pData = playerdata.get(shotUUID);
->>>>>>> Stashed changes
 
 		int sgold = shooterData.get(2);
 		int skills = shooterData.get(3);
@@ -1026,23 +954,12 @@ public class Meltdown implements Listener {
 
 		int pgold = pData.get(2);
 		int pdeaths = pData.get(4);
-<<<<<<< Updated upstream
-		pgold = pgold - money_per_death;
-=======
 		pgold = pgold + money_per_death;
->>>>>>> Stashed changes
 		pdeaths = pdeaths + 1;
 		pData.set(2, pgold);
 		pData.set(4, pdeaths);
 		pData.set(1, 1);
 		
-<<<<<<< Updated upstream
-		iceCube(p.getUniqueId().toString());
-		Bukkit.broadcastMessage(TeamsManager.getTeamColor(p.getUniqueId().toString()) + p.getName() + " §fwas frozen by "
-				+ TeamsManager.getTeamColor(shooter.getName()) + shooter.getName());
-
-		String team = teams.get(p.getUniqueId().toString()); // renvoie l'equipe (ex. "red")
-=======
 		iceCube(shotUUID);
 		
 		Player p = Bukkit.getPlayer(UUID.fromString(shotUUID));
@@ -1052,7 +969,6 @@ public class Meltdown implements Listener {
 				+ TeamsManager.getTeamColor(shooterUUID) + shooter.getName());
 
 		String team = teams.get(shotUUID); // renvoie l'equipe (ex. "red")
->>>>>>> Stashed changes
 		List<String> alive_mates = new ArrayList<String>(); // Va resenser tous les teammates en vie
 		List<String> dead_mates = new ArrayList<String>(); // Va resenser tous les teammates hors jeu
 		for (String player : teams.keySet()) {
@@ -1082,15 +998,9 @@ public class Meltdown implements Listener {
 			}
 
 			sgold = sgold + money_per_final;
-<<<<<<< Updated upstream
-			pgold -= money_for_eliminated;
-			Bukkit.broadcastMessage("§6L'équipe des " + TeamsManager.getTeamColor(p.getUniqueId().toString())
-					+ TeamsManager.getTeamName(p.getUniqueId().toString()) + " §6a été §céliminé");
-=======
 			pgold += money_for_eliminated;
 			Bukkit.broadcastMessage("§6L'équipe des " + TeamsManager.getTeamColor(shotUUID)
 					+ TeamsManager.getTeamName(shotUUID) + " §6a été §céliminé");
->>>>>>> Stashed changes
 
 		}
 		shooterData.set(2, sgold);
@@ -1270,16 +1180,9 @@ public class Meltdown implements Listener {
 	public static void iceCube(String uuid) {
 		Player p = Bukkit.getPlayer(UUID.fromString(uuid));
 		
-<<<<<<< Updated upstream
-		//A TESTER (flm de le faire ce soir) --> no crash but nothing happens
-		if(p == null) p = NPCManager.getNpcPlayerIfItIs(uuid);
-		
-		Location loc = p.getLocation(); // CRASH WHEN PLAYER IS AN AI (NullPointer)
-=======
 		if(p == null) p = NPCManager.getNpcPlayerIfItIs(uuid);
 		
 		Location loc = p.getLocation();
->>>>>>> Stashed changes
 		p.setGameMode(GameMode.SPECTATOR);
 
 		List<Integer> ls = playerdata.get(uuid);
@@ -1362,13 +1265,8 @@ public class Meltdown implements Listener {
 		Player p = Bukkit.getPlayer(UUID.fromString(uuid));
 		if(p == null) {
 			p = NPCManager.getNpcPlayerIfItIs(uuid);
-<<<<<<< Updated upstream
-			EntityPlayer npc = NPCManager.getNpcByUUID(uuid);
-			((PlayerAI) npc).teleport(X, Y, Z);
-=======
 			PlayerAI npc = (PlayerAI) NPCManager.getNpcByUUID(uuid);
 			npc.teleport(X, Y, Z, npc.getYaw(), npc.getPitch());
->>>>>>> Stashed changes
 		}
 
 		p.teleport(loc);

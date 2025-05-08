@@ -301,21 +301,12 @@ static Main main;
 		}
 	}
 	
-<<<<<<< Updated upstream
-	 public static void teleportNPC(EntityPlayer npc, double x, double y, double z) {
-
-        npc.setLocation(x, y, z, npc.yaw, npc.pitch);
-        Location loc = new Location(Bukkit.getWorld("world"), x, y, z);
-        if(!loc.getChunk().isLoaded()) loc.getChunk().load();
-        npc.getBukkitEntity().teleport(new Location(Bukkit.getWorld("world"), x, y, z));
-=======
 	 public static void teleportNPC(EntityPlayer npc, double x, double y, double z, float yaw, float pitch) {
 
         npc.setLocation(x, y, z, yaw, pitch);
         Location loc = new Location(Bukkit.getWorld("world"), x, y, z, yaw, pitch);
         if(!loc.getChunk().isLoaded()) loc.getChunk().load();
         npc.getBukkitEntity().teleport(loc);
->>>>>>> Stashed changes
 //      npc.enderTeleportTo(x, y, z);
         Packet<?> packet = new PacketPlayOutEntityTeleport(npc);
          
@@ -323,10 +314,6 @@ static Main main;
             PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
 
             connection.sendPacket(packet);
-<<<<<<< Updated upstream
-        }
-	  }
-=======
             rotateNPC(npc, yaw, pitch, p);
         }
 	  }
@@ -343,7 +330,6 @@ static Main main;
 	            rotateNPC(npc, loc.getYaw(), loc.getPitch(), p);
 	        }
 		}
->>>>>>> Stashed changes
 	 
 	 public static void renderNpcForPlayer(EntityPlayer npc, Player p) {
 		 Packet<?> packet = new PacketPlayOutEntityTeleport(npc);

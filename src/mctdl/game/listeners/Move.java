@@ -26,11 +26,7 @@ public class Move implements Listener{
 		
 		Player p = e.getPlayer();
 		
-<<<<<<< Updated upstream
-		if(!main.getConfig().getString("game").equals("lobby")) {
-=======
 		if(main.getConfig().getString("game").equals("lobby")) {
->>>>>>> Stashed changes
 			if(p.getLocation().getBlockY() < 4) {
 			Location nouvelle = p.getLocation().subtract(new Location(Bukkit.getWorlds().get(0), 8, 6, 8));
 			p.setVelocity(nouvelle.toVector().multiply(-0.5));
@@ -38,30 +34,6 @@ public class Move implements Listener{
 			if(p.getLocation().getY() < -10) {
 				p.teleport(new Location(Bukkit.getWorlds().get(0), 8, 6, 8));
 			}
-		}
-		
-		
-		if(NPCManager.getInViewNPCs().get(p) == null) {
-			NPCManager.inViewNPCs.put(p, new ArrayList<EntityPlayer>());
-		}
-		//Refresh NPCs (chunk loading at 128 or something fin bref)
-		for(EntityPlayer npc : NPCManager.getNPCs()) {
-			Location loc = new Location(p.getWorld(), npc.locX(), npc.locY(), npc.locZ());
-			double distance = p.getLocation().distance(loc);
-			
-			if(distance < 48 && !NPCManager.getInViewNPCs().get(p).contains(npc)) {
-				List<EntityPlayer> npcs = NPCManager.getInViewNPCs().get(p);
-				npcs.add(npc);
-				NPCManager.inViewNPCs.put(p, npcs);
-				
-				NPCManager.showNpcWithoutTabFor(npc, p, null);
-
-			} else if(distance > 48 && NPCManager.getInViewNPCs().get(p).contains(npc)) {
-				List<EntityPlayer> npcs = NPCManager.getInViewNPCs().get(p);
-				npcs.remove(npc);
-				NPCManager.inViewNPCs.put(p, npcs);
-			}
-		}
 		}
 		
 		
