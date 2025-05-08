@@ -154,6 +154,7 @@ public class TestCommand implements CommandExecutor{
 				for(MeltdownNPC ai : Meltdown.getNPCs()) {
 					if(ai.getNPC().getName().equals(args[1])) {
 						ai.placeHeater();
+						System.out.println("Placed heater");
 						return true;
 					}
 				}

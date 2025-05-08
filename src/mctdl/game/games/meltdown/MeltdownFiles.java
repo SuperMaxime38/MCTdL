@@ -27,7 +27,7 @@ public class MeltdownFiles {
 	        	datas.set("schemX", 607);
 	        	datas.set("schemY", 39);
 	        	datas.set("schemZ", -84);
-	        	datas.set("fall_height", 10);
+	        	datas.set("fall_height", 11);
 	        	 
 	        	datas.createSection("times");
 	        	datas.createSection("times.door");
@@ -95,18 +95,18 @@ public class MeltdownFiles {
 	        	//Times
 	        	
 	        	//room
-	        	datas.set("times.room.A", 120);
-	        	datas.set("times.room.B", 200);
-	        	datas.set("times.room.C", 310);
-	        	datas.set("times.room.D", 430);
-	        	datas.set("times.room.E", 520);
-	        	datas.set("times.room.M", 660);
+	        	datas.set("times.room.A", 90);
+	        	datas.set("times.room.B", 180);
+	        	datas.set("times.room.C", 290);
+	        	datas.set("times.room.D", 410);
+	        	datas.set("times.room.E", 500);
+	        	datas.set("times.room.M", 630);
 	        	
 	        	//door
 	        	datas.set("times.door.1", 30);
-	        	datas.set("times.door.2", 90);
-	        	datas.set("times.door.3", 150);
-	        	datas.set("times.door.4", 240);
+	        	datas.set("times.door.2", 60);
+	        	datas.set("times.door.3", 90);
+	        	datas.set("times.door.4", 200);
 	        	datas.set("times.door.5", 300);
 	        	
 	        	
@@ -517,7 +517,7 @@ public class MeltdownFiles {
 	        	
 	        	coords.add(606);coords.add(21);coords.add(-153);/*Corner A */ coords.add(608);coords.add(19);coords.add(-153); //Corner B
 	        	
-	        	coords.add(584);coords.add(21);coords.add(-199);/*Corner A */ coords.add(584);coords.add(19);coords.add(-121); //Corner B
+	        	coords.add(584);coords.add(21);coords.add(-119);/*Corner A */ coords.add(584);coords.add(19);coords.add(-121); //Corner B
 
 	        	datas.set("coords.door.4", coords);
 	        	

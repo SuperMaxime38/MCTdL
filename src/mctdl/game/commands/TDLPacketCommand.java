@@ -54,7 +54,13 @@ public class TDLPacketCommand implements CommandExecutor {
 					return true;
 				}
 				
-				NPCManager.teleportNPC(npc, Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
+				if(npc instanceof PlayerAI) {
+					PlayerAI ai = (PlayerAI) npc;
+					ai.teleport(Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), ai.getYaw(), ai.getPitch());
+				} else {
+					NPCManager.teleportNPC(npc, Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), npc.yaw, npc.pitch);
+				}
+				
 				s.sendMessage("Teleported");
 				
 				return true;

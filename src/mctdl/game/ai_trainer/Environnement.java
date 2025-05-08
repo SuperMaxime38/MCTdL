@@ -36,16 +36,19 @@ public class Environnement {
 	List<Double> rayDistances, terrain;
 	List<Pair> ennemies, allies;
 	
-	private final int dividingCoef = 10; // plus les données sont variées plus le modèle galère, on va diviser les distances par ce nombre pour réduir cet effet
+	private final int dividingCoef = 100; // plus les données sont variées plus le modèle galère, on va diviser les distances par ce nombre pour réduir cet effet
 	
 	
 	private Location meltdownCenter;
 	
 	float[] datas;
 	
+	float[] current_inputs;
 	float[] inputs;
+	
+	float[] previous;
 
-	public static final List<Material> transparentBlocks = Arrays.asList(Material.AIR, Material.LADDER, Material.WATER);
+	public static final List<Material> transparentBlocks = Arrays.asList(Material.AIR, Material.LADDER, Material.WATER, Material.LAVA);
 	
 	public Environnement(PlayerAI player) {
 		this.player = player;
@@ -67,6 +70,9 @@ public class Environnement {
 	}
 	
 	public void update() {
+		
+		if(current_inputs != null) this.previous = Arrays.copyOf(current_inputs, current_inputs.length);
+		
 		this.rayDistances.clear();
 		this.terrain.clear();
 		
@@ -85,25 +91,25 @@ public class Environnement {
 //		System.out.println("allies length: " + allies.size());
 //		System.out.println("DATA LENGHT : " + datas.length);
 		
-		this.inputs = new float[size+1];
+		this.current_inputs = new float[size+1];
 		//System.out.println("Inputs size: " + inputs.length + " | size: " + size);
 		
 		int i = 0;
 		for(double rayDistance : rayDistances) {
-			this.inputs[i] = (float) rayDistance;
+			this.current_inputs[i] = (float) rayDistance;
 			i++;
 		}
 		//System.out.println("index: " + i);
 		
 		for(double terrain : this.terrain) {
-			this.inputs[i] = (float) terrain;
+			this.current_inputs[i] = (float) terrain;
 			i++;
 		}
 		//System.out.println("index: " + i);
 		
 		for(Pair pair : this.ennemies) {
-			this.inputs[i] = (float) pair.getKey();
-			this.inputs[i+1] = (float) pair.getValue();
+			this.current_inputs[i] = (float) pair.getKey();
+			this.current_inputs[i+1] = (float) pair.getValue();
 			
 			//System.out.println(" dist | wall: " + pair.getKey() + " | " + pair.getValue());
 			
@@ -112,17 +118,36 @@ public class Environnement {
 		//System.out.println("index: " + i);
 		
 		for(Pair pair : this.allies) {
-			this.inputs[i] = (float) pair.getKey();
-			this.inputs[i+1] = (float) pair.getValue();
+			this.current_inputs[i] = (float) pair.getKey();
+			this.current_inputs[i+1] = (float) pair.getValue();
 			i += 2;
 		}
 		//System.out.println("index: " + i);
 		
 		for(int j = 0; j < datas.length; j++) {
 			//System.out.println("Index i|j: " + i + " | " + j);
-			this.inputs[i] = datas[j];
+			this.current_inputs[i] = datas[j];
 			i++;
 		}
+		
+		if(previous != null) {
+			this.inputs = new float[current_inputs.length + previous.length];
+			for(int j = 0; j < previous.length; j++) {
+				inputs[j] = previous[j];
+			}
+			for(int j = 0; j < current_inputs.length; j++) {
+				inputs[j+previous.length] = current_inputs[j];
+			}
+		} else {
+			this.inputs = new float[current_inputs.length*2];
+			for(int j = 0; j < current_inputs.length; j++) {
+				inputs[j] = current_inputs[j];
+			}
+			for(int j = 0; j < current_inputs.length; j++) {
+				inputs[j+current_inputs.length] = current_inputs[j];
+			}
+		}
+		
 		
 //		if(Meltdown.isEnabled()) {
 //			for(MeltdownNPC npc : Meltdown.getNPCs()) {
@@ -154,7 +179,7 @@ public class Environnement {
 					if(p != null) {// Maybe an offline player
 					
 						if(Meltdown.getRawPlayerDatas(uuid).get(1) ==1 || Meltdown.getRawPlayerDatas(uuid).get(0) == 0) { // Frozen / dead
-							this.ennemies.add(new Pair(999f, 1f));
+							this.ennemies.add(new Pair(-1f, 1f));
 						} else {
 							Location loc = new Location(world, this.player.locX(), this.player.locY(), this.player.locZ());
 							float dist = (float) p.getLocation().distance(loc) / dividingCoef;
@@ -231,7 +256,7 @@ public class Environnement {
 		case "lobby":
 			return;
 		case "meltdown":
-			this.datas = new float[6];
+			this.datas = new float[7];
 			int hasPickaxe = Meltdown.getRawPlayerDatas(uuid).get(11);
 			int cooldown = Meltdown.getRawPlayerDatas(uuid).get(13);
 			if(hasPickaxe==1) {
@@ -257,7 +282,7 @@ public class Environnement {
 				}
 				
 				//Si pas placé distance du heater infinie
-				this.datas[2] = 999f;
+				this.datas[2] = -1f;
 				
 			} else {
 				this.datas[1] = 0;
@@ -269,12 +294,14 @@ public class Environnement {
 			
 			Location gold = findNearestBlock(new Location(world, this.player.getX(), this.player.getY(), this.player.getZ()), Material.GOLD_BLOCK, 32);
 			if(gold == null) {
-				this.datas[4] = 999f;
+				this.datas[4] = -1f;
 			} else {
 				this.datas[4] = (float) gold.distance(new Location(world, this.player.getX(), this.player.getY(), this.player.getZ())) / dividingCoef;
 			}
 			
 			this.datas[5] = (float) pLoc.distance(meltdownCenter) / dividingCoef;
+			
+			this.datas[6] = Meltdown.counter / dividingCoef;
 			
 			return;
 		case "nexus":
@@ -284,7 +311,7 @@ public class Environnement {
 	
 	private float nearestArrowDistance() {
 		
-		float distance = 999f;
+		float distance = -1f;
 		Location pLoc = new Location(world, this.player.locX(), this.player.locY(), this.player.locZ());
 		
 		for(Entity e : world.getEntities()) {

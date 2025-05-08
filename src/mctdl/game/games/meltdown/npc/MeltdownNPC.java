@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 import mctdl.game.Main;
 import mctdl.game.ai_trainer.Environnement;
@@ -44,6 +43,7 @@ public class MeltdownNPC {
 		registerIntoTeam();
 		
 		this.env = new Environnement(npc);
+		this.npc.sprint();
 	}
 	
 	/**
@@ -92,7 +92,7 @@ public class MeltdownNPC {
 			MoneyManager.setPlayerPoutres(p.getUniqueId().toString(), 0);
 		}
 		if(game.equals("lobby")) {
-			this.npc.teleport(8, 6, 8);
+			this.npc.teleport(8, 6, 8, 0, 0);
 			PlayerData.registerPlayer(p);
 		}
 		
@@ -165,7 +165,8 @@ public class MeltdownNPC {
 	
 	public void breakBlock() {
 		try {
-			Block b = this.npc.getBukkitEntity().getTargetBlock(null, 5);
+			Ray ray = new Ray(npc.getBukkitEntity().getWorld(), npc.getLoc().toVector(), npc.getLoc().getDirection());
+			Block b = ray.getTargetedBlock(5);
 			this.npc.breakBlock(b.getLocation());
 		} catch(IllegalStateException e) {
 		}

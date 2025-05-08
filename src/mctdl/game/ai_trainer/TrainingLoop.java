@@ -30,7 +30,7 @@ public class TrainingLoop {
 		switch(gamemode) {
 		case MELTDOWN:
 			
-			int[] structure = {149, 1000, 1400, 1600, 2200, 1600, 1200, 900, 19}; // reduced size bcs too much for my computer ;-;
+			int[] structure = {332, 2000, 2100, 2200, 2400, 1600, 1200, 1200, 16}; // reduced size bcs too much for my computer ;-;
 			
 			this.rl = new RL(structure, ActivationFunction.SIGMOID, Meltdown.getNPCs().size());
 			this.rl.setTopClones(20, 8, 4);
@@ -76,7 +76,7 @@ public class TrainingLoop {
 		int curBatch = currentBatch;
 		new BukkitRunnable() {
 			
-			int counter = 0;
+			//int counter = 0;
 			
 			@Override
 			public void run() {
@@ -114,10 +114,10 @@ public class TrainingLoop {
 						}
 					}
 					
-					if(Meltdown.getNPCs().get(0).equals(npc) && counter % 10 == 0) {
-						System.out.println("NPC: "+ npc.getNPC().getName() + " Selected action : " + selectedAction);
-						counter = 0;
-					}
+//					if(Meltdown.getNPCs().get(0).equals(npc) && counter % 20 == 0) {
+//						System.out.println("NPC: "+ npc.getNPC().getName() + " Selected action : " + selectedAction);
+//						counter = 0;
+//					}
 					
 					switch(selectedAction) {
 					case 0:
@@ -140,51 +140,43 @@ public class TrainingLoop {
 						break;
 					case 6:
 						npc.claimPickaxe();
-						break;
-					case 7:
 						npc.breakBlock();
 						break;
-					case 8:
+					case 7:
 						npc.shoot();
 						break;
-					case 9:
+					case 8:
 						npc.addYaw();
 						break;
-					case 10:
+					case 9:
 						npc.removeYaw();
 						break;
-					case 11:
+					case 10:
 						npc.addPitch();
 						break;
-					case 12:
+					case 11:
 						npc.removePitch();
 						break;
-					case 13:
+					case 12:
 						npc.addMoreYaw();
 						break;
-					case 14:
+					case 13:
 						npc.removeMoreYaw();
 						break;
-					case 15:
+					case 14:
 						npc.addMorePitch();
 						break;
-					case 16:
+					case 15:
 						npc.removeMorePitch();
-						break;
-					case 17:
-						npc.run();
-						break;
-					case 18:
-						npc.stopRunning();
 						break;
 					}
 					
-					counter++;
+					//counter++;
 				}
 				
 			}
 			
-		}.runTaskTimer(main, 300, 3);
+		}.runTaskTimer(main, 300, 4);
 	}
 	
 	public void forceDisable() {

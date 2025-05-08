@@ -49,7 +49,8 @@ public class PlayerAI extends EntityPlayer {
 	public static final int WALK_RIGHT = 3;
 	public static final int JUMP = 4;
 	public static final double ARROW_SPEED = 3.0;
-	private final double speed = 0.21585850519;
+	private final double max_speed = 0.21585850519;
+	private double speed = max_speed;
 	//private final double jumpSpeed = 0.42;
 	private final double runMult = 1.3;
 	private final double sneakMult = 0.3;
@@ -285,6 +286,11 @@ public class PlayerAI extends EntityPlayer {
     }
     
     public void walk(int direction) {
+    	if(!this.isOnGround() ) {
+    		this.speed = 0.5*this.max_speed;
+    	} else {
+    		this.speed = this.max_speed;
+    	}
     	switch(direction) {
     	case WALK_FORWARD:
     		computeVelocity(this.yaw);
@@ -299,7 +305,7 @@ public class PlayerAI extends EntityPlayer {
 			computeVelocity(this.yaw + 90);
 			break;
 		case JUMP:
-			if(!this.isOnGround()) return;
+			if(!this.isOnGround() || this.isBurning()) return;
 			this.jump();
 			break;
     	}
@@ -359,11 +365,11 @@ public class PlayerAI extends EntityPlayer {
     	if(pLoc.distance(loc) < 4.5) main.getServer().getPluginManager().callEvent(new PlayerInteractEvent(getBukkitEntity(), Action.RIGHT_CLICK_BLOCK, this.getBukkitEntity().getInventory().getItemInMainHand(), this.getBukkitEntity().getTargetBlock(null, 3), this.getBukkitEntity().getTargetBlock(null, 3).getFace(this.getBukkitEntity().getTargetBlock(null, 3))));
     }
     
-    public void teleport(double x, double y, double z) {
+    public void teleport(double x, double y, double z, float yaw, float pitch) {
 		this.posX = x;
 		this.posY = y;
 		this.posZ = z;
-    	NPCManager.teleportNPC(this, x, y, z);
+    	NPCManager.teleportNPC(this, x, y, z, yaw, pitch);
     }
     
     public void sneak() {
@@ -389,6 +395,10 @@ public class PlayerAI extends EntityPlayer {
     public double getX() {return this.posX;}
 	public double getY() {return this.posY;}
 	public double getZ() {return this.posZ;}
+	
+	public Location getLoc() {
+		return new Location(this.getBukkitEntity().getWorld(), this.posX, this.posY, this.posZ, this.yaw, this.pitch);
+	}
 	
 	public void setX(double x) {
 		this.posX = x;

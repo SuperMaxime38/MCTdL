@@ -26,14 +26,14 @@ public class Move implements Listener{
 		
 		Player p = e.getPlayer();
 		
-		if(!main.getConfig().getString("game").equals("lobby")) {
+		if(main.getConfig().getString("game").equals("lobby")) {
 			if(p.getLocation().getBlockY() < 4) {
 			Location nouvelle = p.getLocation().subtract(new Location(Bukkit.getWorlds().get(0), 8, 6, 8));
 			p.setVelocity(nouvelle.toVector().multiply(-0.5));
-		}
-		if(p.getLocation().getY() < -10) {
-			p.teleport(new Location(Bukkit.getWorlds().get(0), 8, 6, 8));
-		}
+			}
+			if(p.getLocation().getY() < -10) {
+				p.teleport(new Location(Bukkit.getWorlds().get(0), 8, 6, 8));
+			}
 		}
 		
 		

@@ -301,12 +301,12 @@ static Main main;
 		}
 	}
 	
-	 public static void teleportNPC(EntityPlayer npc, double x, double y, double z) {
+	 public static void teleportNPC(EntityPlayer npc, double x, double y, double z, float yaw, float pitch) {
 
-        npc.setLocation(x, y, z, npc.yaw, npc.pitch);
-        Location loc = new Location(Bukkit.getWorld("world"), x, y, z);
+        npc.setLocation(x, y, z, yaw, pitch);
+        Location loc = new Location(Bukkit.getWorld("world"), x, y, z, yaw, pitch);
         if(!loc.getChunk().isLoaded()) loc.getChunk().load();
-        npc.getBukkitEntity().teleport(new Location(Bukkit.getWorld("world"), x, y, z));
+        npc.getBukkitEntity().teleport(loc);
 //      npc.enderTeleportTo(x, y, z);
         Packet<?> packet = new PacketPlayOutEntityTeleport(npc);
          
@@ -314,8 +314,22 @@ static Main main;
             PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
 
             connection.sendPacket(packet);
+            rotateNPC(npc, yaw, pitch, p);
         }
 	  }
+	 public static void teleportNPC(EntityPlayer npc, Location loc) {
+		 	if(!loc.getChunk().isLoaded()) loc.getChunk().load();
+	 		npc.getBukkitEntity().teleport(loc);
+	 		
+	 		Packet<?> packet = new PacketPlayOutEntityTeleport(npc);
+	         
+	        for (Player p : Bukkit.getOnlinePlayers()) {
+	            PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
+
+	            connection.sendPacket(packet);
+	            rotateNPC(npc, loc.getYaw(), loc.getPitch(), p);
+	        }
+		}
 	 
 	 public static void renderNpcForPlayer(EntityPlayer npc, Player p) {
 		 Packet<?> packet = new PacketPlayOutEntityTeleport(npc);
