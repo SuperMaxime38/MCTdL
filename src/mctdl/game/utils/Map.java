@@ -38,6 +38,8 @@ public class Map {
 		this.center = center;
 		this.world = world;
 		
+		this.spawns = new HashMap<String, Location>();
+		
 		current = this;
 	}
 	/**
@@ -63,6 +65,8 @@ public class Map {
 		this.lowestPoint = lowestPoint;
 		this.radius = radius;
 		this.name = name;
+		
+		this.spawns = new HashMap<String, Location>();
 		
 
 		current = this;
@@ -169,6 +173,10 @@ public class Map {
 	}
 	
 	//Setters
+	public void setSpawn(String team, Location spawn) {
+		this.spawns.put(team, spawn);
+	}
+	
 	public void setSpawns(HashMap<String, Location> spawns) {
 		this.spawns = spawns;
 	}

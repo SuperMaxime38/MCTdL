@@ -29,6 +29,7 @@ import org.bukkit.util.Vector;
 
 import mctdl.game.Main;
 import mctdl.game.commands.BaltopCommand;
+import mctdl.game.npc.NPCManager;
 import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.Map;
 import mctdl.game.utils.PlayerData;
@@ -38,8 +39,8 @@ import net.md_5.bungee.api.chat.TextComponent;
 
 public class Nexus implements Listener{
 	
-	static List<String> matches = new ArrayList<>();
-	static HashMap<String, List<String>> playerdatas = new HashMap<String, List<String>>(); //String Playername, List<String> datas
+	//static List<String> matches = new ArrayList<>();
+	static HashMap<String, List<String>> playerdatas = new HashMap<String, List<String>>(); //String player uuid, List<String> datas
 	
 	static HashMap<Player, Player> lastdamager = new HashMap<Player, Player>(); //Associe au joueur la derniere personne qui lui a fait des degats
 	
@@ -47,7 +48,7 @@ public class Nexus implements Listener{
 	static boolean enabled = false;
 	static Map map;
 	
-	static List<String> teams = new ArrayList<>();
+	//static List<String> teams = new ArrayList<>();
 	
 	static int respawn_cooldown=0;
 	static int invulnerability=0;
@@ -65,20 +66,20 @@ public class Nexus implements Listener{
 		Nexus.main = main;
 	}
 	
-	public List<String> getMatches() {
-		return matches;
-	}
+//	public List<String> getMatches() {
+//		return matches;
+//	}
 	
 	public static void start(boolean adminMode) {
 		main.getConfig().set("game", "nexus");
 		Main.game = "nexus";
 		main.saveConfig();
-		List<String> bt = BaltopCommand.getTeamClassement();
+		//List<String> bt = BaltopCommand.getTeamClassement();
 
 		FileConfiguration cfg = NexusFiles.checkMap(main);
 		
 		//Map variable stuff
-		HashMap<String, Location> spawns = new HashMap<String, Location>();
+		//HashMap<String, Location> spawns = new HashMap<String, Location>();
 		map = new Map(main, cfg.getString("map"), new Location(Bukkit.getWorld("mapz"), 8, 13, 8), "mapz", null, null, 0, -1, "Nexus");
 		
 		if(!NexusFiles.isMapGenerated(main)) { //Génère la map
@@ -89,60 +90,62 @@ public class Nexus implements Listener{
 			Bukkit.broadcastMessage("§f[§bNexus§f] > §aThe game will start soon");
 		}
 		
+		//Init les emplacement de stuff des bougs
+		initStuff();
+
+		Bukkit.getWorld("mapz").setGameRule(GameRule.KEEP_INVENTORY, true); //Enable Keep Inventory pr ce jeu
+		Bukkit.getWorld("mapz").setGameRule(GameRule.FALL_DAMAGE, false); //Desactive degats chute
+		
+		if(matchmaking() != 0) System.out.println("Failed to start nexus");
+		
 		new BukkitRunnable() {
 			
 			int timer=0;
 			
-			List<String> basicdatas = new ArrayList<>();
+			//List<String> basicdatas = new ArrayList<>();
 			
 			@Override
 			public void run() {
 				if(timer==0) {
-					for(String team : bt) {
-						if(TeamsManager.hasATeammateOnline(team)) {
-							teams.add(team);
-						}
-					}
-					
-					if(teams.size()%2 != 0 && !adminMode) { //Si le nombre de team n'est pas pair ET que le mode admin est pas adctif
-						System.out.println("Bruh ! Retry when the number of teams is pair");
-						return;
-					}
-					matches = teams;
+//					for(String team : bt) {
+//						if(TeamsManager.hasATeammateOnline(team)) {
+//							teams.add(team);
+//						}
+//					}
+//					
+//					if(teams.size()%2 != 0 && !adminMode) { //Si le nombre de team n'est pas pair ET que le mode admin est pas adctif
+//						System.out.println("Bruh ! Retry when the number of teams is pair");
+//						return;
+//					}
+//					matches = teams;
 					
 					// "Matchmaking" ----------------------------------------------------------------------------
-					for(int i = 0; i < teams.size(); i++) {
-						if(i%2 == 0) { // LES DEFENDERS
-							for(String pl : TeamsManager.getTeamMembers(teams.get(i))) { //pr tt les membre de l'équipe
-								basicdatas =new ArrayList<>();
-								basicdatas.add(String.valueOf(i)); //Index 0 --> Terrain
-								basicdatas.add("defender"); //Index 1 --> Role (def/atk)
-								playerdatas.put(pl, basicdatas);
-							}
-
-							
-							//Define their spawns
-							spawns.put(teams.get(i), new Location(Bukkit.getWorld("mapz"), -3+(143*(i/2)), 6, 0, -90, 0)); //143 blocks entre les spawns
-						} else { //LES ATTAQUANTS
-							for(String pl : TeamsManager.getTeamMembers(teams.get(i))) {
-								basicdatas =new ArrayList<>();
-								basicdatas.add(String.valueOf(i)); //Index 0 --> Terrain
-								basicdatas.add("attacker"); //Index 1 --> Role (def/atk)
-								playerdatas.put(pl, basicdatas);
-							}
-
-							//Define their spawns
-							spawns.put(teams.get(i), new Location(Bukkit.getWorld("mapz"), -3+(143*(i/2)), 6, 16, -90, 0));
-						}
-					}
-					map.setSpawns(spawns);
+//					for(int i = 0; i < teams.size(); i++) {
+//						if(i%2 == 0) { // LES DEFENDERS
+//							for(String pl : TeamsManager.getTeamMembers(teams.get(i))) { //pr tt les membre de l'équipe
+//								basicdatas =new ArrayList<>();
+//								basicdatas.add(String.valueOf(i)); //Index 0 --> Terrain
+//								basicdatas.add("defender"); //Index 1 --> Role (def/atk)
+//								playerdatas.put(pl, basicdatas);
+//							}
+//
+//							
+//							//Define their spawns
+//							spawns.put(teams.get(i), new Location(Bukkit.getWorld("mapz"), -3+(143*(i/2)), 6, 0, -90, 0)); //143 blocks entre les spawns
+//						} else { //LES ATTAQUANTS
+//							for(String pl : TeamsManager.getTeamMembers(teams.get(i))) {
+//								basicdatas =new ArrayList<>();
+//								basicdatas.add(String.valueOf(i)); //Index 0 --> Terrain
+//								basicdatas.add("attacker"); //Index 1 --> Role (def/atk)
+//								playerdatas.put(pl, basicdatas);
+//							}
+//
+//							//Define their spawns
+//							spawns.put(teams.get(i), new Location(Bukkit.getWorld("mapz"), -3+(143*(i/2)), 6, 16, -90, 0));
+//						}
+//					}
+//					map.setSpawns(spawns);
 					//--------------------------------------------------------------------------------------------
-					
-					//Init les emplacement de stuff des bougs
-					initStuff();
-
-					Bukkit.getWorld("mapz").setGameRule(GameRule.KEEP_INVENTORY, true); //Enable Keep Inventory pr ce jeu
-					Bukkit.getWorld("mapz").setGameRule(GameRule.FALL_DAMAGE, false); //Desactive degats chute
 
 				}
 				if(timer==7) Bukkit.broadcastMessage("§f[§bNexus§f] > Téléportation dans §c3 §fsecondes");
@@ -151,7 +154,8 @@ public class Nexus implements Listener{
 				if(timer==10) {
 					Bukkit.broadcastMessage("§f[§bNexus§f] > Téléportation ! §7La partie va commencer dans quelques instants");
 					//Joueurs
-					playersInit();
+					// --> Initialisation des joueurs en même temps que matchmaking
+					//playersInit();
 
 					//HIDE NAMETAGS -------------->
 					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "hidenametags enable");
@@ -176,54 +180,121 @@ public class Nexus implements Listener{
 		
 	}
 	
-	// Initalise les données associées au joueur + les teleporte
-	public static void playersInit() {
-		System.out.println("matches : " + matches);
-		for(String team : matches) { //Pour toutes les équipes
-			List<String> members = TeamsManager.getTeamMembers(team); //Get les membres de l'équipe
-			
-			for(String player : members) { //Pour tous les joueurs de cette team
-				List<String> datas;
-				
-				Player p = Bukkit.getPlayer(player);
-				
-				PlayerData.saveItems(p);
-				p.getInventory().clear();
-				
-				
-				if(playerdatas.get(player) == null) { //Ce n'est jamais supposé être null mais somehow on sait jamais
-					datas = new ArrayList<>();
-					datas.add(String.valueOf(matches.indexOf(team)/2)); //Le terrain probably
-					if(matches.indexOf(team)%2 == 0) { // --> Defenseur
-						datas.add("defender");
-						
-						//ITEMS-->
-						PlayerData.setInventory(p, defStuff);
-					} else {
-						datas.add("attacker");
-						
-						//ITEMS-->
-						PlayerData.setInventory(p, atkStuff);
-					}
-					playerdatas.put(player, datas);
-				}
-				datas = playerdatas.get(player);
-				
-				datas.add("1"); //isAlive
-				datas.add("0"); //Coins
-				datas.add("0"); //Kills
-				datas.add("0"); //Death
-				datas.add("0"); //Respawn cooldown
-				datas.add("0"); //Last death
-				
-				
-				p.teleport(map.getSpawns().get(team));
-				p.setInvisible(true);
-				
-				setPlayerInv(p);
-			}
+	public static int matchmaking() {
+		if(TeamsManager.getTeams().size()%2 != 0) {
+			System.out.println("Bruh ! Retry when the number of teams is pair");
+			return -1;
 		}
+		
+		int index = 0;
+		
+		for(String team : BaltopCommand.getTeamClassement()) {
+			if(TeamsManager.getOnlineTeams().contains(team)) {
+				List<String> basicDatas = new ArrayList<>();
+				
+				System.out.println("Team to add : " + team);
+				
+				if(index%2 == 0) { // DEFENDERS
+					map.setSpawn(team, new Location(Bukkit.getWorld("mapz"), -3+(143*(index/2)), 6, 0, -90, 0)); //143 blocks entre les spawns
+					for(String playerUUID : TeamsManager.getTeamMembers(team)) {
+						basicDatas.add(String.valueOf(index));
+						basicDatas.add("defender");
+						playerdatas.put(playerUUID, basicDatas);
+						initPlayer(playerUUID);
+					}
+				} else {
+					map.setSpawn(team, new Location(Bukkit.getWorld("mapz"), -3+(143*(index/2)), 6, 16, -90, 0));
+					for(String playerUUID : TeamsManager.getTeamMembers(team)) {
+						basicDatas.add(String.valueOf(index));
+						basicDatas.add("attacker");
+						playerdatas.put(playerUUID, basicDatas);
+						initPlayer(playerUUID);
+					}
+				}
+				
+				index++;
+			}
+
+		}
+		
+		
+		return 0; // 0 means no problem
 	}
+	
+	public static void initPlayer(String uuid) {
+		Player p = Bukkit.getPlayer(uuid);
+		if(p == null) p = NPCManager.getNpcPlayerIfItIs(uuid);
+		if(p == null) return;
+		
+		PlayerData.saveItems(p);
+		p.getInventory().clear();
+		
+		List<String> datas = playerdatas.get(uuid);
+		datas.add("1"); //isAlive
+		datas.add("0"); //Coins
+		datas.add("0"); //Kills
+		datas.add("0"); //Death
+		datas.add("0"); //Respawn cooldown
+		datas.add("0"); //Last death
+		
+		playerdatas.put(uuid, datas);
+		
+		p.teleport(map.getSpawns().get(TeamsManager.getPlayerTeam(uuid)));
+		p.setInvisible(true);
+		
+		setPlayerInv(p);
+		
+		System.out.println("Init player " + p.getName() + " with datas : " + datas);
+	}
+	
+	// Initalise les données associées au joueur + les teleporte
+//	public static void playersInit() {
+//		System.out.println("matches : " + matches);
+//		for(String team : matches) { //Pour toutes les équipes
+//			List<String> members = TeamsManager.getTeamMembers(team); //Get les membres de l'équipe
+//			
+//			for(String player : members) { //Pour tous les joueurs de cette team
+//				List<String> datas;
+//				
+//				Player p = Bukkit.getPlayer(player);
+//				
+//				PlayerData.saveItems(p);
+//				p.getInventory().clear();
+//				
+//				
+//				if(playerdatas.get(player) == null) { //Ce n'est jamais supposé être null mais somehow on sait jamais
+//					datas = new ArrayList<>();
+//					datas.add(String.valueOf(matches.indexOf(team)/2)); //Le terrain probably
+//					if(matches.indexOf(team)%2 == 0) { // --> Defenseur
+//						datas.add("defender");
+//						
+//						//ITEMS-->
+//						PlayerData.setInventory(p, defStuff);
+//					} else {
+//						datas.add("attacker");
+//						
+//						//ITEMS-->
+//						PlayerData.setInventory(p, atkStuff);
+//					}
+//					playerdatas.put(player, datas);
+//				}
+//				datas = playerdatas.get(player);
+//				
+//				datas.add("1"); //isAlive
+//				datas.add("0"); //Coins
+//				datas.add("0"); //Kills
+//				datas.add("0"); //Death
+//				datas.add("0"); //Respawn cooldown
+//				datas.add("0"); //Last death
+//				
+//				
+//				p.teleport(map.getSpawns().get(team));
+//				p.setInvisible(true);
+//				
+//				setPlayerInv(p);
+//			}
+//		}
+//	}
 	
 	public static void stop() {
 		enabled = false;
@@ -231,8 +302,8 @@ public class Nexus implements Listener{
 		Main.game = "lobby";
 		main.saveConfig();
 		
-		teams = new ArrayList<>();
-		matches = new ArrayList<>();
+		//teams = new ArrayList<>();
+		//matches = new ArrayList<>();
 		playerdatas = new HashMap<>();
 		System.gc();
 		
@@ -240,6 +311,7 @@ public class Nexus implements Listener{
 		Bukkit.getWorld("mapz").setGameRule(GameRule.FALL_DAMAGE, true);
 		for(String pl : TeamsManager.getOnlinePlayers().keySet()) {
 			Player p = Bukkit.getPlayer(pl);
+			if(p == null) continue; // NPC
 			p.getInventory().clear();
 			p.teleport(new Location(Bukkit.getWorlds().get(0), 8, 6, 8));
 			p.setGameMode(GameMode.ADVENTURE);
@@ -280,13 +352,15 @@ public class Nexus implements Listener{
 				
 				counter++;
 				time = TimeFormater.getFormatedTime(counter);
-				for (Player p : Bukkit.getOnlinePlayers()) {
+				for (String uuid : TeamsManager.getOnlinePlayers().keySet()) {
+					Player p = Bukkit.getPlayer(uuid);
+					if(p == null) continue;
 					p.setPlayerListFooter(
 							 "§f----------------------------\n"
 							+ "§3Mode de jeu §f: §4Meltdown\n"
-							+ "§6Coins : " + playerdatas.get(p.getUniqueId().toString()).get(3) + "\n"
-							+ "§aKills : " + playerdatas.get(p.getUniqueId().toString()).get(4) + "\n"
-							+ "§cDeaths : " + playerdatas.get(p.getUniqueId().toString()).get(5) + "\n"
+							+ "§6Coins : " + playerdatas.get(uuid).get(3) + "\n"
+							+ "§aKills : " + playerdatas.get(uuid).get(4) + "\n"
+							+ "§cDeaths : " + playerdatas.get(uuid).get(5) + "\n"
 							+ "§bTemps passé §f: " + time); //Affiche depuis cb de temps la partie à commencée
 				}
 			}
@@ -348,9 +422,10 @@ public class Nexus implements Listener{
 	@EventHandler
 	public static void onJump(PlayerMoveEvent e) { //JUMP DES DEFENSEURS
 		if(enabled == false) return;
-		Entity p = (Entity) e.getPlayer();
+		Player p = e.getPlayer();
+		if(!playerdatas.containsKey(p.getUniqueId().toString())) return;
 		if(!playerdatas.get(p.getUniqueId().toString()).get(1).equals("defender")) return;
-		if(p.getVelocity().getY() > 0 && !p.isOnGround()) { //Est en l'air ¿
+		if(p.getVelocity().getY() > 0 && !((Entity)p).isOnGround()) { //Est en l'air ¿
 
 			if(p.getLocation().add(0, -1, 0).getBlock().getType() == Material.MAGENTA_GLAZED_TERRACOTTA) { //Saute sur les boost
 				

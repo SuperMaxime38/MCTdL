@@ -30,6 +30,7 @@ import mctdl.game.games.deathswap.DeathSwap;
 import mctdl.game.games.deathswap.DeathSwapCommand;
 import mctdl.game.games.lobby.LobbyJump;
 import mctdl.game.games.lobby.items.NuclearRollerSkates;
+import mctdl.game.games.lobby.items.PortalGun;
 import mctdl.game.games.lobby.items.PouleZooka;
 import mctdl.game.games.meltdown.MDCommand;
 import mctdl.game.games.meltdown.Meltdown;
@@ -182,6 +183,9 @@ public class Main extends JavaPlugin{
 		getServer().getPluginManager().registerEvents(new PouleZooka(this), this);
 		    // --> Nuclear Roller Skates
 		getServer().getPluginManager().registerEvents(new NuclearRollerSkates(), this);
+			// --> Portal Gun
+		getServer().getPluginManager().registerEvents(new PortalGun(this), this);
+		PortalGun.displayPortals();
 		
 		//Other-----------------------------------------------------------------------
 		//Commands -->

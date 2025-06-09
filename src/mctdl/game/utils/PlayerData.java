@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -21,6 +22,7 @@ public class PlayerData {
 	
 	static HashMap<String, HashMap<Integer, String>> items = new HashMap<String, HashMap<Integer, String>>();
 	static HashMap<String, HashMap<String, String>> stats = new HashMap<String, HashMap<String, String>>();
+	static HashMap<UUID, HashMap<Object, Object>> other = new HashMap<UUID, HashMap<Object, Object>>(); // Reset on reload / restart
 	
 	public static boolean fileCheck(Main main) {
 		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "playerdata");
@@ -82,6 +84,10 @@ public class PlayerData {
 		return stats;
 	}
 	
+	public static HashMap<UUID, HashMap<Object, Object>> getOtherData() {
+		return other;
+	}
+	
 	public static void updateConfig(Main main) {
 		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "playerdata"); //A FAIRE
 	    File f = new File(userdata, File.separator + "lobby.yml");
@@ -123,6 +129,9 @@ public class PlayerData {
 			
 			HashMap<String, String> empty2 = new HashMap<String, String>();
 			stats.put(uuid, empty2);
+			
+			HashMap<Object, Object> empty3 = new HashMap<Object, Object>();
+			other.put(p.getUniqueId(), empty3);
 			
 			registerPlayer(p);
 		} else {
@@ -305,6 +314,14 @@ public class PlayerData {
 		}
 	}
 	
+	public static HashMap<Object, Object> getOtherData(UUID uuid) {
+		return other.get(uuid);
+	}
+	
+	public static void setOtherData(UUID uuid, HashMap<Object, Object> data) {
+		other.put(uuid, data);
+	}
+	
 	public static ItemStack helicoHat() {
 		ItemStack item = new ItemStack(Material.WHITE_CARPET);
 		ItemMeta meta;
@@ -394,5 +411,6 @@ public class PlayerData {
 	public static void deleteFromExistence(String uuid) {
 		items.remove(uuid);
 		stats.remove(uuid);
+		other.remove(UUID.fromString(uuid));
 	}
 }

@@ -48,7 +48,7 @@ public class Environnement {
 	
 	float[] previous;
 
-	public static final List<Material> transparentBlocks = Arrays.asList(Material.AIR, Material.LADDER, Material.WATER, Material.LAVA);
+	public static final List<Material> transparentBlocks = Arrays.asList(Material.AIR, Material.LADDER, Material.WATER, Material.LAVA, Material.GRASS, Material.TALL_GRASS, Material.RED_CARPET);
 	
 	public Environnement(PlayerAI player) {
 		this.player = player;

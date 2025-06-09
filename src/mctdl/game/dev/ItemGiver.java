@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import mctdl.game.games.lobby.items.NuclearRollerSkates;
+import mctdl.game.games.lobby.items.PortalGun;
 import mctdl.game.games.lobby.items.PouleZooka;
 import mctdl.game.games.meltdown.Meltdown;
 import mctdl.game.utils.PlayerData;
@@ -92,6 +93,9 @@ public class ItemGiver implements CommandExecutor{
 			break;
 		case NUCLEAR_ROLLERS:
 			it = NuclearRollerSkates.getItem();
+			break;
+		case PORTAL_GUN:
+			it = PortalGun.getItem();
 			break;
 		
 		//MELTDOWN
@@ -250,6 +254,7 @@ public class ItemGiver implements CommandExecutor{
 		SUPPORTER_BLACK,
 		POULEZOOKA,
 		NUCLEAR_ROLLERS,
+		PORTAL_GUN,
 		
 		//Meltdown items
 		MD_FREEZING_GUN,

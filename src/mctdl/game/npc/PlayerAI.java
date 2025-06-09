@@ -138,6 +138,13 @@ public class PlayerAI extends EntityPlayer {
 	    
 	    TabManager.updateTabList();
 	    
+	    //clear variables
+	    nmsServer = null;
+	    nmsWorld = null;
+	    profile = null;
+	    interactManager = null;
+	    
+	    
 	    return entityPlayer;
 	    }
 
