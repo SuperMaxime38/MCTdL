@@ -57,7 +57,7 @@ public class DeathSwap implements Listener {
 	
 	public static void enable() {
 		if(!genWorld()) {
-			System.out.println("ï¿½cDeathSwap cannot be enabled");
+			System.out.println("§cDeathSwap cannot be enabled");
 			return;
 		}
 		//players = tt les joueurs en team online
@@ -71,7 +71,7 @@ public class DeathSwap implements Listener {
 //			int counter = 0;
 //			for (String uuid : players.keySet()) {
 //				if(counter == rint) {
-//					Bukkit.getPlayer(UUID.fromString(uuid)).sendMessage("ï¿½cIl y a un nombre impair de joueurs... vous ï¿½tes le volontaire pour ne pas participer !");
+//					Bukkit.getPlayer(UUID.fromString(uuid)).sendMessage("§cIl y a un nombre impair de joueurs... vous êtes le volontaire pour ne pas participer !");
 //					
 //					abandonne = uuid;
 //					break;
@@ -121,8 +121,8 @@ public class DeathSwap implements Listener {
 			
 			String currentTeam = non_sorted_teams.get(teamIndex);
 			String player1 = "not_found";
-			for(String player : non_sorted_players.keySet()) { // Pour chaque joueur pas encore placï¿½
-				if(non_sorted_players.get(player).equals(currentTeam)) { // S'il appartient ï¿½ la team
+			for(String player : non_sorted_players.keySet()) { // Pour chaque joueur pas encore placé
+				if(non_sorted_players.get(player).equals(currentTeam)) { // S'il appartient à la team
 					player1 = player;
 				}
 			}
@@ -142,8 +142,8 @@ public class DeathSwap implements Listener {
 			currentTeam = non_sorted_teams.get(teamIndex);
 			
 			String player2 = "not_found_2";
-			for(String player : non_sorted_players.keySet()) { // Pour chaque joueur pas encore placï¿½
-				if(non_sorted_players.get(player).equals(currentTeam)) { // S'il appartient ï¿½ la team
+			for(String player : non_sorted_players.keySet()) { // Pour chaque joueur pas encore placé
+				if(non_sorted_players.get(player).equals(currentTeam)) { // S'il appartient à la team
 					player2 = player;
 				}
 			}
@@ -166,10 +166,10 @@ public class DeathSwap implements Listener {
 			}
 			
 			
-//			for(int i = 0; i < non_sorted_teams.size(); i++) { // Pour chaque team dont il reste des membres ï¿½ placer
+//			for(int i = 0; i < non_sorted_teams.size(); i++) { // Pour chaque team dont il reste des membres à placer
 //				String player1 = "not_found";
-//				for(String player : non_sorted_players.keySet()) { // Pour chaque joueur pas encore placï¿½
-//					if(non_sorted_players.get(player).equals(non_sorted_teams.get(i))) { // S'il appartient ï¿½ la team
+//				for(String player : non_sorted_players.keySet()) { // Pour chaque joueur pas encore placé
+//					if(non_sorted_players.get(player).equals(non_sorted_teams.get(i))) { // S'il appartient à la team
 //						player1 = player;
 //					}
 //				}
@@ -187,8 +187,8 @@ public class DeathSwap implements Listener {
 //				}
 //				
 //				String player2 = "not_found_2";
-//				for(String player : non_sorted_players.keySet()) { // Pour chaque joueur pas encore placï¿½
-//					if(non_sorted_players.get(player).equals(non_sorted_teams.get(i))) { // S'il appartient ï¿½ la team
+//				for(String player : non_sorted_players.keySet()) { // Pour chaque joueur pas encore placé
+//					if(non_sorted_players.get(player).equals(non_sorted_teams.get(i))) { // S'il appartient à la team
 //						player2 = player;
 //					}
 //				}
@@ -236,7 +236,7 @@ public class DeathSwap implements Listener {
 
 		if(NPCManager.isAnNPC(uuid)) return;
 		Player p = Bukkit.getPlayer(UUID.fromString(uuid));
-		p.sendMessage("ï¿½cIl y a un nombre impair de joueurs... vous ï¿½tes le volontaire pour ne pas participer !");
+		p.sendMessage("§cIl y a un nombre impair de joueurs... vous êtes le volontaire pour ne pas participer !");
 
 	}
 	
@@ -260,9 +260,6 @@ public class DeathSwap implements Listener {
 			p.getInventory().clear();
 			
 			PlayerData.registerPlayer(p);
-			
-			main.getConfig().set("game", "lobby");
-			Main.game = "lobby";
 		}
 
 		main.getConfig().set("game", "lobby");
@@ -277,7 +274,7 @@ public class DeathSwap implements Listener {
 	public static boolean genWorld() {
 		
 		if(main.getServer().getPluginManager().getPlugin("Multiverse-Core") == null) {
-			System.out.println(ChatColor.RED + "[MCTdL Error] ï¿½f> ï¿½cThe plugin Multiverse Core cannot be find");
+			System.out.println(ChatColor.RED + "[MCTdL Error] §f> §cThe plugin Multiverse Core cannot be find");
 			return false;
 		}
 		
@@ -285,15 +282,15 @@ public class DeathSwap implements Listener {
 		
 		if(main.getServer().getWorld(worldname) == null) { //Si le monde n'existe pas
 			
-			Bukkit.broadcastMessage("ï¿½7Generating a brand new world for ï¿½cDeathSwap");
-			Bukkit.broadcastMessage("ï¿½7CA VA LAGGER !");
+			Bukkit.broadcastMessage("§7Generating a brand new world for §cDeathSwap");
+			Bukkit.broadcastMessage("§7CA VA LAGGER !");
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv create " + worldname + " normal");
 			
 		} else { //Si le monde existe
 			
 			if(!isGenerated) {
 
-				Bukkit.broadcastMessage("ï¿½7Regenerating a world for ï¿½cDeathSwap");
+				Bukkit.broadcastMessage("§7Regenerating a world for §cDeathSwap");
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv regen " + worldname); //Si le monde existe mais qu'il a dï¿½ja ï¿½tï¿½ utilisï¿½
 			} else {
 				//Start
@@ -409,7 +406,7 @@ public class DeathSwap implements Listener {
 					return;
 				}
 				if(left <= 10) {
-					Bukkit.broadcastMessage("ï¿½6[ï¿½4DeathSwapï¿½6] ï¿½f> ï¿½4The next Swap is in ï¿½f: " + left + " seconds");
+					Bukkit.broadcastMessage("§6[§4DeathSwap§6] §f> §4The next Swap is in §f: " + left + " seconds");
 				}
 				if(left == 0) {
 					left = delay;
