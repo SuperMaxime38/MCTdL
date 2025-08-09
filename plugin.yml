@@ -1,11 +1,11 @@
 name: MCTdL
 author: SuperMaxime38
-version: 0.02.2
+version: 0.2.13
 main: mctdl.game.Main
-description: MCTdl 's plugins manager
+description: MCTdL, Minecraft Tournament Plugin
 api-version: 1.13
-loadafter: [HungerGames, Multiverse-Core]
-depend: [ProtocolLib, WorldEdit, Multiverse-Core]
+loadafter: [HungerGames, Multiverse-Core, NTDJL]
+depend: [ProtocolLib, WorldEdit, Multiverse-Core, NTDJL]
 softdepend: [WorldEdit, Multiverse-Core]
 depend: [ProtocolLib]
 commands:
@@ -48,3 +48,6 @@ commands:
   testcmd:
     permission: tdl.commands.test
     description: This command is used to test stuff
+  tdlpacket:
+    permission: tdl.commands.packet
+    description: This command is used to send packets (npc manipulation)

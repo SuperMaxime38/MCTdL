@@ -3,7 +3,6 @@ package mctdl.game.teams;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +14,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import mctdl.game.Main;
+import mctdl.game.npc.NPCManager;
+import mctdl.game.tablist.TabManager;
 
 public class TeamsManager{
 	
@@ -118,17 +119,27 @@ public class TeamsManager{
 	 */
 	public static HashMap<String, String> getTeams() {return teams;}
 	
-	public static void setPlayerTeam(String name, String team) {teams.put(name, team);}
+	public static void setPlayerTeam(String uuid, String team) {
+		if(uuid == null) return;
+		teams.put(uuid, team);
+		TabManager.updateTabList();
+	}
 	
-	public static void removePlayerTeam(String name) {
-		if(teams.containsKey(name)) {
-			teams.remove(name);
+	public static void removePlayerTeam(String uuid) {
+		if(teams.containsKey(uuid)) {
+			teams.remove(uuid);
+			TabManager.updateTabList();
 		}
+	}
+	
+	public static void removePlayerTeamByName(String name) {
+		removePlayerTeam(getUUIDByPseudo(name).toString());
 	}
 	
 	public static void clearTeams(Main main) {
 		teams.clear();
 		updateConfig(main);
+		TabManager.updateTabList();
 	}
 	
 	public static void updateConfig(Main main) {
@@ -229,6 +240,14 @@ public class TeamsManager{
 		return team;
 	}
 	
+	/**
+	 * 
+	 * Retourne la couleur de la team du joueur
+	 * Si le joueur n'appartient pas à une équipe, la couleur sera blanche
+	 * 
+	 * @param uuid
+	 * @return la couleur au format ChatColor
+	 */
 	public static ChatColor getTeamColor(String uuid) {
 		String team = getPlayerTeam(uuid);
 		switch (team) {
@@ -293,6 +312,7 @@ public class TeamsManager{
 	/**
 	 * Get every online players that are in a team
 	 * @return Returns the same HashMap as getTeams() but this one contains only online players
+	 * <br>UUID : Team
 	 */
 	public static HashMap<String, String> getOnlinePlayers() {
 		HashMap<String, String> teams = getTeams();
@@ -301,6 +321,9 @@ public class TeamsManager{
 		for (String uuid : teams.keySet()) {
 			p = Bukkit.getPlayer(UUID.fromString(uuid));
 			if(p == null) { //Le != null est buggé des fois
+				if(NPCManager.getNpcPlayerIfItIs(uuid) != null) {
+					online.put(uuid, teams.get(uuid));
+				}
 			} else {
 				online.put(uuid, teams.get(uuid));
 			}
@@ -312,11 +335,14 @@ public class TeamsManager{
 		HashMap<String, String> teams = getTeams();
 		Player p;
 		
-		for (String uuid : teams.keySet()) { //NOT WORKING !!!
+		for (String uuid : teams.keySet()) {
 			if(teams.get(uuid).equals(team)) {
 				p = Bukkit.getPlayer(UUID.fromString(uuid));
 				if(p == null) {
-					return false;
+					if(NPCManager.getNpcPlayerIfItIs(uuid) == null) {
+						return false;
+					}
+					
 				}
 			}
 		}
@@ -324,18 +350,14 @@ public class TeamsManager{
 	}
 	
 	public static List<String> getOnlineTeams() {
-		List<String> teams = new ArrayList<>();
-		List<String> teams_name = Arrays.asList("red", "blue", "green", "yellow", "purple", "aqua", "black", "orange");
+		List<String> online_teams = new ArrayList<>();
 		
-		for(String team : teams_name) {
-			for(String uuid : TeamsManager.getTeamMembers(team)) {
-				if(Bukkit.getPlayer(UUID.fromString(uuid)) != null) {
-					teams.add(team);
-					break;
-				}
+		for(String uuid : teams.keySet()) {
+			if(Bukkit.getPlayer(UUID.fromString(uuid)) != null || NPCManager.isAnNPC(uuid)) {
+				if(!online_teams.contains(teams.get(uuid))) online_teams.add(teams.get(uuid));
 			}
 		}
-		return teams;
+		return online_teams;
 	}
 	
 	/**
@@ -387,11 +409,11 @@ public class TeamsManager{
 	 * @return List<String> des team (ex:red)
 	 */
 	public static List<String> getNonEmptyTeams() {
-		List<String> teams = new ArrayList<>();
-		for(String team : getTeams().values()) {
-			if(teams.contains(team)) teams.add(team);
+		List<String> non_empty_teams = new ArrayList<>();
+		for(String team : teams.values()) {
+			if(!non_empty_teams.contains(team)) non_empty_teams.add(team);
 		}
-		return teams;
+		return non_empty_teams;
 	}
 	
 	public static void updatePseudo(String uuid, String pseudo) {
@@ -414,9 +436,14 @@ public class TeamsManager{
 	public static UUID getUUIDByPseudo(String pseudo) {
 		for(String uuid : uuidToPseudo.keySet()) {
 			if(uuidToPseudo.get(uuid).equals(pseudo)) {
+				System.out.println("found it ! " + uuid);
 				return UUID.fromString(uuid);
 			}
 		}
-		return null;
+		return UUID.fromString("00000000-0000-0000-0000-000000000000"); // null is annoying
+	}
+	
+	public static void removeUUIDToPseudo(String uuid) {
+		uuidToPseudo.remove(uuid);
 	}
 }

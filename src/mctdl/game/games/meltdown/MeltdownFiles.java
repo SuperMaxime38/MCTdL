@@ -27,7 +27,7 @@ public class MeltdownFiles {
 	        	datas.set("schemX", 607);
 	        	datas.set("schemY", 39);
 	        	datas.set("schemZ", -84);
-	        	datas.set("fall_height", 10);
+	        	datas.set("fall_height", 11);
 	        	 
 	        	datas.createSection("times");
 	        	datas.createSection("times.door");
@@ -69,44 +69,44 @@ public class MeltdownFiles {
 	        	datas.set("spawn.orange", spawn);
 	        	
 	        	spawn = new ArrayList<>();
-	        	spawn.add(561);spawn.add(19);spawn.add(26);spawn.add(-90); //Last is yaw
+	        	spawn.add(561);spawn.add(19);spawn.add(26);spawn.add(180); //Last is yaw
 	        	datas.set("spawn.yellow", spawn);
 	        	
 	        	spawn = new ArrayList<>();
-	        	spawn.add(653);spawn.add(19);spawn.add(26);spawn.add(-90); //Last is yaw
+	        	spawn.add(653);spawn.add(19);spawn.add(26);spawn.add(180); //Last is yaw
 	        	datas.set("spawn.green", spawn);
 	        	
 	        	spawn = new ArrayList<>();
-	        	spawn.add(717);spawn.add(19);spawn.add(-37);spawn.add(-90); //Last is yaw
+	        	spawn.add(717);spawn.add(19);spawn.add(-37);spawn.add(90); //Last is yaw
 	        	datas.set("spawn.aqua", spawn);
 	        	
 	        	spawn = new ArrayList<>();
-	        	spawn.add(717);spawn.add(19);spawn.add(-129);spawn.add(-90); //Last is yaw
+	        	spawn.add(717);spawn.add(19);spawn.add(-129);spawn.add(90); //Last is yaw
 	        	datas.set("spawn.blue", spawn);
 	        	
 	        	spawn = new ArrayList<>();
-	        	spawn.add(653);spawn.add(19);spawn.add(-193);spawn.add(-90); //Last is yaw
+	        	spawn.add(653);spawn.add(19);spawn.add(-193);spawn.add(0); //Last is yaw
 	        	datas.set("spawn.purple", spawn);
 	        	
 	        	spawn = new ArrayList<>();
-	        	spawn.add(561);spawn.add(19);spawn.add(-193);spawn.add(-90); //Last is yaw
+	        	spawn.add(561);spawn.add(19);spawn.add(-193);spawn.add(0); //Last is yaw
 	        	datas.set("spawn.black", spawn);
 	        	
 	        	//Times
 	        	
 	        	//room
-	        	datas.set("times.room.A", 120);
-	        	datas.set("times.room.B", 200);
-	        	datas.set("times.room.C", 310);
-	        	datas.set("times.room.D", 430);
-	        	datas.set("times.room.E", 520);
-	        	datas.set("times.room.M", 660);
+	        	datas.set("times.room.A", 90);
+	        	datas.set("times.room.B", 180);
+	        	datas.set("times.room.C", 290);
+	        	datas.set("times.room.D", 410);
+	        	datas.set("times.room.E", 500);
+	        	datas.set("times.room.M", 630);
 	        	
 	        	//door
 	        	datas.set("times.door.1", 30);
-	        	datas.set("times.door.2", 90);
-	        	datas.set("times.door.3", 150);
-	        	datas.set("times.door.4", 240);
+	        	datas.set("times.door.2", 60);
+	        	datas.set("times.door.3", 90);
+	        	datas.set("times.door.4", 200);
 	        	datas.set("times.door.5", 300);
 	        	
 	        	
@@ -517,7 +517,7 @@ public class MeltdownFiles {
 	        	
 	        	coords.add(606);coords.add(21);coords.add(-153);/*Corner A */ coords.add(608);coords.add(19);coords.add(-153); //Corner B
 	        	
-	        	coords.add(584);coords.add(21);coords.add(-199);/*Corner A */ coords.add(584);coords.add(19);coords.add(-121); //Corner B
+	        	coords.add(584);coords.add(21);coords.add(-119);/*Corner A */ coords.add(584);coords.add(19);coords.add(-121); //Corner B
 
 	        	datas.set("coords.door.4", coords);
 	        	
@@ -546,7 +546,7 @@ public class MeltdownFiles {
 
 	}
 	
-	static FileConfiguration checkMap(Main main) {
+	public static FileConfiguration checkMap(Main main) {
 		String map = main.getConfig().getString("games.meltdown.map");
 		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "maps");
 		File f = new File(userdata, File.separator + map + ".yml");

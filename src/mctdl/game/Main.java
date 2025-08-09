@@ -20,6 +20,7 @@ import mctdl.game.commands.BaltopCommand;
 import mctdl.game.commands.DummyCommand;
 import mctdl.game.commands.NPCCommand;
 import mctdl.game.commands.PouleZookaCMD;
+import mctdl.game.commands.TDLPacketCommand;
 import mctdl.game.commands.TdLCommand;
 import mctdl.game.commands.TdLTabCompleter;
 import mctdl.game.commands.TestCommand;
@@ -28,17 +29,21 @@ import mctdl.game.dev.ItemGiverCompleter;
 import mctdl.game.games.deathswap.DeathSwap;
 import mctdl.game.games.deathswap.DeathSwapCommand;
 import mctdl.game.games.lobby.LobbyJump;
-import mctdl.game.games.lobby.PouleZooka;
+import mctdl.game.games.lobby.items.NuclearRollerSkates;
+import mctdl.game.games.lobby.items.PortalGun;
+import mctdl.game.games.lobby.items.PouleZooka;
 import mctdl.game.games.meltdown.MDCommand;
 import mctdl.game.games.meltdown.Meltdown;
 import mctdl.game.games.meltdown.MeltdownFiles;
 import mctdl.game.games.nexus.Nexus;
 import mctdl.game.games.nexus.NexusCommand;
 import mctdl.game.games.nexus.NexusFiles;
+import mctdl.game.listeners.ChunkUnload;
 import mctdl.game.listeners.Damage;
 import mctdl.game.listeners.Interact;
 import mctdl.game.listeners.Join;
 import mctdl.game.listeners.Move;
+import mctdl.game.listeners.ProjectileHit;
 import mctdl.game.money.MoneyManager;
 import mctdl.game.npc.NPCCommandCompleter;
 import mctdl.game.npc.NPCManager;
@@ -55,11 +60,14 @@ import mctdl.game.utils.objects.riffles.AssaultRiffle;
 public class Main extends JavaPlugin{
 
 	Main main = this;
+	public static String game;
 	
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();
 		new Time(this);
+		
+		game = "lobby";
 		
 		//Gamerules
 		Bukkit.getWorlds().get(0).setGameRule(GameRule.KEEP_INVENTORY, false);
@@ -83,15 +91,15 @@ public class Main extends JavaPlugin{
 		
 		//Load TAB & NPCs (if server reload)
 		if(!Bukkit.getOnlinePlayers().isEmpty()) {
-			
 			new BukkitRunnable() {
 				
 				@Override
 				public void run() {
 					for (Player pl : Bukkit.getOnlinePlayers()) {
-						TabManager.tabClock(pl);
-						NPCManager.onPlayerJoin(pl, main, 60);
+						NPCManager.onPlayerJoin(pl, 60);
+						ScoreboardManager.initScoreboardForPlayer(pl);
 					}
+					TabManager.updateTabList();
 				}
 			}.runTaskLater(this, 40);
 		}
@@ -109,7 +117,7 @@ public class Main extends JavaPlugin{
 			@Override
 			public void onPacketReceiving(PacketEvent e) {
 				PacketContainer packet = e.getPacket();
-				Player p = e.getPlayer();
+				//Player p = e.getPlayer();
 				
 				//Extract Info
 				if(e.getPacket().getType() == PacketType.Play.Server.NAMED_SOUND_EFFECT) {
@@ -156,13 +164,15 @@ public class Main extends JavaPlugin{
 		//Nexus
 		getServer().getPluginManager().registerEvents(new Nexus(this), this);
 		
-		
 		//Register LISTENERS---------------------------------------------------------
 		getServer().getPluginManager().registerEvents(new Damage(this), this);
 		getServer().getPluginManager().registerEvents(new Join(this), this);
 		getServer().getPluginManager().registerEvents(new Interact(this), this);
 		getServer().getPluginManager().registerEvents(new Move(this), this);
 		getServer().getPluginManager().registerEvents(new Spectate(this), this);
+		getServer().getPluginManager().registerEvents(new ChunkUnload(), this);
+		getServer().getPluginManager().registerEvents(new ProjectileHit(this), this);
+		
 		
 		//Lobby Games----------------------------------------------------------------
 			// --> Jump
@@ -171,6 +181,11 @@ public class Main extends JavaPlugin{
 		getServer().getPluginManager().registerEvents(new Canon(this), this);
 			// --> PouleZooka
 		getServer().getPluginManager().registerEvents(new PouleZooka(this), this);
+		    // --> Nuclear Roller Skates
+		getServer().getPluginManager().registerEvents(new NuclearRollerSkates(), this);
+			// --> Portal Gun
+		getServer().getPluginManager().registerEvents(new PortalGun(this), this);
+		PortalGun.displayPortals();
 		
 		//Other-----------------------------------------------------------------------
 		//Commands -->
@@ -181,6 +196,7 @@ public class Main extends JavaPlugin{
 		getCommand("poulezooka").setExecutor(new PouleZookaCMD());
 		getCommand("dummy").setExecutor(new DummyCommand(this));
 		getCommand("testcmd").setExecutor(new TestCommand(this));
+		getCommand("tdlpacket").setExecutor(new TDLPacketCommand());
 		
 		//meltdown
 		getCommand("meltdown").setExecutor(new MDCommand(this));
@@ -212,17 +228,17 @@ public class Main extends JavaPlugin{
 	public void onDisable() {
 		saveDefaultConfig();
 		String h = header();
-		TeamsManager.updateConfig(this);
-		MoneyManager.updateConfig(this);
-		PlayerData.updateConfig(this);
 		
 		//NPC
 		if(getConfig().getBoolean("enable-npc")) {
 			NPCManager.updateConfig(this);
-			for (Player pl : Bukkit.getOnlinePlayers()) {
-				NPCManager.killAllNPCs(pl);
-			}
+			NPCManager.destroyNPCs();
 		}
+		
+
+		TeamsManager.updateConfig(this);
+		MoneyManager.updateConfig(this);
+		PlayerData.updateConfig(this);
 		
 		//Clear Display
 		GameVoting.clearDisplay();

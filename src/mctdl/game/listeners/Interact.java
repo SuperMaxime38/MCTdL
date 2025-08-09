@@ -33,6 +33,7 @@ public class Interact implements Listener{
 		
 		if(main.getConfig().getString("game").equals("lobby")) {
 			if(p.getGameMode().equals(GameMode.CREATIVE)) return;
+			if(p.getInventory().getItemInMainHand().getType() == Material.FIREWORK_ROCKET) return; // c joli
 			e.setCancelled(true);
 		}
 		

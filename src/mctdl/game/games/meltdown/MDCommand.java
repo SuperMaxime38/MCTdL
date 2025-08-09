@@ -9,7 +9,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
 import mctdl.game.Main;
+import mctdl.game.teams.TeamsManager;
 
 public class MDCommand implements CommandExecutor{
 	
@@ -35,11 +37,14 @@ public class MDCommand implements CommandExecutor{
 		} else if(args.length == 1) {
 			if(args[0].equals("start")) {
 				Meltdown.enable();
+				return true;
 			}
 			if(args[0].equals("stop")) {
 				new Meltdown(main);
 				Meltdown.disable(main);
 				Bukkit.broadcastMessage("§cLa partie a été interrompue...");
+				
+				return true;
 			}
 			if(args[0].equals("alarm")) {
 				List<Integer> room = new ArrayList<>();
@@ -52,6 +57,7 @@ public class MDCommand implements CommandExecutor{
 				room.add(-24);
 				room.add(16);
 				MDMap.alarmTrigger(room);
+				return true;
 			}
 			if(args[0].equals("door")) {
 				List<Integer> room = new ArrayList<>();
@@ -64,6 +70,7 @@ public class MDCommand implements CommandExecutor{
 				room.add(-24);
 				room.add(16);
 				MDMap.doorTrigger(room);
+				return true;
 			}
 			if(args[0].equals("room")) {
 				List<Integer> room = new ArrayList<>();
@@ -77,13 +84,20 @@ public class MDCommand implements CommandExecutor{
 				room.add(-12);
 				room.add(60);
 				MDMap.roomTrigger(room, main);
+				
+				return true;
 			}
 			if(args[0].equals("test")) {
 				p = (Player) s;
 				Meltdown.particleEffect(p.getLocation(), Material.AIR, p.getLocation().getBlock());
+				return true;
 			}
 			if((args[0].equals("genmap"))) {
 				MDMap.generateMap(main);
+				return true;
+			}
+			if(args[0].equals("in_range_ai")) {
+				s.sendMessage("IAs à portée de vue : " + Meltdown.inViewNPCs);
 			}
 		} else if(args.length == 2) {
 			if(args[0].equals("getdata")) {
@@ -99,22 +113,22 @@ public class MDCommand implements CommandExecutor{
 				s.sendMessage(Meltdown.getRawPlayerDatas(args[1]).toString());
 			}
 			if(args[0].equals("freeze")) {
-				p = Bukkit.getPlayer(args[1]);
-				if(p == null) {
+				String uuid = TeamsManager.getUUIDByPseudo(args[1]).toString();
+				if(TeamsManager.getPlayerTeam(uuid).equals("none")) {
 					s.sendMessage("Unknown player");
 					return true;
 				}
-				System.out.println("Freezing test : " + p.getName());
-				Meltdown.iceCube(p.getName());
+				System.out.println("Freezing test : " + args[1]);
+				Meltdown.iceCube(uuid);
 				return true;
 			}
 			if(args[0].equals("unfreeze")) {
-				p = Bukkit.getPlayer(args[1]);
-				if(p == null) {
+				String uuid = TeamsManager.getUUIDByPseudo(args[1]).toString();
+				if(TeamsManager.getPlayerTeam(uuid).equals("none")) {
 					s.sendMessage("Unknown player");
 					return true;
 				}
-				Meltdown.unFreeze(p.getName());
+				Meltdown.unFreeze(uuid);
 				return true;
 			}
 			if(args[0].equals("setgen")) {

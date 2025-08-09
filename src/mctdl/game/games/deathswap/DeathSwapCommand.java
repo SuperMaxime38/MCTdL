@@ -18,10 +18,12 @@ public class DeathSwapCommand implements CommandExecutor{
 	public boolean onCommand(CommandSender s, Command cmd, String label, String[] args) {
 		
 		if(args.length == 0) {
-			s.sendMessage("Command help will come soon");
+			s.sendMessage("/deathswap §astart §f: Start the game");
+			s.sendMessage("/deathswap §astop §f: Stop the game");
+			s.sendMessage("/deathswap §agetdata <player> §f: Get random data");
 		} else if(args.length == 1) {
 			if(args[0].equals("start")) {
-				new DeathSwap(main);
+				//new DeathSwap(main);
 				DeathSwap.enable();
 				s.sendMessage("Enabled DeathSwap");
 			}
