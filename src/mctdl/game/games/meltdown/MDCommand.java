@@ -26,12 +26,12 @@ public class MDCommand implements CommandExecutor{
 		Player p = null;
 		
 		if(args.length == 0) {
-			s.sendMessage("§a/meltdown §fCommand List :"
-					+ "\n§a/meltdown start §f: Démarre une game de meltdown"
-					+ "\n§a/meltdown stop §f: Arrête une partie de meltdown"
-					+ "\n§a/meltdown getdata §f: get raw players datas"
-					+ "\n§a/meltdown freeze §f: Freeze someone"
-					+ "\n§a/meltdown unfreeze §f: Unfreeze someone");
+			s.sendMessage("Â§a/meltdown Â§fCommand List :"
+					+ "\nÂ§a/meltdown start Â§f: DÃ©marre une game de meltdown"
+					+ "\nÂ§a/meltdown stop Â§f: ArrÃªte une partie de meltdown"
+					+ "\nÂ§a/meltdown getdata Â§f: get raw players datas"
+					+ "\nÂ§a/meltdown freeze Â§f: Freeze someone"
+					+ "\nÂ§a/meltdown unfreeze Â§f: Unfreeze someone");
 			return true;
 			
 		} else if(args.length == 1) {
@@ -42,7 +42,7 @@ public class MDCommand implements CommandExecutor{
 			if(args[0].equals("stop")) {
 				new Meltdown(main);
 				Meltdown.disable(main);
-				Bukkit.broadcastMessage("§cLa partie a été interrompue...");
+				Bukkit.broadcastMessage("Â§cLa partie a Ã©tÃ© interrompue...");
 				
 				return true;
 			}
@@ -97,7 +97,7 @@ public class MDCommand implements CommandExecutor{
 				return true;
 			}
 			if(args[0].equals("in_range_ai")) {
-				s.sendMessage("IAs à portée de vue : " + Meltdown.inViewNPCs);
+				s.sendMessage("IAs Â§ portÃ©e de vue : " + Meltdown.inViewNPCs);
 			}
 		} else if(args.length == 2) {
 			if(args[0].equals("getdata")) {

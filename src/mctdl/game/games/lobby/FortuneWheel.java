@@ -16,7 +16,7 @@ import mctdl.game.teams.TeamsManager;
 public class FortuneWheel {
 	
 	public static void gui(Player p) {
-		Inventory inv = Bukkit.createInventory(null, 45, "§6Roue de la Fortune");
+		Inventory inv = Bukkit.createInventory(null, 45, "Â§6Roue de la Fortune");
 		ItemStack item = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(ChatColor.RESET + "");
@@ -27,10 +27,10 @@ public class FortuneWheel {
 			inv.setItem(i, item);
 		}
 		
-		//Défini infos
+		//DÂ§fini infos
 		item.setType(Material.GOLD_INGOT);
-		meta.setDisplayName("§3Informations :");
-		meta.setLore(Arrays.asList("§7Tournez la §6Roue de la Fortune §7pour gagner de nombreux lots, ", "§7comme par exemple des cosmétiques pour le §aLobby", " ", "§6Coût : 5 Poutres"));
+		meta.setDisplayName("Â§3Informations :");
+		meta.setLore(Arrays.asList("Â§7Tournez la Â§6Roue de la Fortune Â§7pour gagner de nombreux lots, ", "Â§7comme par exemple des cosmÃ©tiques pour le Â§aLobby", " ", "Â§6CoÃ»t : 5 Poutres"));
 		item.setItemMeta(meta);
 		
 		inv.setItem(4, item);
@@ -38,15 +38,15 @@ public class FortuneWheel {
 		
 		//Balance
 		item.setType(Material.GOLD_NUGGET);
-		meta.setDisplayName("§6Balance :");
-		meta.setLore(Arrays.asList("§7Vous avez actuellement §6" + MoneyManager.getPlayerPoutres(p.getName()) + " Poutres"));
+		meta.setDisplayName("Â§6Balance :");
+		meta.setLore(Arrays.asList("Â§7Vous avez actuellement Â§6" + MoneyManager.getPlayerPoutres(p.getName()) + " Poutres"));
 		item.setItemMeta(meta);
 		
 		inv.setItem(8, item);
 		
 		//Arrow down
 		item.setType(Material.ARROW);
-		meta.setDisplayName("§7Look Down");
+		meta.setDisplayName("Â§7Look Down");
 		meta.setLore(Arrays.asList(""));
 		item.setItemMeta(meta);
 		
@@ -54,7 +54,7 @@ public class FortuneWheel {
 		
 		//Arrow up
 		item.setType(Material.ARROW);
-		meta.setDisplayName("§7Look Up");
+		meta.setDisplayName("Â§7Look Up");
 		meta.setLore(Arrays.asList(""));
 		item.setItemMeta(meta);
 		
@@ -64,29 +64,29 @@ public class FortuneWheel {
 		
 		item.setType(Material.IRON_INGOT);
 		item.setAmount(3);
-		meta.setDisplayName("§fx3 Poutres");
-		meta.setLore(Arrays.asList("§fVous gagnerez 3 Poutres"));
+		meta.setDisplayName("Â§fx3 Poutres");
+		meta.setLore(Arrays.asList("Â§fVous gagnerez 3 Poutres"));
 		item.setItemMeta(meta);
 		
 		inv.setItem(36, item);
 		
 		item.setAmount(5);
-		meta.setDisplayName("§ax5 Poutres");
-		meta.setLore(Arrays.asList("§aVous gagnerez 5 Poutres"));
+		meta.setDisplayName("Â§ax5 Poutres");
+		meta.setLore(Arrays.asList("Â§aVous gagnerez 5 Poutres"));
 		item.setItemMeta(meta);
 		
 		inv.setItem(37, item);
 		
 		item.setAmount(10);
-		meta.setDisplayName("§ax10 Poutres");
-		meta.setLore(Arrays.asList("§aVous gagnerez 10 Poutres"));
+		meta.setDisplayName("Â§ax10 Poutres");
+		meta.setLore(Arrays.asList("Â§aVous gagnerez 10 Poutres"));
 		item.setItemMeta(meta);
 		
 		inv.setItem(38, item);
 		
 		item.setAmount(1);
-		meta.setDisplayName("§a 1 Poutre");
-		meta.setLore(Arrays.asList("§aVous gagnerez 1 Poutre !", "§7C'est une vrai poutre et pas une version virtuelle !"));
+		meta.setDisplayName("Â§a 1 Poutre");
+		meta.setLore(Arrays.asList("Â§aVous gagnerez 1 Poutre !", "Â§7C'est une vrai poutre et pas une version virtuelle !"));
 		item.setItemMeta(meta);
 		
 		inv.setItem(39, item);
@@ -120,10 +120,10 @@ public class FortuneWheel {
 			meta.setDisplayName(c + "Gant Supporter Orange Mechanic");
 			break;
 		default:
-			meta.setDisplayName("§fGant Supporter Everyone<3");
+			meta.setDisplayName("Â§fGant Supporter Everyone<3");
 			break;
 		}
-		meta.setLore(Arrays.asList("§7Montrez que vous soutnez à fond votre équipe", "§7ou récupérez un gant d'une équipe adverse pour... hmm... §cTRAITRE !"));
+		meta.setLore(Arrays.asList("Â§7Montrez que vous soutenez Ã  fond votre Ã©quipe", "Â§7ou rÃ©cupÃ©rez un gant d'une Ã©quipe adverse pour... hmm... Â§cTRAITRE !"));
 		item.setItemMeta(meta);
 		
 		inv.setItem(39, item);

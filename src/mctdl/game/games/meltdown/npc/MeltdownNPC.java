@@ -116,7 +116,7 @@ public class MeltdownNPC {
 		Player p = npc.getBukkitEntity();
 		TeamsManager.setPlayerTeam(p.getUniqueId().toString(), team);
 		
-		Bukkit.broadcastMessage(Main.header() + "AI Player " + TeamsManager.getTeamColorByTeam(team) + p.getName() + "§r has joined team " + TeamsManager.getTeamNameByTeam(team));
+		Bukkit.broadcastMessage(Main.header() + "AI Player " + TeamsManager.getTeamColorByTeam(team) + p.getName() + "Â§r has joined team " + TeamsManager.getTeamNameByTeam(team));
 	}
 	
 	public Environnement getEnvironnement() {

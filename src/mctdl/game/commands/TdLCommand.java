@@ -29,7 +29,7 @@ public class TdLCommand implements CommandExecutor{
 
 	List<String> red = new ArrayList<String>(Arrays.asList("Star_Lord", "Lorem_Impsum", "Red_Steel_Beam", "Fireplace"));
 	List<String> blue = new ArrayList<String>(Arrays.asList("Fat_Seal", "Sea_You_Soon", "Titanic_Driver", "Lipton"));
-	List<String> green = new ArrayList<String>(Arrays.asList("Grass_Toucher", "Géant_Vert", "JaimeLesPommes", "Harry_Coteur"));
+	List<String> green = new ArrayList<String>(Arrays.asList("Grass_Toucher", "GÂ§ant_Vert", "JaimeLesPommes", "Harry_Coteur"));
 	List<String> yellow = new ArrayList<String>(Arrays.asList("YellowSnow", "ShinyMe", "Sparkles", "SunWeightedGuy"));
 	List<String> purple = new ArrayList<String>(Arrays.asList("Jaded", "Crystalline", "PASDINSPI1", "PASDINSPI2"));
 	List<String> aqua = new ArrayList<String>(Arrays.asList("RapinDolphin", "Aqualand", "SlipMan", "DrinkWater"));
@@ -47,13 +47,13 @@ public class TdLCommand implements CommandExecutor{
 	@Override
 	public boolean onCommand(CommandSender s, Command cmd, String label, String[] args) {
 		
-		String playername; //Variables pouvant etre utilisés dans le code
+		String playername; //Variables pouvant etre utilisÂ§s dans le code
 		String teamname;
 		int amount;
 		Player p;
 		
 		if(args.length == 0) {
-			s.sendMessage("Liste des commandes pour §a/mctdl §f:");
+			s.sendMessage("Liste des commandes pour Â§a/mctdl Â§f:");
 			for(Player pl : Bukkit.getOnlinePlayers()) {
 				pl.setInvisible(false);
 			}
@@ -62,20 +62,20 @@ public class TdLCommand implements CommandExecutor{
 				TeamsManager.updateConfig(main);
 				MoneyManager.updateConfig(main);
 				NPCManager.updateConfig(main);
-				s.sendMessage(h + "Les configs ont été mises à jour");
-				System.out.println("[MCTdL] > Les configs ont été mises à jour");
+				s.sendMessage(h + "Les configs ont Ã©tÃ© mises Ã  jour");
+				System.out.println("[MCTdL] > Les configs ont Ã©tÃ© mises Ã  jour");
 				return true;
 			}
 			if(args[0].equals("loadhashmaps")) {
 				TeamsManager.loadHashMap(main);
 				MoneyManager.loadHashMap(main);
 				NPCManager.loadHashMap(main);
-				s.sendMessage(h + "Les hashmaps ont été chargés selon les fichiers yml");
+				s.sendMessage(h + "Les hashmaps ont Â§tÂ§ chargÂ§s selon les fichiers yml");
 				System.out.println("[MCTdL] > Hashmaps loaded from .yml");
 			}
 			if(args[0].equals("loadteam")) {
 				TeamsManager.loadHashMap(main);
-				System.out.println("La hashmap a chargé");
+				System.out.println("La hashmap a chargÃ©");
 			}
 			if(args[0].equals("teams")) {
 				s.sendMessage(TeamsManager.getTeams().toString());
@@ -157,7 +157,7 @@ public class TdLCommand implements CommandExecutor{
 			if(args[0].equals("money")) {
 				if(args[1].equals("loadhashmap")) {
 					MoneyManager.loadHashMap(main);
-					s.sendMessage(h + "La hashmap a été chargé selon les données enregistrées dans la config");
+					s.sendMessage(h + "La hashmap a Ã©tÃ© chargÃ© selon les donnÂ§es enregistrÃ©es dans la config");
 					return true;
 				}
 			}
@@ -190,14 +190,14 @@ public class TdLCommand implements CommandExecutor{
 				if(args[1].equals("get")) {
 					playername = args[2];
 					//if(!isLogged(s, playername)) return true;
-					s.sendMessage(h + playername + " est dans l'équipe " + TeamsManager.getPlayerTeam(TeamsManager.getUUIDByPseudo(playername).toString()));
+					s.sendMessage(h + playername + " est dans l'Â§quipe " + TeamsManager.getPlayerTeam(TeamsManager.getUUIDByPseudo(playername).toString()));
 					return true;
 				}
 				if(args[1].equals("remove")) {
 					playername = args[2];
 					//if(!isLogged(s, playername)) return true;
 					TeamsManager.removePlayerTeamByName(playername);
-					s.sendMessage(h + playername  + " a été retiré de son équipe");
+					s.sendMessage(h + playername  + " a Â§tÂ§ retirÂ§ de son Â§quipe");
 					return true;
 				}
 			}
@@ -209,7 +209,7 @@ public class TdLCommand implements CommandExecutor{
 					
 					TeamsManager.setPlayerTeam(TeamsManager.getUUIDByPseudo(playername).toString(), teamname);
 					
-					s.sendMessage(h + "Le joueur §a" + playername + " §fa été transferé dans l'équipe §6" + teamname);
+					s.sendMessage(h + "Le joueur Â§a" + playername + " Â§fa Ã©tÃ© transferÃ© dans l'Ã©quipe Â§6" + teamname);
 					return true;
 				}
 			}
@@ -346,7 +346,7 @@ public class TdLCommand implements CommandExecutor{
 //	private boolean isLogged(CommandSender s,String playername) {
 //		if(Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(playername))) return true;
 //
-//		s.sendMessage(h + "Le joueur §a" + playername + " §fne semble pas connecté");
+//		s.sendMessage(h + "Le joueur Â§a" + playername + " Â§fne semble pas connectÃ©");
 //		return false;
 //	}
 

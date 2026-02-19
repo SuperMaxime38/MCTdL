@@ -59,26 +59,26 @@ public class GameVoting implements Listener{
 		 */
 		
 		//Meltdown
-		game.add("§4Meltdown");
-		game.add("§7Récupérez le maximum de Coins avant que les salles ne s'éffondrent... \nEliminez les teams ennemis en les gelants avec votre §bFreezing Gun");
+		game.add("Â§4Meltdown");
+		game.add("Â§7RÃ©cupÃ©rez le maximum de Coins avant que les salles ne s'Ã©ffondrent... \nEliminez les teams ennemis en les gelants avec votre Â§bFreezing Gun");
 		games.put("meltdown", game);
 		
 		//Test Games
 		game = new ArrayList<>();
-		game.add("§fTest");
-		game.add("§7Testtt");
+		game.add("Â§fTest");
+		game.add("Â§7Testtt");
 		games.put("test1", game);
 
 		//Test Games
 		game = new ArrayList<>();
-		game.add("§fTest2");
-		game.add("§7Testtttttt");
+		game.add("Â§fTest2");
+		game.add("Â§7Testtttttt");
 		games.put("test2", game);
 
 		//Test Games
 		game = new ArrayList<>();
-		game.add("§fTest3");
-		game.add("§7Testttttttttt");
+		game.add("Â§fTest3");
+		game.add("Â§7Testttttttttt");
 		games.put("test3", game);
 		
 		return games;
@@ -126,7 +126,7 @@ public class GameVoting implements Listener{
 		stand.setCustomNameVisible(true);
 		stand.setGravity(false);
 		stand.setCollidable(false);
-		stand.setCustomName("§6Vote for " + games.get(proposals.get(0)).get(0)); //Get Nom du proposal 1
+		stand.setCustomName("Â§6Vote for " + games.get(proposals.get(0)).get(0)); //Get Nom du proposal 1
 		ids.add(stand.getUniqueId());
 		
 		//Vote 2
@@ -137,7 +137,7 @@ public class GameVoting implements Listener{
 		stand2.setCustomNameVisible(true);
 		stand2.setGravity(false);
 		stand2.setCollidable(false);
-		stand2.setCustomName("§6Vote for " + games.get(proposals.get(1)).get(0)); //Get Nom du proposal 2
+		stand2.setCustomName("Â§6Vote for " + games.get(proposals.get(1)).get(0)); //Get Nom du proposal 2
 		ids.add(stand2.getUniqueId());
 		
 		//Vote 3
@@ -148,7 +148,7 @@ public class GameVoting implements Listener{
 		stand3.setCustomNameVisible(true);
 		stand3.setGravity(false);
 		stand3.setCollidable(false);
-		stand3.setCustomName("§6Vote for " + games.get(proposals.get(2)).get(0)); //Get Nom (games.get(x).get(0)) du proposal 3 --> proposal.get(3)
+		stand3.setCustomName("Â§6Vote for " + games.get(proposals.get(2)).get(0)); //Get Nom (games.get(x).get(0)) du proposal 3 --> proposal.get(3)
 		ids.add(stand3.getUniqueId());
 	}
 	
@@ -193,7 +193,7 @@ public class GameVoting implements Listener{
 		if((X == X1 || X == X2 || X == X3) && (Z == Z1 || Z == Z2 || Z == Z3)) { //si interaction ds zone de vote
 			if(p.getInventory().getItemInMainHand().getType() == Material.SAND) {
 				if(hasVoted.get(name) == true) {
-					p.spigot().sendMessage(ChatMessageType.SYSTEM, new TextComponent("§cVous avez déja voté"));
+					p.spigot().sendMessage(ChatMessageType.SYSTEM, new TextComponent("Â§cVous avez dÃ©ja votÃ©"));
 				} else {
 					
 				}

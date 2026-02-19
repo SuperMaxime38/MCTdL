@@ -140,12 +140,12 @@ public class AssaultRiffle implements Listener{
 		ItemStack item = new  ItemStack(Material.WOODEN_HOE);
 		ItemMeta meta = item.getItemMeta();
 		
-		meta.setDisplayName("§8Assault Riffle");
-		meta.setLore(Arrays.asList("§eStats :", 
-				"§7Damage : " + getQuality("damage", damage) + damage, 
-				"§7Spray Rate : " + getQuality("spray", sprayrate) +sprayrate,
-				"§7Reload Time : " + getQuality("reload", reloadtime) + reloadtime/20,
-				"§7Magazine : " + magazine + "/" + magazine));
+		meta.setDisplayName("Â§8Assault Riffle");
+		meta.setLore(Arrays.asList("Â§eStats :", 
+				"Â§7Damage : " + getQuality("damage", damage) + damage, 
+				"Â§7Spray Rate : " + getQuality("spray", sprayrate) +sprayrate,
+				"Â§7Reload Time : " + getQuality("reload", reloadtime) + reloadtime/20,
+				"Â§7Magazine : " + magazine + "/" + magazine));
 		
 		
 		meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
@@ -178,12 +178,12 @@ public class AssaultRiffle implements Listener{
 		ItemStack item = new ItemStack(Material.WOODEN_HOE);
 		ItemMeta meta = item.getItemMeta();
 		
-		meta.setDisplayName("§8ShotGun");
-		meta.setLore(Arrays.asList("§eStats :", 
-				"§7Damage : §c0§f-" + getQuality("damage", damage*8) + damage*8, 
-				"§7Spray Rate : " + getQuality("spray", sprayrate) +sprayrate,
-				"§7Reload Time : " + getQuality("reload", reloadtime) + reloadtime/20,
-				"§7Magazine : " + magazine + "/" + magazine));
+		meta.setDisplayName("Â§8ShotGun");
+		meta.setLore(Arrays.asList("Â§eStats :", 
+				"Â§7Damage : Â§c0Â§f-" + getQuality("damage", damage*8) + damage*8, 
+				"Â§7Spray Rate : " + getQuality("spray", sprayrate) +sprayrate,
+				"Â§7Reload Time : " + getQuality("reload", reloadtime) + reloadtime/20,
+				"Â§7Magazine : " + magazine + "/" + magazine));
 		
 		
 		meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
@@ -215,12 +215,12 @@ public class AssaultRiffle implements Listener{
 		ItemStack item = new ItemStack(Material.WOODEN_HOE);
 		ItemMeta meta = item.getItemMeta();
 		
-		meta.setDisplayName("§8Sniper Riffle");
-		meta.setLore(Arrays.asList("§eStats :", 
-				"§7Damage : " + getQuality("damage", damage) + damage, 
-				"§7Spray Rate : " + getQuality("spray", sprayrate) +sprayrate,
-				"§7Reload Time : " + getQuality("reload", reloadtime) + reloadtime/20,
-				"§7Magazine : " + magazine + "/" + magazine));
+		meta.setDisplayName("Â§8Sniper Riffle");
+		meta.setLore(Arrays.asList("Â§eStats :", 
+				"Â§7Damage : " + getQuality("damage", damage) + damage, 
+				"Â§7Spray Rate : " + getQuality("spray", sprayrate) +sprayrate,
+				"Â§7Reload Time : " + getQuality("reload", reloadtime) + reloadtime/20,
+				"Â§7Magazine : " + magazine + "/" + magazine));
 		
 		
 		meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
@@ -284,7 +284,7 @@ public class AssaultRiffle implements Listener{
 		cooldown();
 		
 		String mag = meta.getLore().get(4);
-		mag = mag.replace("§7Magazine : ", "");
+		mag = mag.replace("Â§7Magazine : ", "");
 		mag = mag.split("/")[0];
 		int ammos = Integer.parseInt(mag);
 		
@@ -294,7 +294,7 @@ public class AssaultRiffle implements Listener{
 		}
 		ammos--;
 		List<String> lore = meta.getLore();
-		lore.set(4, "§7Magazine : " + ammos + "/" + magazine);
+		lore.set(4, "Â§7Magazine : " + ammos + "/" + magazine);
 		meta.setLore(lore);
 		item.setItemMeta(meta);
 		
@@ -409,7 +409,7 @@ public class AssaultRiffle implements Listener{
 					}
 				}
 				if(stand.getLocation().distance(loc) >= drop) gravity += acceleration;
-				stand.setVelocity(direction.add(new Vector(0, -gravity, 0)));//0.784000015258789 est l'intensité gravitationnelle dans minecraft
+				stand.setVelocity(direction.add(new Vector(0, -gravity, 0)));//0.784000015258789 est l'intensitÂ§ gravitationnelle dans minecraft
 				stand.getWorld().spawnParticle(Particle.SMOKE_NORMAL, stand.getLocation(), 1, 0, 0, 0, -0.0005);
 			}
 		}.runTaskTimer(main, 0, 1);
@@ -481,7 +481,7 @@ public class AssaultRiffle implements Listener{
 						}
 					}
 					if(stand.getLocation().distance(loc) >= drop) gravity += acceleration;
-					stand.setVelocity(dir.add(new Vector(0, -gravity, 0)));//0.784000015258789 est l'intensité gravitationnelle dans minecraft
+					stand.setVelocity(dir.add(new Vector(0, -gravity, 0)));//0.784000015258789 est l'intensitÂ§ gravitationnelle dans minecraft
 					stand.getWorld().spawnParticle(Particle.SMOKE_NORMAL, stand.getLocation(), 1, 0, 0, 0, -0.0005);
 				}
 			}.runTaskTimer(main, 0, 1);
@@ -548,45 +548,45 @@ public class AssaultRiffle implements Listener{
 				if(counter == reloadtime) {
 					ItemMeta meta = item.getItemMeta();
 					List<String> lore = meta.getLore();
-					lore.set(4, "§7Magazine : " + magazine + "/" + magazine);
+					lore.set(4, "Â§7Magazine : " + magazine + "/" + magazine);
 					meta.setLore(lore);
 					item.setItemMeta(meta);
 
-					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§f[§a:::::§6100%§a:::::§f]"));
+					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Â§f[Â§a:::::Â§6100%Â§a:::::Â§f]"));
 					isReloading = false;
 					
 					cancel();
 					return;
 				}
 				if(reloadtime/10 <= counter) {
-					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§f[§a:§f::::§410%§f:::::]"));
+					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Â§f[Â§a:Â§f::::Â§410%Â§f:::::]"));
 				}
 				if(reloadtime/5 <= counter) {
-					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§f[§a::§f:::§420%§f:::::]"));
+					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Â§f[Â§a::Â§f:::Â§420%Â§f:::::]"));
 				}
 				if(reloadtime/3.33 <= counter) {
-					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§f[§a:::§f::§c30%§f:::::]"));
+					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Â§f[Â§a:::Â§f::Â§c30%Â§f:::::]"));
 				}
 				if(reloadtime/2.5 <= counter) {
-					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§f[§a::::§f:§c40%§f:::::]"));
+					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Â§f[Â§a::::Â§f:Â§c40%Â§f:::::]"));
 				}
 				if(reloadtime/2 <= counter) {
-					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§f[§a:::::§e50%§f:::::]"));
+					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Â§f[Â§a:::::Â§e50%Â§f:::::]"));
 				}
 				if(reloadtime/1.66 <= counter) {
-					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§f[§a:::::§e60%§a:§f::::]"));
+					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Â§f[Â§a:::::Â§e60%Â§a:Â§f::::]"));
 				}
 				if(reloadtime/1.43 <= counter) {
-					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§f[§a:::::§a70%§a::§f:::]"));
+					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Â§f[Â§a:::::Â§a70%Â§a::Â§f:::]"));
 				}
 				if(reloadtime/1.25 <= counter) {
-					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§f[§a:::::§a80%§a:::§f::]"));
+					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Â§f[Â§a:::::Â§a80%Â§a:::Â§f::]"));
 				}
 				if(reloadtime/1.11 <= counter) {
-					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§f[§a:::::§290%§a::::§f:]"));
+					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Â§f[Â§a:::::Â§290%Â§a::::Â§f:]"));
 				}
 				
-				p.sendTitle("", "§cReloading...", 0, 2, 1);
+				p.sendTitle("", "Â§cReloading...", 0, 2, 1);
 				counter++;
 			}
 		}.runTaskTimer(main, 0, 1);

@@ -38,9 +38,9 @@ public class PortalGun implements Listener {
 		ItemStack item = new ItemStack(Material.WOODEN_HOE);
 		
 		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName("ง3Portal ง6Gun");
+		meta.setDisplayName("ยง3Portal ยง6Gun");
 		meta.setCustomModelData(2);
-		meta.setLore(Arrays.asList("ง7Portal Guns are used to teleport...", "งcNOWAY BRO THE NAME ISN'T EXPLICIT ENOUGH!", "", "ง7...", "ง7Anyway, ง3LEFT CLICK ง7for a blue portal", "ง6RIGHT CLICK ง7for an orange portal"));
+		meta.setLore(Arrays.asList("ยง7Portal Guns are used to teleport...", "ยงcNOWAY BRO THE NAME ISN'T EXPLICIT ENOUGH!", "", "ยง7...", "ยง7Anyway, ยง3LEFT CLICK ยง7for a blue portal", "ยง6RIGHT CLICK ยง7for an orange portal"));
 		meta.setUnbreakable(true);
 		meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);

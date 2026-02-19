@@ -51,8 +51,8 @@ public class Canon implements Listener{
 	public static ItemStack getItem() {//Get ItemStack
 		ItemStack item = new ItemStack(Material.GUNPOWDER);
 		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName("§cCanon");
-		meta.setLore(Arrays.asList("§7Un canon placable qui... bah tire des boulets"));
+		meta.setDisplayName("Â§cCanon");
+		meta.setLore(Arrays.asList("Â§7Un canon placable qui... bah tire des boulets"));
 		meta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1, false);
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);

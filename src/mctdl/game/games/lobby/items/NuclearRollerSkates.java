@@ -28,9 +28,9 @@ public class NuclearRollerSkates implements Listener{
 		ItemStack item = new ItemStack(Material.LEATHER_BOOTS);
 		ItemMeta meta = item.getItemMeta();
 		LeatherArmorMeta lMeta = (LeatherArmorMeta) meta;
-		lMeta.setDisplayName("§6Nuclear §bRoller Skates");
+		lMeta.setDisplayName("Â§6Nuclear Â§bRoller Skates");
 		lMeta.setColor(Color.fromBGR(205,205,100));
-		lMeta.setLore(Arrays.asList("§7Imagine having nuclear powered shoes, well that's what this item does!", "§dWin all your races with these!", "§7You could even become the new §4f§6a§es§2h§ai§bo§3n §7model!","","§5COSMETIC"));
+		lMeta.setLore(Arrays.asList("Â§7Imagine having nuclear powered shoes, well that's what this item does!", "Â§dWin all your races with these!", "Â§7You could even become the new Â§4fÂ§6aÂ§esÂ§2hÂ§aiÂ§boÂ§3n Â§7model!","","Â§5COSMETIC"));
 		lMeta.setUnbreakable(true);
 		lMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		lMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);

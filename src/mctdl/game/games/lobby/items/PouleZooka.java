@@ -49,8 +49,8 @@ public class PouleZooka implements Listener{
 		ItemStack item = new ItemStack(Material.WOODEN_HOE);
 		
 		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName("§ePouleZooka");
-		meta.setLore(Arrays.asList("§7Wé c'est un bazooka... MAIS POUR LES POULES", "§7en plus c'est le miens", "","§7- Canwardow"));
+		meta.setDisplayName("Â§ePouleZooka");
+		meta.setLore(Arrays.asList("Â§7WÃ© c'est un bazooka... MAIS POUR LES POULES", "Â§7en plus c'est le miens", "","Â§7- Canwardow"));
 		meta.setUnbreakable(true);
 		meta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1, false);
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -178,9 +178,9 @@ public class PouleZooka implements Listener{
 					if(earn == true) {
 						amount = rdm.nextInt(5) + 1;
 						MoneyManager.addPlayerPoutre(p.getName(), amount);
-						p.sendMessage("§aCôôôt ! Vous avez eu " + amount + " §6poutres §aavec cette poule");
+						p.sendMessage("Â§aCÂ§Â§Â§t ! Vous avez eu " + amount + " Â§6poutres Â§aavec cette poule");
 					} else {
-						p.sendMessage("§cCôt >:( !! Cette poule était un clochard et n'avait pas de §6poutres");
+						p.sendMessage("Â§cCÂ§t >:( !! Cette poule Ã©tait pauvre et n'avait pas de Â§6poutres");
 					}
 				}
 			}

@@ -82,12 +82,12 @@ public class Nexus implements Listener{
 		//HashMap<String, Location> spawns = new HashMap<String, Location>();
 		map = new Map(main, cfg.getString("map"), new Location(Bukkit.getWorld("mapz"), 8, 13, 8), "mapz", null, null, 0, -1, "Nexus");
 		
-		if(!NexusFiles.isMapGenerated(main)) { //Génère la map
-			Bukkit.broadcastMessage("§6Generating §bNexus §6map... §cThis could cause some lag :)");
+		if(!NexusFiles.isMapGenerated(main)) { //GÂ§nÂ§re la map
+			Bukkit.broadcastMessage("Â§6Generating Â§bNexus Â§6map... Â§cThis could cause some lag :)");
 			map.build(false);
 			NexusFiles.setMapGenerated(main, true);
 		} else {
-			Bukkit.broadcastMessage("§f[§bNexus§f] > §aThe game will start soon");
+			Bukkit.broadcastMessage("Â§f[Â§bNexusÂ§f] > Â§aThe game will start soon");
 		}
 		
 		//Init les emplacement de stuff des bougs
@@ -122,7 +122,7 @@ public class Nexus implements Listener{
 					// "Matchmaking" ----------------------------------------------------------------------------
 //					for(int i = 0; i < teams.size(); i++) {
 //						if(i%2 == 0) { // LES DEFENDERS
-//							for(String pl : TeamsManager.getTeamMembers(teams.get(i))) { //pr tt les membre de l'équipe
+//							for(String pl : TeamsManager.getTeamMembers(teams.get(i))) { //pr tt les membre de l'Â§quipe
 //								basicdatas =new ArrayList<>();
 //								basicdatas.add(String.valueOf(i)); //Index 0 --> Terrain
 //								basicdatas.add("defender"); //Index 1 --> Role (def/atk)
@@ -148,22 +148,22 @@ public class Nexus implements Listener{
 					//--------------------------------------------------------------------------------------------
 
 				}
-				if(timer==7) Bukkit.broadcastMessage("§f[§bNexus§f] > Téléportation dans §c3 §fsecondes");
-				if(timer==8) Bukkit.broadcastMessage("§f[§bNexus§f] > Téléportation dans §e2 §fsecondes");
-				if(timer==9) Bukkit.broadcastMessage("§f[§bNexus§f] > Téléportation dans §a1 §fsecondes");
+				if(timer==7) Bukkit.broadcastMessage("Â§f[Â§bNexusÂ§f] > TÃ©lÃ©portation dans Â§c3 Â§fsecondes");
+				if(timer==8) Bukkit.broadcastMessage("Â§f[Â§bNexusÂ§f] > TÃ©lÃ©portation dans Â§e2 Â§fsecondes");
+				if(timer==9) Bukkit.broadcastMessage("Â§f[Â§bNexusÂ§f] > TÃ©lÃ©portation dans Â§a1 Â§fsecondes");
 				if(timer==10) {
-					Bukkit.broadcastMessage("§f[§bNexus§f] > Téléportation ! §7La partie va commencer dans quelques instants");
+					Bukkit.broadcastMessage("Â§f[Â§bNexusÂ§f] > TÃ©lÃ©portation ! Â§7La partie va commencer dans quelques instants");
 					//Joueurs
-					// --> Initialisation des joueurs en même temps que matchmaking
+					// --> Initialisation des joueurs en mÂ§me temps que matchmaking
 					//playersInit();
 
 					//HIDE NAMETAGS -------------->
 					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "hidenametags enable");
 					//-----------------------------
 				}
-				if(timer==12) Bukkit.broadcastMessage("§aPréparez vous...");
+				if(timer==12) Bukkit.broadcastMessage("Â§aPrÃ©parez vous...");
 				if(timer==15) {
-					Bukkit.broadcastMessage("§f[§bNexus§f] > §6La partie commence !");
+					Bukkit.broadcastMessage("Â§f[Â§bNexusÂ§f] > Â§6La partie commence !");
 
 					enabled = true;
 					gameTimer();
@@ -247,11 +247,11 @@ public class Nexus implements Listener{
 		System.out.println("Init player " + p.getName() + " with datas : " + datas);
 	}
 	
-	// Initalise les données associées au joueur + les teleporte
+	// Initalise les donnÂ§es associÂ§es au joueur + les teleporte
 //	public static void playersInit() {
 //		System.out.println("matches : " + matches);
-//		for(String team : matches) { //Pour toutes les équipes
-//			List<String> members = TeamsManager.getTeamMembers(team); //Get les membres de l'équipe
+//		for(String team : matches) { //Pour toutes les Â§quipes
+//			List<String> members = TeamsManager.getTeamMembers(team); //Get les membres de l'Â§quipe
 //			
 //			for(String player : members) { //Pour tous les joueurs de cette team
 //				List<String> datas;
@@ -262,7 +262,7 @@ public class Nexus implements Listener{
 //				p.getInventory().clear();
 //				
 //				
-//				if(playerdatas.get(player) == null) { //Ce n'est jamais supposé être null mais somehow on sait jamais
+//				if(playerdatas.get(player) == null) { //Ce n'est jamais supposÂ§ Â§tre null mais somehow on sait jamais
 //					datas = new ArrayList<>();
 //					datas.add(String.valueOf(matches.indexOf(team)/2)); //Le terrain probably
 //					if(matches.indexOf(team)%2 == 0) { // --> Defenseur
@@ -340,7 +340,7 @@ public class Nexus implements Listener{
 				}
 				
 				for(String dude : playerdatas.keySet()) {
-					if(playerdatas.get(dude).get(7) == "60") { //Quand le boug a passé 1 minute sans mourrir
+					if(playerdatas.get(dude).get(7) == "60") { //Quand le boug a passÂ§ 1 minute sans mourrir
 						int coins = Integer.valueOf(playerdatas.get(dude).get(3));
 						coins += COINS_PER_MINUTES_SURVIVED;
 						playerdatas.get(dude).set(3, String.valueOf(coins));
@@ -356,12 +356,12 @@ public class Nexus implements Listener{
 					Player p = Bukkit.getPlayer(uuid);
 					if(p == null) continue;
 					p.setPlayerListFooter(
-							 "§f----------------------------\n"
-							+ "§3Mode de jeu §f: §4Meltdown\n"
-							+ "§6Coins : " + playerdatas.get(uuid).get(3) + "\n"
-							+ "§aKills : " + playerdatas.get(uuid).get(4) + "\n"
-							+ "§cDeaths : " + playerdatas.get(uuid).get(5) + "\n"
-							+ "§bTemps passé §f: " + time); //Affiche depuis cb de temps la partie à commencée
+							 "Â§f----------------------------\n"
+							+ "Â§3Mode de jeu Â§f: Â§bNexus\n"
+							+ "Â§6Coins : " + playerdatas.get(uuid).get(3) + "\n"
+							+ "Â§aKills : " + playerdatas.get(uuid).get(4) + "\n"
+							+ "Â§cDeaths : " + playerdatas.get(uuid).get(5) + "\n"
+							+ "Â§bTemps passÃ©Â§f: " + time); //Affiche depuis cb de temps la partie Â§ commencÂ§e
 				}
 			}
 			
@@ -379,7 +379,7 @@ public class Nexus implements Listener{
 		if(b.getType() == Material.LIGHT_BLUE_CONCRETE) {
 			String cooldown = playerdatas.get(p.getUniqueId().toString()).get(6);
 			if(!cooldown.equals("0")) {
-				p.sendMessage("§cVous pourrez réapparaître dans " + cooldown + " seconds");
+				p.sendMessage("Â§cVous pourrez rÃ©apparaitre dans " + cooldown + " secondes");
 				return;
 			}
 			if(playerdatas.get(p.getUniqueId().toString()).get(1) == "defender") {
@@ -404,7 +404,7 @@ public class Nexus implements Listener{
 				}
 			}
 			
-			p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§bYou are invulnerable for " + invulnerability + " seconds"));
+			p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Â§bYou are invulnerable for " + invulnerability + " seconds"));
 			
 			//Disable invulnerability
 			new BukkitRunnable() {
@@ -412,7 +412,7 @@ public class Nexus implements Listener{
 				@Override
 				public void run() {
 					p.setInvulnerable(false);
-					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§cYou can take damages now"));
+					p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Â§cYou can take damages now"));
 				}
 				
 			}.runTaskLater(main, invulnerability*20);
@@ -425,7 +425,7 @@ public class Nexus implements Listener{
 		Player p = e.getPlayer();
 		if(!playerdatas.containsKey(p.getUniqueId().toString())) return;
 		if(!playerdatas.get(p.getUniqueId().toString()).get(1).equals("defender")) return;
-		if(p.getVelocity().getY() > 0 && !((Entity)p).isOnGround()) { //Est en l'air ¿
+		if(p.getVelocity().getY() > 0 && !((Entity)p).isOnGround()) { //Est en l'air Â§
 
 			if(p.getLocation().add(0, -1, 0).getBlock().getType() == Material.MAGENTA_GLAZED_TERRACOTTA) { //Saute sur les boost
 				
@@ -445,7 +445,7 @@ public class Nexus implements Listener{
 		Player d = (Player) e.getDamager();
 		
 		ItemStack item = d.getInventory().getItemInMainHand();
-		if(!(item.isSimilar(getMatraque()) || item.isSimilar(getKnife()))) e.setDamage(0); //Si c'est pas une arme CaC les dégats sont annulés
+		if(!(item.isSimilar(getMatraque()) || item.isSimilar(getKnife()))) e.setDamage(0); //Si c'est pas une arme CaC les dÂ§gats sont annulÂ§s
 		if(item.isSimilar(getMatraque())) { //Apply damages
 			e.setDamage(MATRAQUE_DAMAGE);
 		}
@@ -531,8 +531,8 @@ public class Nexus implements Listener{
 		ItemStack item = new ItemStack(Material.WOODEN_SHOVEL);
 		ItemMeta meta = item.getItemMeta();
 		
-		meta.setDisplayName("§cMatraque §3Electrique");
-		meta.setLore(Arrays.asList("", "§7La matraque électrique est une arme CaC", "§7très puissante qui en plus de faire mal", "§7permet de ralentir les ennemis", "", "§2Damage §f: §23.95", "§bStunt §f: §3" + MATRAQUE_DAMAGE, "§dCooldown §f: 0.2"));
+		meta.setDisplayName("Â§cMatraque Â§3Electrique");
+		meta.setLore(Arrays.asList("", "Â§7La matraque Ã©lectrique est une arme CaC", "Â§7trÃ¨s puissante qui en plus de faire mal", "Â§7permet de ralentir les ennemis", "", "Â§2Damage Â§f: Â§23.95", "Â§bStunt Â§f: Â§3" + MATRAQUE_DAMAGE, "Â§dCooldown Â§f: 0.2"));
 		meta.setUnbreakable(true);
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		item.setItemMeta(meta);
@@ -544,8 +544,8 @@ public class Nexus implements Listener{
 		ItemStack item = new ItemStack(Material.IRON_SWORD);
 		ItemMeta meta = item.getItemMeta();
 		
-		meta.setDisplayName("§7Coûteau");
-		meta.setLore(Arrays.asList("", "§7fLe couteau permet de tuer facilement une cible", "§7a condition d'un minimum de discretion évidement", "§7\"On ne participe pas à une fusillade avec un coûteau\"", "", "§2Damage §f: §2" + KNIFE_DAMAGE , "§dCooldown §f: 1.0"));
+		meta.setDisplayName("Â§7CoÃ»teau");
+		meta.setLore(Arrays.asList("", "Â§7fLe couteau permet de tuer facilement une cible", "Â§7Ã  condition d'un minimum de discretion Ã©videment", "Â§7\"On ne participe pas Ã  une fusillade avec un coÃ»teau\"", "", "Â§2Damage Â§f: Â§2" + KNIFE_DAMAGE , "Â§dCooldown Â§f: 1.0"));
 		meta.setUnbreakable(true);
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		item.setItemMeta(meta);
@@ -557,8 +557,8 @@ public class Nexus implements Listener{
 		ItemStack item = new ItemStack(Material.IRON_SHOVEL);
 		ItemMeta meta = item.getItemMeta();
 		
-		meta.setDisplayName("§3Tazer");
-		meta.setLore(Arrays.asList("", "§7Le tazer est retoutable tant par le fait", "§7qu'il s'agit d'une arme à distance mais aussi", "§7car elle permet de §bstunt§7 les ennemis", "", "§2Damage §f: §21.5", "§bStunt §f: §32.0", "§5Range §f: 10", "§dCooldown §f: 3.0"));
+		meta.setDisplayName("Â§3Tazer");
+		meta.setLore(Arrays.asList("", "Â§7Le tazer est retoutable tant par le fait", "Â§7qu'il s'agit d'une arme Ã  distance mais aussi", "Â§7car elle permet de Â§bstuntÂ§7 les ennemis", "", "Â§2Damage Â§f: Â§21.5", "Â§bStunt Â§f: Â§32.0", "Â§5Range Â§f: 10", "Â§dCooldown Â§f: 3.0"));
 		meta.setUnbreakable(true);
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		item.setItemMeta(meta);
@@ -570,8 +570,8 @@ public class Nexus implements Listener{
 		ItemStack item = new ItemStack(Material.IRON_SHOVEL);
 		ItemMeta meta = item.getItemMeta();
 		
-		meta.setDisplayName("§3Chocker");
-		meta.setLore(Arrays.asList("", "§7La grenade de choc est unne arme extremement", "§7efficace, elle permet de §bstunt §7les ennemis", "§7pendant une courte période. Elle est définitivement", "§7meilleure qu'un tazer mais il y en a une quantité limitée...", "", "§2Damage §f: §20.5", "§bStunt §f: §33.0", "§5Range §f: 6", "§dCooldown §f: 4.0"));
+		meta.setDisplayName("Â§3Chocker");
+		meta.setLore(Arrays.asList("", "Â§7La grenade de choc est unne arme extremement", "Â§7efficace, elle permet de Â§bstunt Â§7les ennemis", "Â§7pendant une courte pÃ©riode. Elle est dÃ©finitivement", "Â§7meilleure qu'un tazer mais il y en a une quantitÃ© limitÃ©e...", "", "Â§2Damage Â§f: Â§20.5", "Â§bStunt Â§f: Â§33.0", "Â§5Range Â§f: 6", "Â§dCooldown Â§f: 4.0"));
 		meta.setUnbreakable(true);
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		item.setItemMeta(meta);
@@ -583,8 +583,8 @@ public class Nexus implements Listener{
 		ItemStack item = new ItemStack(Material.IRON_INGOT);
 		ItemMeta meta = item.getItemMeta();
 		
-		meta.setDisplayName("§6Pinger");
-		meta.setLore(Arrays.asList("", "§7Le pinger permet d'indiquer une §6position", "§7aux alliés. Ceux ci voient un marqueur à travers des murs", "", "§bDuration §f: §310", "§dCooldown §f: 8.0"));
+		meta.setDisplayName("Â§6Pinger");
+		meta.setLore(Arrays.asList("", "Â§7Le pinger permet d'indiquer une Â§6position", "Â§7aux alliÃ©s. Ceux ci voient un marqueur Ã  travers des murs", "", "Â§bDuration Â§f: Â§310", "Â§dCooldown Â§f: 8.0"));
 		meta.setUnbreakable(true);
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		item.setItemMeta(meta);

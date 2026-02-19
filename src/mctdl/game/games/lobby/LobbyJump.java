@@ -31,22 +31,22 @@ public class LobbyJump implements CommandExecutor, Listener{
 	public boolean onCommand(CommandSender s, Command cmd, String label, String[] args) {
 
 		if(!(s instanceof Player)) {
-			s.sendMessage("§cOnly players can execute this command");
+			s.sendMessage("Â§cOnly players can execute this command");
 			return true;
 		}
 		Player p = (Player) s;
 		
 		if(!main.getConfig().getString("game").equals("lobby")) {
-			p.sendMessage("§cVous ne pouvez utiliser cette commande que dans le Lobby");
+			p.sendMessage("Â§cVous ne pouvez utiliser cette commande que dans le Lobby");
 			return true;
 		}
 		
 		if(args.length == 0) {
-			p.sendMessage("§6Liste des commandes pour §a/jump §f:"
-					+ "\n§a/jump on §f: Active un effet de jump boost 1"
-					+ "\n§a/jump off §f: Désactive les effets de jump boost"
-					+ "\n§a/jump cp §f: Mettre le checkpoint à la position actuelle"
-					+ "\n§a/jump tp §f: Se téléporter au checkpoint");
+			p.sendMessage("Â§6Liste des commandes pour Â§a/jump Â§f:"
+					+ "\nÂ§a/jump on Â§f: Active un effet de jump boost 1"
+					+ "\nÂ§a/jump off Â§f: DÃ©sactive les effets de jump boost"
+					+ "\nÂ§a/jump cp Â§f: Mettre le checkpoint Ã  la position actuelle"
+					+ "\nÂ§a/jump tp Â§f: Se tÃ©lÃ©porter au checkpoint");
 			
 			return true;
 		}
@@ -61,7 +61,7 @@ public class LobbyJump implements CommandExecutor, Listener{
 			}
 			if(args[0].equals("cp")) {
 				setCheckpoint(p);
-				p.sendMessage("§aVous avez défini un checkpoint sur votre position");
+				p.sendMessage("Â§aVous avez dÃ©fini un checkpoint sur votre position");
 				return true;
 			}
 			if(args[0].equals("tp")) {
@@ -107,7 +107,7 @@ public class LobbyJump implements CommandExecutor, Listener{
 	    	 return false;
 	     }
 	     
-    }*/ //Si jump sauvegardés dans fichier (peu probable)
+    }*/ //Si jump sauvegardÂ§s dans fichier (peu probable)
 	
 	public static void setCheckpoint(Player p) {
 		loc = p.getLocation();
@@ -116,7 +116,7 @@ public class LobbyJump implements CommandExecutor, Listener{
 	
 	public static void tpToCheckpoint(Player p) {
 		if(!datas.containsKey(p.getName())) {
-			p.sendMessage("§cVous n'avez pas défini de checkpoint : §a/jump cp");
+			p.sendMessage("Â§cVous n'avez pas dÂ§fini de checkpoint : Â§a/jump cp");
 			return;
 		}
 		

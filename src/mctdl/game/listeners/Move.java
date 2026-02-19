@@ -13,7 +13,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import mctdl.game.Main;
@@ -89,14 +91,24 @@ public class Move implements Listener{
 		p.setFlying(false);
 		e.setCancelled(true);
 		
-		if(Main.game.equals("lobby")) {
-			p.getInventory().setChestplate(new ItemStack(Material.ELYTRA));
+		if(Main.game.equals("lobby") || Main.game.equals("hungergames")) {
+			
+			ItemStack chestplate = p.getInventory().getChestplate();
+			
+			ItemStack elytra = new ItemStack(Material.ELYTRA);
+			ItemMeta meta = elytra.getItemMeta();
+			meta.setDisplayName("§6Double §bJump §dElytra");
+			meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+			meta.setUnbreakable(true);
+			elytra.setItemMeta(meta);
+			
+			p.getInventory().setChestplate(elytra);
 			p.setGliding(true);
 			
 			new BukkitRunnable() {
 				public void run() {
 					if(((Entity) p).isOnGround()) {
-						p.getInventory().setChestplate(new ItemStack(Material.AIR));
+						p.getInventory().setChestplate(chestplate);
 						cancel();
 						return;
 					}

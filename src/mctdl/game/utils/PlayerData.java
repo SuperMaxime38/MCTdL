@@ -51,7 +51,7 @@ public class PlayerData {
 	    FileConfiguration config = YamlConfiguration.loadConfiguration(f);
 	    
 	    if(config.getConfigurationSection("players").getKeys(false).isEmpty()) {
-	    	System.out.println("[§6MCTdL §cWARN§f] > §cPLAYUERDATA HASHMAP DIDNT LOAD --> Empty config\n"
+	    	System.out.println("[Â§6MCTdL Â§cWARNÂ§f] > Â§cPLAYUERDATA HASHMAP DIDNT LOAD --> Empty config\n"
 	    			+ "THIS MAY CAUSE BUGS AND THROW ERRORS");
 	    }
 	    
@@ -119,7 +119,7 @@ public class PlayerData {
 		stats.put(playerUUID, statistics);
 	}
 	
-	public static void registerPlayer(Player p) { //Quand joueur se connecte ou sors d'un minijeu (charge ses cosmétiques)
+	public static void registerPlayer(Player p) { //Quand joueur se connecte ou sors d'un minijeu (charge ses cosmÂ§tiques)
 		String uuid = p.getUniqueId().toString();
 		String type = "";
 		if(!getPlayersData().containsKey(uuid)) {
@@ -153,16 +153,16 @@ public class PlayerData {
 					case "poutre":
 						item = new ItemStack(Material.IRON_INGOT);
 						meta = item.getItemMeta();
-						meta.setDisplayName("§4Poutre");
-						meta.setLore(Arrays.asList("§cUne poutre longue et dure"));
+						meta.setDisplayName("Â§4Poutre");
+						meta.setLore(Arrays.asList("Â§cUne poutre longue et dure"));
 						item.setItemMeta(meta);
 						item.setAmount(amount);
 						break;
 					case "example":
 						item = new ItemStack(Material.DIAMOND);
 						meta = item.getItemMeta();
-						meta.setDisplayName("§6Example Item");
-						meta.setLore(Arrays.asList("§7Ceci est un item exemple"));
+						meta.setDisplayName("Â§6Example Item");
+						meta.setLore(Arrays.asList("Â§7Ceci est un item exemple"));
 						item.setItemMeta(meta);
 						item.setAmount(amount);
 						break;
@@ -219,16 +219,16 @@ public class PlayerData {
 			case "poutre":
 				item = new ItemStack(Material.IRON_INGOT);
 				meta = item.getItemMeta();
-				meta.setDisplayName("§4Poutre");
-				meta.setLore(Arrays.asList("§cUne poutre longue et dure"));
+				meta.setDisplayName("Â§4Poutre");
+				meta.setLore(Arrays.asList("Â§cUne poutre longue et dure"));
 				item.setItemMeta(meta);
 				item.setAmount(amount);
 				break;
 			case "example":
 				item = new ItemStack(Material.DIAMOND);
 				meta = item.getItemMeta();
-				meta.setDisplayName("§6Example Item");
-				meta.setLore(Arrays.asList("§7Ceci est un item exemple"));
+				meta.setDisplayName("Â§6Example Item");
+				meta.setLore(Arrays.asList("Â§7Ceci est un item exemple"));
 				item.setItemMeta(meta);
 				item.setAmount(amount);
 				break;
@@ -274,16 +274,16 @@ public class PlayerData {
 				if(item.getItemMeta().hasLore()) { //Si c'est un item custom
 					name = item.getItemMeta().getDisplayName();
 					switch(name) {
-					case "§4Poutre":
+					case "Â§4Poutre":
 						id = "poutre";
 						break;
-					case "§6Example Item":
+					case "Â§6Example Item":
 						id = "example";
 						break;
-					case "§6Welcome":
+					case "Â§6Welcome":
 						id = "welcome";
 						break;
-					case "§ePouleZooka":
+					case "Â§ePouleZooka":
 						id = "poulezooka";
 						break;
 					default:
@@ -326,8 +326,8 @@ public class PlayerData {
 		ItemStack item = new ItemStack(Material.WHITE_CARPET);
 		ItemMeta meta;
 		meta = item.getItemMeta();
-		meta.setDisplayName("§dHelico Hat");
-		meta.setLore(Arrays.asList("§5:)"));
+		meta.setDisplayName("Â§dHelico Hat");
+		meta.setLore(Arrays.asList("Â§5:)"));
 		item.setItemMeta(meta);
 		
 		return item;
@@ -336,8 +336,8 @@ public class PlayerData {
 	public static ItemStack welcolme() {
 		ItemStack item = new ItemStack(Material.COMPASS);
 		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName("§6Welcome");
-		meta.setLore(Arrays.asList("§7Bienvenue dans le §6§lTournoi des Légendes", "§aQue le meilleur gagne"));
+		meta.setDisplayName("Â§6Welcome");
+		meta.setLore(Arrays.asList("Â§7Bienvenue dans le Â§6Â§lTournoi des LÃ©gendes", "Â§aQue le meilleur gagne"));
 		item.setItemMeta(meta);
 		return item;
 	}
@@ -348,56 +348,56 @@ public class PlayerData {
 		case "red":
 			item = new ItemStack(Material.RED_WOOL);
 			meta = item.getItemMeta();
-			meta.setDisplayName("§4Gant Supporter Red Rocket");
-			meta.setLore(Arrays.asList("§cAffiche ton soutiens à l'équipe §4Red Rocket"));
+			meta.setDisplayName("Â§4Gant Supporter Red Rocket");
+			meta.setLore(Arrays.asList("Â§cAffiche ton soutiens Â§ l'Ã©quipe Â§4Red Rocket"));
 			item.setItemMeta(meta);
 			break;
 		case "blue":
 			item = new ItemStack(Material.BLUE_WOOL);
 			meta = item.getItemMeta();
-			meta.setDisplayName("§1Gant Supporter Red Rocket");
-			meta.setLore(Arrays.asList("§9Affiche ton soutiens à l'équipe §1Blue Whale"));
+			meta.setDisplayName("Â§1Gant Supporter Red Rocket");
+			meta.setLore(Arrays.asList("Â§9Affiche ton soutiens Â§ l'Ã©quipe Â§1Blue Whale"));
 			item.setItemMeta(meta);
 			break;
 		case "green":
 			item = new ItemStack(Material.GREEN_WOOL);
 			meta = item.getItemMeta();
-			meta.setDisplayName("§2Gant Supporter Green Turtle");
-			meta.setLore(Arrays.asList("§aAffiche ton soutiens à l'équipe §2Green Turtle"));
+			meta.setDisplayName("Â§2Gant Supporter Green Turtle");
+			meta.setLore(Arrays.asList("Â§aAffiche ton soutiens Â§ l'Ã©quipe Â§2Green Turtle"));
 			item.setItemMeta(meta);
 			break;
 		case "yellow":
 			item = new ItemStack(Material.YELLOW_WOOL);
 			meta = item.getItemMeta();
-			meta.setDisplayName("§eGant Supporter Yellow Stone");
-			meta.setLore(Arrays.asList("§eAffiche ton soutiens à l'équipe Yellow Stone"));
+			meta.setDisplayName("Â§eGant Supporter Yellow Stone");
+			meta.setLore(Arrays.asList("Â§eAffiche ton soutiens Â§ l'Ã©quipe Yellow Stone"));
 			item.setItemMeta(meta);
 			break;
 		case "purple":
 			item = new ItemStack(Material.PURPLE_WOOL);
 			meta = item.getItemMeta();
-			meta.setDisplayName("§5Gant Supporter Purple Amethyst");
-			meta.setLore(Arrays.asList("§dAffiche ton soutiens à l'équipe §5Purple Amethyst"));
+			meta.setDisplayName("Â§5Gant Supporter Purple Amethyst");
+			meta.setLore(Arrays.asList("Â§dAffiche ton soutiens Â§ l'Ã©quipe Â§5Purple Amethyst"));
 			break;
 		case "aqua":
 			item = new ItemStack(Material.LIGHT_BLUE_WOOL);
 			meta = item.getItemMeta();
-			meta.setDisplayName("§bGant Supporter Aqua Dolphin");
-			meta.setLore(Arrays.asList("§bAffiche ton soutiens à l'équipe Aqua Dolphin"));
+			meta.setDisplayName("Â§bGant Supporter Aqua Dolphin");
+			meta.setLore(Arrays.asList("Â§bAffiche ton soutiens Â§ l'Ã©quipe Aqua Dolphin"));
 			item.setItemMeta(meta);
 			break;
 		case "orange":
 			item = new ItemStack(Material.ORANGE_WOOL);
 			meta = item.getItemMeta();
-			meta.setDisplayName("§6Gant Supporter Orange Mechanic");
-			meta.setLore(Arrays.asList("§6Affiche ton soutiens à l'équipe Orange Mechanic"));
+			meta.setDisplayName("Â§6Gant Supporter Orange Mechanic");
+			meta.setLore(Arrays.asList("Â§6Affiche ton soutiens Â§ l'Ã©quipe Orange Mechanic"));
 			item.setItemMeta(meta);
 			break;
 		case "black":
 			item = new ItemStack(Material.BLACK_WOOL);
 			meta = item.getItemMeta();
-			meta.setDisplayName("§0Gant Supporter Black Raven");
-			meta.setLore(Arrays.asList("§8Affiche ton soutiens à l'équipe §0Black Raven"));
+			meta.setDisplayName("Â§0Gant Supporter Black Raven");
+			meta.setLore(Arrays.asList("Â§8Affiche ton soutiens Â§ l'Ã©quipe Â§0Black Raven"));
 			item.setItemMeta(meta);
 			break;
 		default:

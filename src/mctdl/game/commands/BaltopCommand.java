@@ -36,34 +36,34 @@ public class BaltopCommand implements CommandExecutor{
 		            .map(it -> it.getKey())
 		            .collect(Collectors.toList());
 			
-			String output = "§6----------------------------------------------\n"
-				 +"§aLes joueurs les plus riches sont :§f";
+			String output = "Â§6----------------------------------------------\n"
+				 +"Â§aLes joueurs les plus riches sont :ï¿½f";
 			int order = 0;
 			if(result.size() >= 10) {
 				for(int i = 0; i < 10; i++) {
 					order = i + 1;
-					output = output + "§f\n " + order + "- "+ TeamsManager.getTeamColor(result.get(i)) + TeamsManager.getPseudo(result.get(i)) + " §f: " + MoneyManager.getPlayerMoney(result.get(i)) + " §6Coins";
+					output = output + "Â§f\n " + order + "- "+ TeamsManager.getTeamColor(result.get(i)) + TeamsManager.getPseudo(result.get(i)) + " Â§f: " + MoneyManager.getPlayerMoney(result.get(i)) + " Â§6Coins";
 				}
 			} else {
 				for(int i = 0; i < result.size(); i++) {
 					order = i + 1;
-					output = output + "§f\n " + order +"- " + TeamsManager.getTeamColor(result.get(i)) + TeamsManager.getPseudo(result.get(i)) + " §f: " + MoneyManager.getPlayerMoney(result.get(i)) + " §6Coins";
+					output = output + "Â§f\n " + order +"- " + TeamsManager.getTeamColor(result.get(i)) + TeamsManager.getPseudo(result.get(i)) + " Â§f: " + MoneyManager.getPlayerMoney(result.get(i)) + "Â§6Coins";
 				}
 			}
 			if(s instanceof Player) {
 				p = (Player) s;
 				order = getClassement().indexOf(p.getUniqueId().toString()) + 1;
-				output = output + "\n \n§f " + order +"- " + TeamsManager.getTeamColor(p.getUniqueId().toString()) + p.getName() + " §f: " + MoneyManager.getPlayerMoney(p.getUniqueId().toString()) + " §6Coins";
+				output = output + "\n \nï¿½f " + order +"- " + TeamsManager.getTeamColor(p.getUniqueId().toString()) + p.getName() + "Â§f: " + MoneyManager.getPlayerMoney(p.getUniqueId().toString()) + "Â§6Coins";
 				
 				String team = TeamsManager.getPlayerTeam(p.getUniqueId().toString());
 				if(!team.equals("none")) {
 					order = getTeamClassement().indexOf(team) +1;
-					output = output + "\n §f" + order + "- " + TeamsManager.getTeamName(p.getUniqueId().toString()) + " §f: " + getTeamBal(team) + " §6Coins";
+					output = output + "\nÂ§f" + order + "- " + TeamsManager.getTeamName(p.getUniqueId().toString()) + "Â§f: " + getTeamBal(team) + "Â§6Coins";
 					//getTeamClassement().indexOf(TeamsManager.getPlayerTeam(p.getName()))
 					//TeamsManager.getTeamColor(p.getName()) + TeamsManager.getTeamName(p.getName())
 				}
 			}
-			output = output + "\n§6----------------------------------------------";
+			output = output + "\nï¿½6----------------------------------------------";
 			s.sendMessage(output);
 		} else if(args.length == 1) {
 		//PLUS TARD PR LE CLASSEMENT DES TEAM ETC...
