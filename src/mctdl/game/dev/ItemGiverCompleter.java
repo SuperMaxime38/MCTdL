@@ -7,7 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
-import mctdl.game.dev.ItemGiver.ItemList;
+import mctdl.game.dev.ItemGiver.CustomItem;
 
 public class ItemGiverCompleter implements TabCompleter{
 
@@ -22,7 +22,7 @@ public class ItemGiverCompleter implements TabCompleter{
 			return arg;
 		}
 		if(args.length == 2) {
-			for(ItemList item : ItemList.values()) {
+			for(CustomItem item : CustomItem.values()) {
 				arg.add(item.toString());
 			}
 			return arg;

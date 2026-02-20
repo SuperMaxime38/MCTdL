@@ -34,10 +34,8 @@ import mctdl.game.games.lobby.items.PortalGun;
 import mctdl.game.games.lobby.items.PouleZooka;
 import mctdl.game.games.meltdown.MDCommand;
 import mctdl.game.games.meltdown.Meltdown;
-import mctdl.game.games.meltdown.MeltdownFiles;
 import mctdl.game.games.nexus.Nexus;
 import mctdl.game.games.nexus.NexusCommand;
-import mctdl.game.games.nexus.NexusFiles;
 import mctdl.game.listeners.ChunkUnload;
 import mctdl.game.listeners.Damage;
 import mctdl.game.listeners.Interact;
@@ -59,11 +57,9 @@ import mctdl.game.utils.objects.Canon;
 import mctdl.game.utils.objects.riffles.AssaultRiffle;
 
 public class Main extends JavaPlugin{
-
-	Main main = this;
+	
 	public static String game;
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();
@@ -79,19 +75,10 @@ public class Main extends JavaPlugin{
 		Bukkit.getWorld("mapz").setGameRule(GameRule.FALL_DAMAGE, true);
 		
 		
-		//FileCheck
-		TeamsManager.fileCheck(this);
-		MeltdownFiles.fileCheck(this);
-		NexusFiles.fileCheck(this);
-
-		// These have been replaced by the new system because they were too weak
-		// MoneyManager.fileCheck(this);
-		// PlayerData.fileCheck(this);
-		
-		// New file loading method
+		// Load files
 		FileLoader.loadFiles();
 		
-		//Load HashMap
+		// Load HashMap
 		TeamsManager.loadHashMap(this);
 		MoneyManager.loadHashMap(this);
 		PlayerData.loadHashMap(this);
@@ -113,7 +100,6 @@ public class Main extends JavaPlugin{
 		
 		//NPC
 		if(getConfig().getBoolean("enable-npc")) {
-			NPCManager.fileCheck(this);
 			NPCManager.loadHashMap(this);
 		}
 		
@@ -269,5 +255,9 @@ public class Main extends JavaPlugin{
 				}
 			}.runTaskLater(main, 5);
 		}
+	}
+
+	public static JavaPlugin getPlugin() {
+		return Main.getPlugin(Main.class);
 	}
 }

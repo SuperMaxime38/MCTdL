@@ -32,6 +32,7 @@ import mctdl.game.Main;
 import mctdl.game.money.MoneyManager;
 import mctdl.game.tablist.TabManager;
 import mctdl.game.teams.TeamsManager;
+import mctdl.game.utils.FileLoader;
 import mctdl.game.utils.PlayerData;
 import net.minecraft.server.v1_16_R3.EntityPlayer;
 import net.minecraft.server.v1_16_R3.EnumItemSlot;
@@ -51,47 +52,22 @@ import net.minecraft.server.v1_16_R3.WorldServer;
 public class NPCManager {
 
 
-//Liste des textures
-static HashMap<String, List<String>> textures = new HashMap<String, List<String>>();
-
-public static HashMap<Player, List<EntityPlayer>> inViewNPCs = new HashMap<Player, List<EntityPlayer>>();
+	//Liste des textures
+	static HashMap<String, List<String>> textures = new HashMap<String, List<String>>();
 	
-
-static List<EntityPlayer> npcss = new ArrayList<>();
-static List<EntityPlayer> lookPlayer = new ArrayList<>();
-static Main main;
-//static HashMap<String, List<String>> data = new HashMap<String, List<String>>();
-
-	@Deprecated
-	public static boolean fileCheck(Main main){
-		NPCManager.main = main;
-    	
-	     File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "npc");
-	     File f = new File(userdata, File.separator + "npc.yml");
-	     FileConfiguration preset = YamlConfiguration.loadConfiguration(f);
-
-	     
-	     if (!f.exists()) { //CREER SI FICHIER N'EXISTE PAS
-	         preset.createSection("textures");
-			 
-			 preset.createSection("npc");
-//	        	 List<Integer> data = new ArrayList<>();
-//	        	 data.add(-73);
-//	        	 data.add(14);
-//	        	 data.add(72);
-//	        	 preset.set("npc.top1", data);
-//	        	 
-//	             preset.save(f);
-	         return false;
-	     } else {
-	    	return true; 
-	     }
-     }
+	public static HashMap<Player, List<EntityPlayer>> inViewNPCs = new HashMap<Player, List<EntityPlayer>>();
+		
+	
+	static List<EntityPlayer> npcss = new ArrayList<>();
+	static List<EntityPlayer> lookPlayer = new ArrayList<>();
+	static Main main;
 	
 	public static void loadHashMap(Main main) {
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "npc");
-	    File f = new File(userdata, File.separator + "npc.yml");
-	    fileCheck(main);
+		
+		NPCManager.main = main;
+	    
+	    File f = FileLoader.loadFile("npc.yml", "npc/");
+	    
 	    FileConfiguration yaml = YamlConfiguration.loadConfiguration(f);
 	    
 	    if(yaml.getConfigurationSection("textures") != null) {
@@ -102,16 +78,12 @@ static Main main;
 	 			textures.put(uuid, texture);
 	 		}
 	    }
-//	    for(String role : yaml.getConfigurationSection("npc").getKeys(false)) {
-//	    	List<String> elements = yaml.getStringList("npc." + role);
-//	    	data.put(role, elements);
-//	    }
 	}
 	
 	public static void updateConfig(Main main) {
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "npc"); //A FAIRE
-	    File f = new File(userdata, File.separator + "npc.yml");
-	    fileCheck(main);
+	    
+	    File f = FileLoader.loadFile("npc.yml", "npc/");
+	    
 	    FileConfiguration yaml = YamlConfiguration.loadConfiguration(f);
 	    
 	    yaml.set("textures", null);
@@ -119,12 +91,6 @@ static Main main;
 	    for (String uuid : textures.keySet()) {
 			yaml.set("textures." + uuid, textures.get(uuid));
 		}
-	    
-//	    for (String role : data.keySet()) {
-//	    	List<?> elements = data.get(role);
-//	    	
-//			yaml.set("npc." + role, elements);
-//		}
 	    
 	    try {
 			yaml.save(f);
@@ -424,7 +390,7 @@ static Main main;
 	            e.printStackTrace();
 	        }
 	    } else {
-	        uuid = Bukkit.getPlayer(name).getUniqueId().toString().replaceAll("-", ""); //Get UUID et enl�ve les -
+	        uuid = Bukkit.getPlayer(name).getUniqueId().toString().replaceAll("-", ""); //Get UUID et enlève les -
 	    }
 	    
 	    

@@ -8,42 +8,16 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import mctdl.game.Main;
+import mctdl.game.utils.FileLoader;
 
 public class NexusFiles {
 	
-	@Deprecated
-	public static boolean fileCheck(Main main) {
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "maps");
-		File f = new File(userdata, File.separator + "nexus.yml");
-	    FileConfiguration datas = YamlConfiguration.loadConfiguration(f);
-
-	     
-	    if (!f.exists()) { //CREER SI FICHIER N'EXISTE PAS
-	        try {
-	        	datas.set("isMapGenerated", false);
-	        	datas.set("map", "nexus");
-	        	//set les spawns
-
-	        	datas.set("respawn_cooldown", 5);
-	        	datas.set("invulnerability", 3);
-	        	datas.save(f);
-	        }  catch (IOException exception) {
-
-	            exception.printStackTrace();
-	        }
-	        return false;
-	    } else {
-	    	return true;
-	    }
-	}
 	
 	static FileConfiguration checkMap(Main main) {
 		String map = main.getConfig().getString("games.nexus.map");
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "maps");
-		File f = new File(userdata, File.separator + map + ".yml");
-		if(!f.exists()) {
-			fileCheck(main);
-		}
+		
+		File f = FileLoader.loadFile(map + ".yml", "maps/");
+		
 	    FileConfiguration datas = YamlConfiguration.loadConfiguration(f);
 	    return datas;
 	}

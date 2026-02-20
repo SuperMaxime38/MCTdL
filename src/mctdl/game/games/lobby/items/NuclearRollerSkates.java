@@ -20,6 +20,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import mctdl.game.Main;
+import mctdl.game.utils.NBTAPI;
 
 public class NuclearRollerSkates implements Listener{
 	
@@ -37,6 +38,9 @@ public class NuclearRollerSkates implements Listener{
 		lMeta.addItemFlags(ItemFlag.HIDE_DYE);
 		
 		item.setItemMeta(lMeta);
+		
+		NBTAPI.addNBT(item, "mctdlID", "NUCLEAR_ROLLERS");
+		
 		return item;
 	}
 	

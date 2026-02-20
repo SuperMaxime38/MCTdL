@@ -20,6 +20,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import mctdl.game.Main;
 import mctdl.game.npc.NPCManager;
+import mctdl.game.utils.NBTAPI;
+import mctdl.game.utils.PlayerData;
 import net.minecraft.server.v1_16_R3.EntityPlayer;
 
 public class Move implements Listener{
@@ -93,28 +95,48 @@ public class Move implements Listener{
 		
 		if(Main.game.equals("lobby") || Main.game.equals("hungergames")) {
 			
-			ItemStack chestplate = p.getInventory().getChestplate();
-			
-			ItemStack elytra = new ItemStack(Material.ELYTRA);
-			ItemMeta meta = elytra.getItemMeta();
-			meta.setDisplayName("§6Double §bJump §dElytra");
-			meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-			meta.setUnbreakable(true);
-			elytra.setItemMeta(meta);
-			
-			p.getInventory().setChestplate(elytra);
-			p.setGliding(true);
-			
-			new BukkitRunnable() {
-				public void run() {
-					if(((Entity) p).isOnGround()) {
-						p.getInventory().setChestplate(chestplate);
-						cancel();
-						return;
+			if(NBTAPI.hasNBT(p, "mctdlDoubleJumpEnabled") && NBTAPI.getNBT(p, "mctdlDoubleJumpEnabled").equals("true")) {
+				
+				cancelDoubleJump(p);
+				
+			} else {
+				NBTAPI.addNBT(p, "mctdlDoubleJumpEnabled", "true");
+				PlayerData.rememberChestplate(p.getUniqueId(), p.getInventory().getChestplate());
+				
+				ItemStack elytra = new ItemStack(Material.ELYTRA);
+				ItemMeta meta = elytra.getItemMeta();
+				meta.setDisplayName("§6Double §bJump §dElytra");
+				meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+				meta.setUnbreakable(true);
+				elytra.setItemMeta(meta);
+				
+				NBTAPI.addNBT(elytra, "mctdlID", "doubleJumpElytra");
+				
+				p.getInventory().setChestplate(elytra);
+				p.setGliding(true);
+				
+				new BukkitRunnable() {
+					public void run() {
+						if(((Entity) p).isOnGround() || !p.isGliding()) {
+							
+							cancelDoubleJump(p);
+							
+							cancel();
+							return;
+						}
+				
 					}
-					
-				}
-			}.runTaskTimer(main, 0, 10);
+				}.runTaskTimer(main, 0, 10);
+			}
+			
+			
 		}
+	}
+	
+	private static void cancelDoubleJump(Player p) {
+		p.setGliding(false);
+		NBTAPI.addNBT(p, "mctdlDoubleJumpEnabled", "false");
+		
+		p.getInventory().setChestplate(PlayerData.getPlayerChestplate(p.getUniqueId()));
 	}
 }

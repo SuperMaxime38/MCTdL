@@ -1,5 +1,9 @@
 package mctdl.game.games.meltdown;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,8 +18,22 @@ import org.bukkit.block.data.Openable;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import com.sk89q.worldedit.function.operation.Operation;
+import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.session.ClipboardHolder;
+
 import mctdl.game.Main;
 import mctdl.game.utils.Cuboid;
+import mctdl.game.utils.FileLoader;
 
 public class MDMap {
 	
@@ -31,21 +49,35 @@ public class MDMap {
 		int X = datas.getInt("schemX");
 		int Y = datas.getInt("schemY");
 		int Z = datas.getInt("schemZ");
-
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/world world");
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/schem load " + map);
 		
-		new BukkitRunnable() {
+		Location loc = new Location(Bukkit.getWorlds().get(0), X, Y, Z);
+		
+		com.sk89q.worldedit.world.World world = BukkitAdapter.adapt(loc.getWorld());
+		File file = FileLoader.loadFile(map + ".schem", "schematics/");
+		ClipboardFormat format = ClipboardFormats.findByFile(file);
+		
+		try(ClipboardReader reader = format.getReader(new FileInputStream(file));
+				EditSession editSession = WorldEdit.getInstance().newEditSession(world);
+				) {
 			
-			@Override
-			public void run() {
-				System.out.println("[Meltdown] > Schemati loaded");
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/pos1 " + X + "," + Y + "," + Z);
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/pos2 " + X + "," + Y + "," + Z);
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/paste");
-				System.out.println("[Meltdown] > Schematic pasted");
-			}
-		}.runTaskLater(main, 40);
+			Clipboard clipboard = reader.read();
+			Operation pasteOperation = new ClipboardHolder(clipboard)
+					.createPaste(editSession)
+					.to(BlockVector3.at(X, Y, Z))
+					.build();
+			
+			Operations.complete(pasteOperation);
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (WorldEditException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -138,7 +170,7 @@ public class MDMap {
 				}
 			}
 			
-			//Liste de toutes les coordonnées X Z
+			//Liste de toutes les coordonnÃ©es X Z
 			
 			List<List<Integer>> blocks = new ArrayList<>();
 			

@@ -1,3 +1,8 @@
+meltdown.yml:maps/
+nexus.yml:maps/
 hungergames_tree.yml:maps/
 balances.yml:money/
 lobby.yml:playerdata/
+teams.yml:teams/
+npc.yml:npc/
+datas.yml:lobbydata/

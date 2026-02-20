@@ -29,6 +29,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import mctdl.game.Main;
+import mctdl.game.utils.NBTAPI;
 import mctdl.game.utils.Time;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -159,6 +160,8 @@ public class AssaultRiffle implements Listener{
 		
 		item.setItemMeta(meta);
 		
+		NBTAPI.addNBT(item, "mctdlID", "ASSAULT_RIFFLE");
+		
 		return item;
 	}
 	
@@ -195,6 +198,7 @@ public class AssaultRiffle implements Listener{
 
 		item.setItemMeta(meta);
 		
+		NBTAPI.addNBT(item, "mctdlID", "SHOTGUN");
 		
 		return item;
 	}
@@ -232,6 +236,7 @@ public class AssaultRiffle implements Listener{
 
 		item.setItemMeta(meta);
 		
+		NBTAPI.addNBT(item, "mctdlID", "SNIPER_RIFFLE");
 		
 		return item;
 	}

@@ -48,6 +48,7 @@ import mctdl.game.npc.NPCManager;
 import mctdl.game.npc.PlayerAI;
 import mctdl.game.tablist.TabManager;
 import mctdl.game.teams.TeamsManager;
+import mctdl.game.utils.NBTAPI;
 import mctdl.game.utils.PlayerData;
 import mctdl.game.utils.Ray;
 import mctdl.game.utils.Spectate;
@@ -399,10 +400,6 @@ public class Meltdown implements Listener {
 	public static List<Integer> getRawPlayerDatas(String uuid) {
 		return playerdata.get(uuid);
 	}
-	
-	public static void doesPlayerJoined(String playername) {
-		
-	}
 
 	public static ItemStack getBow() {
 		ItemStack item = new ItemStack(Material.BOW); // Freezing gun
@@ -414,6 +411,8 @@ public class Meltdown implements Listener {
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		meta.setUnbreakable(true);
 		item.setItemMeta(meta);
+		
+		NBTAPI.addNBT(item, "mctdlID", "MD_FREEZING_GUN");
 
 		return item;
 	}
@@ -430,6 +429,8 @@ public class Meltdown implements Listener {
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		item.setItemMeta(meta);
 
+		NBTAPI.addNBT(item, "mctdlID", "MD_TEAM_PICKAXE");
+		
 		return item;
 	}
 
@@ -442,6 +443,8 @@ public class Meltdown implements Listener {
 				"§3Cooldown : §f" + pickaxe_cooldown + " secondes"));
 		meta.setUnbreakable(true);
 		item.setItemMeta(meta);
+		
+		NBTAPI.addNBT(item, "mctdlID", "MD_COOLDOWN_PICKAXE");
 
 		return item;
 	}
@@ -670,6 +673,8 @@ public class Meltdown implements Listener {
 		meta.setLore(Arrays.asList("§7§oLe heater permet de §r§6décongeler §7§ovos équipiers",
 				"§4Attention : §7§oIls peuvent être cassés par l'équipe adverse"));
 		item.setItemMeta(meta);
+		
+		NBTAPI.addNBT(item, "mctdlID", "MD_HEATER");
 
 		return item;
 	}

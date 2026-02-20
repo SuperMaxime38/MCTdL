@@ -1,5 +1,7 @@
 package mctdl.game.dev;
 
+import java.util.Arrays;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -14,6 +16,7 @@ import mctdl.game.games.lobby.items.NuclearRollerSkates;
 import mctdl.game.games.lobby.items.PortalGun;
 import mctdl.game.games.lobby.items.PouleZooka;
 import mctdl.game.games.meltdown.Meltdown;
+import mctdl.game.utils.NBTAPI;
 import mctdl.game.utils.PlayerData;
 import mctdl.game.utils.objects.Canon;
 import mctdl.game.utils.objects.riffles.AssaultRiffle;
@@ -37,7 +40,7 @@ public class ItemGiver implements CommandExecutor{
 		if(args.length == 1) {
 			if(args[0].equals("list")) {
 				p.sendMessage("§aVoici la liste des items disponibles §f:");
-				for(ItemList item : ItemList.values()) {
+				for(CustomItem item : CustomItem.values()) {
 					p.sendMessage("§3" + item);
 				}
 			}
@@ -45,7 +48,7 @@ public class ItemGiver implements CommandExecutor{
 		if(args.length == 2) {
 			if(args[0].equals("add")) {
 				try {
-					ItemList item = ItemList.valueOf(args[1].toUpperCase());
+					CustomItem item = CustomItem.valueOf(args[1].toUpperCase());
 					addItem(item, p);
 				} catch(IllegalArgumentException e) {
 					s.sendMessage("§cCet item n'existe pas");
@@ -57,7 +60,19 @@ public class ItemGiver implements CommandExecutor{
 		return false;
 	}
 	
-	public static void addItem(ItemList item, Player p) {
+	public static void addItem(CustomItem item, Player p) {
+		// CUSTOM BEHAVIOR
+		switch(item) {
+		case HELICO_HAT:
+			p.getInventory().setHelmet(getItem(item));
+			return;
+		default:
+			p.getInventory().addItem(getItem(item));
+			return;
+		}
+	}
+	
+	public static ItemStack getItem(CustomItem item) {
 		ItemStack it;
 		ItemMeta meta;
 		
@@ -66,7 +81,9 @@ public class ItemGiver implements CommandExecutor{
 		//LOBBY
 		case HELICO_HAT:
 			it = PlayerData.helicoHat();
-			p.getInventory().setHelmet(it);
+			break;
+		case WELCOME:
+			it = PlayerData.welcome();
 			break;
 		case SUPPORTER_RED:
 			it = PlayerData.supporter("red");
@@ -101,6 +118,13 @@ public class ItemGiver implements CommandExecutor{
 		case PORTAL_GUN:
 			it = PortalGun.getItem();
 			break;
+		case EXAMPLE:
+			it = new ItemStack(Material.DIAMOND);
+			meta = it.getItemMeta();
+			meta.setDisplayName("§6Example Item");
+			meta.setLore(Arrays.asList("§7Ceci est un item exemple"));
+			it.setItemMeta(meta);
+			break;
 		
 		//MELTDOWN
 		case MD_FREEZING_GUN:
@@ -128,6 +152,7 @@ public class ItemGiver implements CommandExecutor{
 			meta = it.getItemMeta();
 			meta.setDisplayName(meta.getDisplayName() + " Target");
 			it.setItemMeta(meta);
+			
 			break;
 		case SHOTGUN:
 			it = AssaultRiffle.getShotGun();
@@ -242,15 +267,27 @@ public class ItemGiver implements CommandExecutor{
 			meta.setDisplayName("§fsniper");
 			it.setItemMeta(meta);
 			break;
+		case POUTRE:
+			it = new ItemStack(Material.IRON_INGOT);
+			meta = it.getItemMeta();
+			meta.setDisplayName("§4Poutre");
+			meta.setLore(Arrays.asList("§cUne poutre longue et dure"));
+			it.setItemMeta(meta);
+			break;
 		default:
 			it = new ItemStack(Material.AIR);
 			break;
 		}
+		
+		NBTAPI.addNBT(it, "mctdlID", item.toString());
+		
+		return it;
 	}
 	
-	enum ItemList {
+	public enum CustomItem {
 		//Lobby Items
 		HELICO_HAT,
+		WELCOME,
 		SUPPORTER_RED,
 		SUPPORTER_BLUE,
 		SUPPORTER_GREEN,
@@ -262,6 +299,7 @@ public class ItemGiver implements CommandExecutor{
 		POULEZOOKA,
 		NUCLEAR_ROLLERS,
 		PORTAL_GUN,
+		EXAMPLE,
 		
 		//Meltdown items
 		MD_FREEZING_GUN,
@@ -294,7 +332,8 @@ public class ItemGiver implements CommandExecutor{
 		DECO_SHOTGUN,
 		SPRINGFIELDS,
 		THOMPSON,
-		SNIPER;
+		SNIPER,
+		POUTRE;
 	}
 
 }

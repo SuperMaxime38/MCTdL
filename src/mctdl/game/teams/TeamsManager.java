@@ -16,74 +16,17 @@ import org.bukkit.entity.Player;
 import mctdl.game.Main;
 import mctdl.game.npc.NPCManager;
 import mctdl.game.tablist.TabManager;
+import mctdl.game.utils.FileLoader;
 
 public class TeamsManager{
 	
 	static HashMap<String, String> teams = new HashMap<String, String>();
 	static HashMap<String, String> uuidToPseudo = new HashMap<String, String>();
 	
-	/**
-	 * Check if the file teams.yml exists, if not, generated it and fill it with default values
-	 * 
-	 * @param Main instance
-	 * @return true if the file exists, false if not
-	 */
-	 @Deprecated
-	public static boolean fileCheck(Main main){
-    	
-	     File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "teams");
-	     File f = new File(userdata, File.separator + "teams.yml");
-	     FileConfiguration preset = YamlConfiguration.loadConfiguration(f);
-
-	     
-	     if (!f.exists()) { //CREER LES SECTIONS AVEC DES LISTES VIDES SI FICHIER N'EXISTE PAS
-	         try {
-	        	 List<String> username = new ArrayList<>();
-	        	 
-	        	 preset.createSection("teams");
-	        	 preset.set("teams.red", username);
-	        	
-	        	 username = new ArrayList<>();
-	        	 preset.set("teams.blue", username);
-	        	 
-	        	 username = new ArrayList<>();
-	        	 preset.set("teams.green", username);
-	        	 
-	        	 username = new ArrayList<>();
-	        	 preset.set("teams.yellow", username);
-	        	 
-	        	 username = new ArrayList<>();
-	        	 preset.set("teams.purple", username);
-	        	 
-	        	 username = new ArrayList<>();
-	        	 preset.set("teams.aqua", username);
-	        	 
-	        	 username = new ArrayList<>();
-	        	 preset.set("teams.black", username);
-	        	 
-	        	 username = new ArrayList<>();
-	        	 preset.set("teams.orange", username);
-	        	 
-	        	 // Bind UUID x Pseudo
-	        	 preset.createSection("pseudo");
-	        	 
-	             preset.save(f);
-	             
-	         } catch (IOException exception) {
-
-	             exception.printStackTrace();
-	         }
-	         return false;
-	     } else {
-	    	 return false;
-	     }
-	     
-     }
-	
 	public static void loadHashMap(Main main) {
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "teams");
-	    File f = new File(userdata, File.separator + "teams.yml");
-	    fileCheck(main);
+		
+		File f = FileLoader.loadFile("teams.yml", "teams/");
+		
 	    FileConfiguration yaml = YamlConfiguration.loadConfiguration(f);
 		for (String uuid : yaml.getStringList("teams.red")) {
 			teams.put(uuid, "red");
@@ -144,9 +87,9 @@ public class TeamsManager{
 	}
 	
 	public static void updateConfig(Main main) {
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "teams");
-	    File f = new File(userdata, File.separator + "teams.yml");
-	    fileCheck(main);
+	    
+	    File f = FileLoader.loadFile("teams.yml", "teams/");
+	    
 	    FileConfiguration yaml = YamlConfiguration.loadConfiguration(f);
 	    
 	    List<String> players = new ArrayList<>();
@@ -244,7 +187,7 @@ public class TeamsManager{
 	/**
 	 * 
 	 * Retourne la couleur de la team du joueur
-	 * Si le joueur n'appartient pas � une �quipe, la couleur sera blanche
+	 * Si le joueur n'appartient pas à une équipe, la couleur sera blanche
 	 * 
 	 * @param uuid
 	 * @return la couleur au format ChatColor
@@ -283,14 +226,14 @@ public class TeamsManager{
 	public static String getTeamName(String uuid) {
 		String team = getPlayerTeam(uuid);
 		switch (team) {
-		case "red": return "�4Red Rocket";
-		case "blue": return "�1Blue Whale";
-		case "green": return "�2Green Turtle";
-		case "yellow": return "�eYellow Stone";
-		case "purple": return "�5Purple Amethyst";
-		case "aqua": return "�3Aqua Dolphin";
-		case "black": return "�0Black Raven";
-		case "orange": return "�6Orange Mechanic";
+		case "red": return "§4Red Rocket";
+		case "blue": return "§1Blue Whale";
+		case "green": return "§2Green Turtle";
+		case "yellow": return "§eYellow Stone";
+		case "purple": return "§5Purple Amethyst";
+		case "aqua": return "§3Aqua Dolphin";
+		case "black": return "§0Black Raven";
+		case "orange": return "§6Orange Mechanic";
 
 		default: return "none";
 		}
@@ -298,14 +241,14 @@ public class TeamsManager{
 	
 	public static String getTeamNameByTeam(String teamname) {
 		switch (teamname) {
-		case "red": return "�4Red Rocket";
-		case "blue": return "�1Blue Whale";
-		case "green": return "�2Green Turtle";
-		case "yellow": return "�eYellow Stone";
-		case "purple": return "�5Purple Amethyst";
-		case "aqua": return "�3Aqua Dolphin";
-		case "black": return "�0Black Raven";
-		case "orange": return "�6Orange Mechanic";
+		case "red": return "§4Red Rocket";
+		case "blue": return "§1Blue Whale";
+		case "green": return "§2Green Turtle";
+		case "yellow": return "§eYellow Stone";
+		case "purple": return "§5Purple Amethyst";
+		case "aqua": return "§3Aqua Dolphin";
+		case "black": return "§0Black Raven";
+		case "orange": return "§6Orange Mechanic";
 
 		default: return "none";
 		}
@@ -321,7 +264,7 @@ public class TeamsManager{
 		Player p;
 		for (String uuid : teams.keySet()) {
 			p = Bukkit.getPlayer(UUID.fromString(uuid));
-			if(p == null) { //Le != null est bugg� des fois
+			if(p == null) { //Le != null est buggé des fois
 				if(NPCManager.getNpcPlayerIfItIs(uuid) != null) {
 					online.put(uuid, teams.get(uuid));
 				}

@@ -40,8 +40,8 @@ public class Interact implements Listener{
 		ItemStack item = e.getItem();
 		if(item == null || item.getType() == Material.AIR) return;
 		
-		if(item.isSimilar(PlayerData.welcolme())) { //Si l'item est le compass de bienvenue
-			Inventory inv = Bukkit.createInventory(null, 54, "§bWarps");
+		if(item.isSimilar(PlayerData.welcome())) { //Si l'item est le compass de bienvenue
+			Inventory inv = Bukkit.createInventory(null, 54, "Â§bWarps");
 			//Do stuff
 			
 			

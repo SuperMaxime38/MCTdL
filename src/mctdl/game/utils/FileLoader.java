@@ -38,13 +38,13 @@ public class FileLoader {
 		}
 	}
 	
-	public static void loadFile(String fileName, String filePath) {
+	public static File loadFile(String fileName, String filePath) {
 		File directory = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + filePath);
 		
 		try {
 			
 			InputStream is = Main.class.getResourceAsStream(DEFAULT_PATH + filePath + fileName);
-			copyStreamIfMissing(is, fileName, directory);
+			return copyStreamIfMissing(is, fileName, directory);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -52,9 +52,11 @@ public class FileLoader {
 			System.out.println("Could not find resource file: " + filePath + fileName);
 		}
 		
+		return null;
+		
 	}
 	
-	private static void copyStreamIfMissing(InputStream is, String fileName, File targetDir) throws IOException {
+	private static File copyStreamIfMissing(InputStream is, String fileName, File targetDir) throws IOException {
 
 	    if (!targetDir.exists()) {
 	        targetDir.mkdirs();
@@ -69,5 +71,7 @@ public class FileLoader {
 	    }
 
 	    is.close();
+	    
+	    return target;
 	}
 }

@@ -20,6 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import mctdl.game.Main;
+import mctdl.game.utils.NBTAPI;
 import mctdl.game.utils.Ray;
 
 public class PortalGun implements Listener {
@@ -47,6 +48,8 @@ public class PortalGun implements Listener {
 		meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		item.setItemMeta(meta);
+		
+		NBTAPI.addNBT(item, "mctdlID", "PORTAL_GUN");
 		
 		return item;
 	}

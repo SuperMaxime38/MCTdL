@@ -18,6 +18,7 @@ import mctdl.game.games.meltdown.npc.MeltdownNPC;
 import mctdl.game.money.MoneyManager;
 import mctdl.game.npc.NPCManager;
 import mctdl.game.teams.TeamsManager;
+import mctdl.game.utils.FileLoader;
 import mctdl.game.utils.GameVoting;
 import mctdl.game.utils.PlayerData;
 import mctdl.game.utils.Time;
@@ -99,7 +100,9 @@ public class TdLCommand implements CommandExecutor{
 				}
 			}
 			if(args[0].equals("pdata-test")) {
-				PlayerData.fileCheck(main);
+				FileLoader.loadFile("lobby.yml", "playerdata");
+				// Future maxime if you don't use this delete it
+				// I updated it bcs I forgot what it is used for
 			}
 			if(args[0].equals("pdata-load")) {
 				PlayerData.loadHashMap(main);
@@ -306,34 +309,42 @@ public class TdLCommand implements CommandExecutor{
 	private String nameStuff(String team) {
 		switch(team) {
 		case "red":
+			if(red.isEmpty()) return "Dummy";
 			String name = red.get(rdm.nextInt(red.size()));
 			red.remove(name);
 			return name;
 		case "blue":
+			if(blue.isEmpty()) return "Dummy";
 			name = blue.get(rdm.nextInt(blue.size()));
 			blue.remove(name);
 			return name;
 		case "green":
+			if(green.isEmpty()) return "Dummy";
 			name = green.get(rdm.nextInt(green.size()));
 			green.remove(name);
 			return name;
 		case "yellow":
+			if(yellow.isEmpty()) return "Dummy";
 			name = yellow.get(rdm.nextInt(yellow.size()));
 			yellow.remove(name);
 			return name;
 		case "purple":
+			if(purple.isEmpty()) return "Dummy";
 			name = purple.get(rdm.nextInt(purple.size()));
 			purple.remove(name);
 			return name;
 		case "aqua":
+			if(aqua.isEmpty()) return "Dummy";
 			name = aqua.get(rdm.nextInt(aqua.size()));
 			aqua.remove(name);
 			return name;
 		case "black":
+			if(black.isEmpty()) return "Dummy";
 			name = black.get(rdm.nextInt(black.size()));
 			black.remove(name);
 			return name;
 		case "orange":
+			if(orange.isEmpty()) return "Dummy";
 			name = orange.get(rdm.nextInt(orange.size()));
 			orange.remove(name);
 			return name;

@@ -30,6 +30,7 @@ import org.bukkit.util.Vector;
 
 import mctdl.game.Main;
 import mctdl.game.money.MoneyManager;
+import mctdl.game.utils.NBTAPI;
 
 public class PouleZooka implements Listener{
 	
@@ -56,6 +57,8 @@ public class PouleZooka implements Listener{
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		item.setItemMeta(meta);
+		
+		NBTAPI.addNBT(item, "mctdlID", "POULEZOOKA");
 		
 		return item;
 	}

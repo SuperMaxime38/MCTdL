@@ -12,11 +12,13 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import mctdl.game.Main;
-import mctdl.game.games.lobby.items.PouleZooka;
+import mctdl.game.dev.ItemGiver;
+import mctdl.game.dev.ItemGiver.CustomItem;
 
 public class PlayerData {
 	
@@ -24,31 +26,12 @@ public class PlayerData {
 	static HashMap<String, HashMap<String, String>> stats = new HashMap<String, HashMap<String, String>>();
 	static HashMap<UUID, HashMap<Object, Object>> other = new HashMap<UUID, HashMap<Object, Object>>(); // Reset on reload / restart
 	
-	@Deprecated
-	public static boolean fileCheck(Main main) {
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "playerdata");
-		File f = new File(userdata, File.separator + "lobby.yml");
-	    FileConfiguration datas = YamlConfiguration.loadConfiguration(f);
-
-	     
-	    if (!f.exists()) { //CREER SI FICHIER N'EXISTE PAS
-	        try {
-	        	datas.createSection("players");
-	        	datas.createSection("stats");
-	        	datas.save(f);
-	        } catch (IOException exception) {
-	            exception.printStackTrace();
-	        }
-	        return false;
-	    } else {
-	    	return true;
-	    }
-	}
+	static HashMap<UUID, ItemStack> chestplates = new HashMap<UUID, ItemStack>();
 	
 	public static void loadHashMap(Main main) {
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "playerdata");
-	    File f = new File(userdata, File.separator + "lobby.yml");
-	    if(!f.exists()) fileCheck(main);
+	    
+		File f = FileLoader.loadFile("lobby.yml", "playerdata/");
+	    
 	    FileConfiguration config = YamlConfiguration.loadConfiguration(f);
 	    
 	    if(config.getConfigurationSection("players").getKeys(false).isEmpty()) {
@@ -143,7 +126,6 @@ public class PlayerData {
 		} else {
 			HashMap<Integer, String> cosmetics = getPlayersData().get(uuid);
 			ItemStack item;
-			ItemMeta meta;
 			int amount = 1;
 			String[] spliter;
 			for(int i : cosmetics.keySet()) {
@@ -153,49 +135,12 @@ public class PlayerData {
 				if(spliter[1] != null) amount = Integer.parseInt(spliter[1]);
 				if(Material.getMaterial(id) != null) {
 					item = new ItemStack(Material.getMaterial(id));
-					item.setAmount(amount);
 				} else {
-					switch(id) {
-					case "poutre":
-						item = new ItemStack(Material.IRON_INGOT);
-						meta = item.getItemMeta();
-						meta.setDisplayName("§4Poutre");
-						meta.setLore(Arrays.asList("§cUne poutre longue et dure"));
-						item.setItemMeta(meta);
-						item.setAmount(amount);
-						break;
-					case "example":
-						item = new ItemStack(Material.DIAMOND);
-						meta = item.getItemMeta();
-						meta.setDisplayName("§6Example Item");
-						meta.setLore(Arrays.asList("§7Ceci est un item exemple"));
-						item.setItemMeta(meta);
-						item.setAmount(amount);
-						break;
-					case "helico_hat":
-						item = helicoHat();
-						item.setAmount(amount);
-						type = "helmet";
-						break;
-					case "welcome":
-						item = welcolme();
-						item.setAmount(amount);
-						Location target = new Location(Bukkit.getWorlds().get(0), 8, 8, -81);
-						p.setCompassTarget(target);
-						break;
-					case "poulezooka":
-						item = PouleZooka.getBazooka();
-						item.setAmount(amount);
-						break;
-					default:
-						item = new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
-						meta = item.getItemMeta();
-						meta.setDisplayName("FAKE AIR");
-						item.setItemMeta(meta);
-						item.setAmount(amount);
-						break;
-					}
+					item = ItemGiver.getItem(CustomItem.valueOf(id.toUpperCase()));
 				}
+				
+				item.setAmount(amount);
+				
 				if(type == "") {
 					p.getInventory().setItem(i, item);
 				} else {
@@ -205,60 +150,34 @@ public class PlayerData {
 					if(type == "boots") p.getInventory().setBoots(item);
 				}
 				type = "";
+				
+				if(item.isSimilar(welcome())) {
+					Location target = new Location(Bukkit.getWorlds().get(0), 8, 8, -81);
+					p.setCompassTarget(target);
+				}
 			}
 		}
 	}
 	
+	/**
+	 * FOR NPC ONLY
+	 * @param id
+	 * @return
+	 */
 	public static ItemStack getItem(String id) { //POUR LES NPCs !!!!!
 		int amount = 1;
 		ItemStack item;
-		ItemMeta meta;
 		String[] spliter;
 		spliter = id.split("\\*");
 		id = spliter[0];
 		if(spliter[1] != null) amount = Integer.parseInt(spliter[1]);
 		if(Material.getMaterial(id) != null) {
 			item = new ItemStack(Material.getMaterial(id));
-			item.setAmount(amount);
 		} else {
-			switch(id) {
-			case "poutre":
-				item = new ItemStack(Material.IRON_INGOT);
-				meta = item.getItemMeta();
-				meta.setDisplayName("§4Poutre");
-				meta.setLore(Arrays.asList("§cUne poutre longue et dure"));
-				item.setItemMeta(meta);
-				item.setAmount(amount);
-				break;
-			case "example":
-				item = new ItemStack(Material.DIAMOND);
-				meta = item.getItemMeta();
-				meta.setDisplayName("§6Example Item");
-				meta.setLore(Arrays.asList("§7Ceci est un item exemple"));
-				item.setItemMeta(meta);
-				item.setAmount(amount);
-				break;
-			case "helico_hat":
-				item = helicoHat();
-				item.setAmount(amount);
-				break;
-			case "welcome":
-				item = welcolme();
-				item.setAmount(amount);
-				break;
-			case "poulezooka":
-				item = PouleZooka.getBazooka();
-				item.setAmount(amount);
-				break;
-			default:
-				item = new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
-				meta = item.getItemMeta();
-				meta.setDisplayName("FAKE AIR");
-				item.setItemMeta(meta);
-				item.setAmount(amount);
-				break;
-			}
+			item = ItemGiver.getItem(CustomItem.valueOf(id));
 		}
+
+		item.setAmount(amount);
 		
 		return item;
 	}
@@ -270,41 +189,36 @@ public class PlayerData {
 		
 		//Items
 		String id;
-		String name;
 		int amount = 1;
 		int slot;
-		for (ItemStack item : p.getInventory().getContents()) {
+		
+		Inventory inv = p.getInventory();
+		
+		for (ItemStack item : inv.getContents()) {
 			if(item != null) {
 				amount = item.getAmount();
-				slot = p.getInventory().first(item);
-				if(item.getItemMeta().hasLore()) { //Si c'est un item custom
-					name = item.getItemMeta().getDisplayName();
-					switch(name) {
-					case "§4Poutre":
-						id = "poutre";
-						break;
-					case "§6Example Item":
-						id = "example";
-						break;
-					case "§6Welcome":
-						id = "welcome";
-						break;
-					case "§ePouleZooka":
-						id = "poulezooka";
-						break;
-					default:
-						id = "example";
-						break;
-					}
-				} else { //ITEM NORMAL
-					id= item.getType().toString();
+				slot = inv.first(item);
+				
+				
+				if(NBTAPI.hasNBT(item, "mctdlID")) { // C'est un item custom
+					id = NBTAPI.getNBT(item, "mctdlID");
+				} else {
+					id = item.getType().toString();
 				}
+				
 				id += "*" + amount;
 				
 				//Save in player hashmap
+				
+				if(slot == -1) {
+					System.out.println("somehow this item is in slot -1 ._. : " + item);
+					continue;
+				} 
+				
 				playerinv.put(slot, id);
 			}
 		}
+		
 		
 		//Save in playersdata
 		items.put(uuid, playerinv);
@@ -312,6 +226,26 @@ public class PlayerData {
 	
 	public static void addItem(Player p, int slot, String item) {
 		//A FAIRE
+	}
+	
+	/**
+	 * Used in Move.java for double jump chestplate change
+	 * @param uuid
+	 * @param item
+	 */
+	public static void rememberChestplate(UUID uuid, ItemStack item) {
+		chestplates.put(uuid, item);
+	}
+	
+	/**
+	 * Used in Move.java for double jump thingy
+	 * 
+	 * @param uuid
+	 */
+	public static ItemStack getPlayerChestplate(UUID uuid) {
+		ItemStack item = chestplates.get(uuid);
+		
+		return item;
 	}
 	
 	public static void setInventory(Player p, HashMap<Integer, ItemStack> items) {
@@ -339,12 +273,15 @@ public class PlayerData {
 		return item;
 	}
 	
-	public static ItemStack welcolme() {
+	public static ItemStack welcome() {
 		ItemStack item = new ItemStack(Material.COMPASS);
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName("§6Welcome");
 		meta.setLore(Arrays.asList("§7Bienvenue dans le §6§lTournoi des Légendes", "§aQue le meilleur gagne"));
 		item.setItemMeta(meta);
+		
+		NBTAPI.addNBT(item, "mctdlID", "WELCOME");
+		
 		return item;
 	}
 	public static ItemStack supporter(String team) {

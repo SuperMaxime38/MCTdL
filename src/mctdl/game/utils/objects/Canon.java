@@ -35,6 +35,7 @@ import org.bukkit.util.Vector;
 
 import mctdl.game.Main;
 import mctdl.game.utils.LobbyData;
+import mctdl.game.utils.NBTAPI;
 
 public class Canon implements Listener{
 	
@@ -58,6 +59,8 @@ public class Canon implements Listener{
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		
 		item.setItemMeta(meta);
+		
+		NBTAPI.addNBT(item, "mctdlID", "CANON");
 		
 		return item;
 	}
@@ -175,7 +178,7 @@ public class Canon implements Listener{
 		dfloc.add(B);
 		dfloc.add(Chair);
 		defaut.put(String.valueOf(chairsd.getUniqueId()), dfloc);
-		LobbyData.fileCheck(main);
+		
 		LobbyData.setCanonDatas(canons);
 		
 		

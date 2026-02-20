@@ -12,6 +12,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import mctdl.game.utils.NBTAPI;
+
 public class VelocityBooster implements Listener {
 	
 	public static ItemStack getItem() {
@@ -25,6 +27,9 @@ public class VelocityBooster implements Listener {
 		meta.addItemFlags(ItemFlag.HIDE_DYE);
 		
 		item.setItemMeta(meta);
+		
+		NBTAPI.addNBT(item, "mctdlID", "VELOCITY_BOOSTER");
+		
 		return item;
 	}
 	

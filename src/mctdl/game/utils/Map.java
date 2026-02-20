@@ -1,18 +1,32 @@
 package mctdl.game.utils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import mctdl.game.Main;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import com.sk89q.worldedit.function.operation.Operation;
+import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.session.ClipboardHolder;
+import com.sk89q.worldedit.world.block.BlockTypes;
 
 public class Map {
-	
-	private Main main;
 	
 	private String schem;
 	private Location center;
@@ -25,14 +39,12 @@ public class Map {
 	
 	public static Map current;
 	
-	public Map(Main main) {
-		this.main = main;
+	public Map() {
 
 		current = this;
 	}
 	
-	public Map(Main main, String schem, Location center, String world) {
-		this.main = main;
+	public Map(String schem, Location center, String world) {
 		
 		this.schem = schem;
 		this.center = center;
@@ -43,8 +55,7 @@ public class Map {
 		current = this;
 	}
 	/**
-	 * 
-	 * @param main
+	 * Create a map "view" --> allows to build & destroy a gamemode map
 	 * @param schem (the schem name no need for extension)
 	 * @param center (apply point of schem)
 	 * @param world
@@ -54,8 +65,7 @@ public class Map {
 	 * @param radius
 	 * @param name
 	 */
-	public Map(Main main, String schem, Location center, String world, HashMap<String, Location> spawns, List<Cuboid> doors, int lowestPoint, int radius, String name) {
-		this.main = main;
+	public Map(String schem, Location center, String world, HashMap<String, Location> spawns, List<Cuboid> doors, int lowestPoint, int radius, String name) {
 		
 		this.schem = schem;
 		this.center = center;
@@ -81,35 +91,48 @@ public class Map {
 	}
 	
 	public void build(boolean withAir) {
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/world " + world);
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "schem load " + schem);
 
 		int X = center.getBlockX();
 		int Y = center.getBlockY();
 		int Z = center.getBlockZ();
 		
-		new BukkitRunnable() {
+		Location loc = new Location(Bukkit.getWorld(world), X, Y, Z);
+		
+		com.sk89q.worldedit.world.World world = BukkitAdapter.adapt(loc.getWorld());
+		File file = FileLoader.loadFile(schem + ".schem", "schematics/");
+		ClipboardFormat format = ClipboardFormats.findByFile(file);
+		
+		try(ClipboardReader reader = format.getReader(new FileInputStream(file));
+				EditSession editSession = WorldEdit.getInstance().newEditSession(world);
+				) {
 			
-			@Override
-			public void run() {
-				System.out.println("[" + name +"] > Schemati loaded");
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/pos1 " + X + "," + Y + "," + Z);
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/pos2 " + X + "," + Y + "," + Z);
-				if(withAir) {
-					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/paste");
-				} else {
-					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/paste -a");
-				}
-				System.out.println("[" + name+ "] > Schematic pasted");
-			}
-		}.runTaskLater(main, 40);
+			Clipboard clipboard = reader.read();
+			Operation pasteOperation = new ClipboardHolder(clipboard)
+					.createPaste(editSession)
+					.to(BlockVector3.at(X, Y, Z))
+					.build();
+			
+			Operations.complete(pasteOperation);
+			
+			System.out.println("[" + name+ "] > Schematic pasted");
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (WorldEditException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void deleteTerrain() {
 
-		System.out.println("[" + name+ "] > LAG WARNING : a lag is incoming (map deletion)");
+		System.out.println("[" + name + "] > LAG WARNING : a lag is incoming (map deletion)");
 		
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/world " + world);
+//		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/world " + world);
 		
 		int XC = center.getBlockX();
 		int YC = center.getBlockY();
@@ -122,11 +145,27 @@ public class Map {
 		int Y2 = YC + radius;
 		int Z2 = ZC + radius;
 		
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/pos1 " + X1 + "," + Y1 + "," + Z1);
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/pos2 " + X2 + "," + Y2 + "," + Z2);
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/cut");
+//		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/pos1 " + X1 + "," + Y1 + "," + Z1);
+//		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/pos2 " + X2 + "," + Y2 + "," + Z2);
+//		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/cut");
 		
-		System.out.println("[" + name+ "] > Deleted da Terrain");
+		
+		Location loc = new Location(Bukkit.getWorld(world), X1, Y1, Z1);
+		
+		com.sk89q.worldedit.world.World world = BukkitAdapter.adapt(loc.getWorld());
+		
+		try(EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
+			
+			editSession.setBlocks(new CuboidRegion(BlockVector3.at(X1, Y1, Z1), BlockVector3.at(X2, Y2, Z2)), BlockTypes.AIR.getDefaultState());
+			
+			Operations.complete(editSession.commit());
+
+			System.out.println("[" + name+ "] > Deleted da Terrain");
+			
+		} catch (WorldEditException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void deleteDoors() {

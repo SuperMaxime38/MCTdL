@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -15,27 +14,11 @@ public class LobbyData {
 	
 	static HashMap<String, List<String>> canon = new HashMap<>();
 	
-	public static File fileCheck(Main main) {
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "lobbydata");
-		File f = new File(userdata, File.separator + "datas.yml");
-	    FileConfiguration datas = YamlConfiguration.loadConfiguration(f);
-
-	     
-	    if (!f.exists()) { //CREER SI FICHIER N'EXISTE PAS
-	        try {
-	        	datas.createSection("canon");
-	        	datas.save(f);
-	        } catch (IOException exception) {
-	            exception.printStackTrace();
-	        }
-	        return f;
-	    } else {
-	    	return f;
-	    }
-	}
 	
 	public static void updateConfig(Main main) {
-		File f = fileCheck(main);
+	    
+	    File f =  FileLoader.loadFile("datas.yml", "lobbydata/"); // new way to create new file if not exist
+	    
 		FileConfiguration datas = YamlConfiguration.loadConfiguration(f);
 		for(String id : canon.keySet()) {
 			datas.set("canon." + id, canon.get(id));
@@ -49,7 +32,7 @@ public class LobbyData {
 	}
 	
 	public static void loadDatas(Main main) {
-		File f = fileCheck(main);
+		File f = FileLoader.loadFile("datas.yml", "lobbydata/");
 		FileConfiguration datas = YamlConfiguration.loadConfiguration(f);
 		if(datas.getConfigurationSection("canon") != null) {
 			for(String sec : datas.getConfigurationSection("canon").getKeys(false)) {

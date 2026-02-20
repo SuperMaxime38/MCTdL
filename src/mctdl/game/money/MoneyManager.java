@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -17,32 +16,6 @@ static HashMap<String, Integer> balances = new HashMap<String, Integer>();
 static HashMap<String, Integer> lifetime = new HashMap<String, Integer>();
 static HashMap<String, Integer> poutres_owners = new HashMap<String, Integer>();
 	
-	@Deprecated 
-	public static boolean fileCheck(Main main){
-    	
-	     File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "money");
-	     File f = new File(userdata, File.separator + "balances.yml");
-	     FileConfiguration preset = YamlConfiguration.loadConfiguration(f);
-
-	     
-	     if (!f.exists()) { //CREER SI FICHIER N'EXISTE PAS
-	         try {
-	        	 
-	        	 preset.createSection("balances");
-	        	 preset.createSection("lifetime");
-	        	 preset.createSection("poutres");
-	        	 
-	             preset.save(f);
-	             
-	         } catch (IOException exception) {
-
-	             exception.printStackTrace();
-	         }
-	         return false;
-	     } else {
-	    	 return true;
-	     }
-     }
 	 
 	public static HashMap<String, Integer> getRegsPlayer() {return balances;}
 	public static HashMap<String, Integer> getLifeTimeCoins() {return lifetime;}
@@ -92,9 +65,9 @@ static HashMap<String, Integer> poutres_owners = new HashMap<String, Integer>();
 	}
 	
 	public static void loadHashMap(Main main) {
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "money");
-	    File f = new File(userdata, File.separator + "balances.yml");
-	    if(!f.exists()) fileCheck(main);
+	    
+	    File f = FileLoader.loadFile("balances.yml", "money/");
+	    
 	    FileConfiguration config = YamlConfiguration.loadConfiguration(f);
 	    
 	    balances.clear();
@@ -112,12 +85,8 @@ static HashMap<String, Integer> poutres_owners = new HashMap<String, Integer>();
 	}
 	
 	public static void updateConfig(Main main) {
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "money"); //A FAIRE
-	    File f = new File(userdata, File.separator + "balances.yml");
 	    
-	    
-	    // fileCheck(main);
-	    FileLoader.loadFile("balances.yml", "money/"); // new way to create new file if not exist
+	    File f = FileLoader.loadFile("balances.yml", "money/"); // new way to create new file if not exist
 	    
 	    
 	    FileConfiguration yaml = YamlConfiguration.loadConfiguration(f);
