@@ -10,12 +10,14 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import mctdl.game.Main;
 import mctdl.game.tablist.TabManager;
+import mctdl.game.utils.FileLoader;
 
 public class MoneyManager {
 static HashMap<String, Integer> balances = new HashMap<String, Integer>();
 static HashMap<String, Integer> lifetime = new HashMap<String, Integer>();
 static HashMap<String, Integer> poutres_owners = new HashMap<String, Integer>();
 	
+	@Deprecated 
 	public static boolean fileCheck(Main main){
     	
 	     File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "money");
@@ -112,20 +114,28 @@ static HashMap<String, Integer> poutres_owners = new HashMap<String, Integer>();
 	public static void updateConfig(Main main) {
 		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "money"); //A FAIRE
 	    File f = new File(userdata, File.separator + "balances.yml");
-	    fileCheck(main);
+	    
+	    
+	    // fileCheck(main);
+	    FileLoader.loadFile("balances.yml", "money/"); // new way to create new file if not exist
+	    
+	    
 	    FileConfiguration yaml = YamlConfiguration.loadConfiguration(f);
 	    
 	    yaml.set("balances", null);
+	    yaml.createSection("balances");
 	    for (String uuid : balances.keySet()) {
 			yaml.set("balances." + uuid, balances.get(uuid));
 		}
 
 	    yaml.set("lifetime", null);
+	    yaml.createSection("lifetime");
 	    for (String uuid : lifetime.keySet()) {
 			yaml.set("lifetime." + uuid, lifetime.get(uuid));
 		}
 	    
 	    yaml.set("poutres", null); //POUTRE
+	    yaml.createSection("poutres");
 	    for (String uuid : poutres_owners.keySet()) {
 			yaml.set("poutres." + uuid, poutres_owners.get(uuid));
 		}

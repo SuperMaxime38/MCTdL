@@ -28,6 +28,7 @@ public class TeamsManager{
 	 * @param Main instance
 	 * @return true if the file exists, false if not
 	 */
+	 @Deprecated
 	public static boolean fileCheck(Main main){
     	
 	     File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "teams");
@@ -243,7 +244,7 @@ public class TeamsManager{
 	/**
 	 * 
 	 * Retourne la couleur de la team du joueur
-	 * Si le joueur n'appartient pas à une équipe, la couleur sera blanche
+	 * Si le joueur n'appartient pas ï¿½ une ï¿½quipe, la couleur sera blanche
 	 * 
 	 * @param uuid
 	 * @return la couleur au format ChatColor
@@ -282,14 +283,14 @@ public class TeamsManager{
 	public static String getTeamName(String uuid) {
 		String team = getPlayerTeam(uuid);
 		switch (team) {
-		case "red": return "§4Red Rocket";
-		case "blue": return "§1Blue Whale";
-		case "green": return "§2Green Turtle";
-		case "yellow": return "§eYellow Stone";
-		case "purple": return "§5Purple Amethyst";
-		case "aqua": return "§3Aqua Dolphin";
-		case "black": return "§0Black Raven";
-		case "orange": return "§6Orange Mechanic";
+		case "red": return "ï¿½4Red Rocket";
+		case "blue": return "ï¿½1Blue Whale";
+		case "green": return "ï¿½2Green Turtle";
+		case "yellow": return "ï¿½eYellow Stone";
+		case "purple": return "ï¿½5Purple Amethyst";
+		case "aqua": return "ï¿½3Aqua Dolphin";
+		case "black": return "ï¿½0Black Raven";
+		case "orange": return "ï¿½6Orange Mechanic";
 
 		default: return "none";
 		}
@@ -297,14 +298,14 @@ public class TeamsManager{
 	
 	public static String getTeamNameByTeam(String teamname) {
 		switch (teamname) {
-		case "red": return "§4Red Rocket";
-		case "blue": return "§1Blue Whale";
-		case "green": return "§2Green Turtle";
-		case "yellow": return "§eYellow Stone";
-		case "purple": return "§5Purple Amethyst";
-		case "aqua": return "§3Aqua Dolphin";
-		case "black": return "§0Black Raven";
-		case "orange": return "§6Orange Mechanic";
+		case "red": return "ï¿½4Red Rocket";
+		case "blue": return "ï¿½1Blue Whale";
+		case "green": return "ï¿½2Green Turtle";
+		case "yellow": return "ï¿½eYellow Stone";
+		case "purple": return "ï¿½5Purple Amethyst";
+		case "aqua": return "ï¿½3Aqua Dolphin";
+		case "black": return "ï¿½0Black Raven";
+		case "orange": return "ï¿½6Orange Mechanic";
 
 		default: return "none";
 		}
@@ -320,7 +321,7 @@ public class TeamsManager{
 		Player p;
 		for (String uuid : teams.keySet()) {
 			p = Bukkit.getPlayer(UUID.fromString(uuid));
-			if(p == null) { //Le != null est buggé des fois
+			if(p == null) { //Le != null est buggï¿½ des fois
 				if(NPCManager.getNpcPlayerIfItIs(uuid) != null) {
 					online.put(uuid, teams.get(uuid));
 				}

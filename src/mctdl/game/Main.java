@@ -50,6 +50,7 @@ import mctdl.game.npc.NPCManager;
 import mctdl.game.scoreboard.ScoreboardManager;
 import mctdl.game.tablist.TabManager;
 import mctdl.game.teams.TeamsManager;
+import mctdl.game.utils.FileLoader;
 import mctdl.game.utils.GameVoting;
 import mctdl.game.utils.PlayerData;
 import mctdl.game.utils.Spectate;
@@ -62,6 +63,7 @@ public class Main extends JavaPlugin{
 	Main main = this;
 	public static String game;
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();
@@ -79,10 +81,15 @@ public class Main extends JavaPlugin{
 		
 		//FileCheck
 		TeamsManager.fileCheck(this);
-		MoneyManager.fileCheck(this);
 		MeltdownFiles.fileCheck(this);
-		PlayerData.fileCheck(this);
 		NexusFiles.fileCheck(this);
+
+		// These have been replaced by the new system because they were too weak
+		// MoneyManager.fileCheck(this);
+		// PlayerData.fileCheck(this);
+		
+		// New file loading method
+		FileLoader.loadFiles();
 		
 		//Load HashMap
 		TeamsManager.loadHashMap(this);

@@ -62,6 +62,7 @@ static List<EntityPlayer> lookPlayer = new ArrayList<>();
 static Main main;
 //static HashMap<String, List<String>> data = new HashMap<String, List<String>>();
 
+	@Deprecated
 	public static boolean fileCheck(Main main){
 		NPCManager.main = main;
     	
@@ -114,6 +115,7 @@ static Main main;
 	    FileConfiguration yaml = YamlConfiguration.loadConfiguration(f);
 	    
 	    yaml.set("textures", null);
+	    yaml.createSection("textures");
 	    for (String uuid : textures.keySet()) {
 			yaml.set("textures." + uuid, textures.get(uuid));
 		}
@@ -422,7 +424,7 @@ static Main main;
 	            e.printStackTrace();
 	        }
 	    } else {
-	        uuid = Bukkit.getPlayer(name).getUniqueId().toString().replaceAll("-", ""); //Get UUID et enlève les -
+	        uuid = Bukkit.getPlayer(name).getUniqueId().toString().replaceAll("-", ""); //Get UUID et enlï¿½ve les -
 	    }
 	    
 	    

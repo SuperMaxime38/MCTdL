@@ -103,7 +103,7 @@ public class Meltdown implements Listener {
 		counter = 0; // Var used for gameTimer (super important)
 		
 		boolean isMapGenerated = MeltdownFiles.isMapGenerated(main);
-		if (isMapGenerated == false) {
+		if (!isMapGenerated) {
 			Bukkit.broadcastMessage("§aThe game will start soon...");
 			Bukkit.broadcastMessage("§fNote : Les §6Coins §fque vous obtennez pendant la partie sont affichés dans la §atablist");
 			MDMap.generateMap(main);

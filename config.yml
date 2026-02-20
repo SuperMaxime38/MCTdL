@@ -55,3 +55,13 @@ games:
       dmg: 10
   nexus:
     map: nexus
+  hungergames:
+    map: hungergames_tree
+    border:
+      delay: 120 	# Delay in seconds
+    money:
+      kill: 100
+      survive: 10 	# Every minute
+      assist: 30	# more than 10HP damage
+      win: 150		# per player
+      coinDrop: 200 # only the one that claim the drop

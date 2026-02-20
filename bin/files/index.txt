@@ -1,0 +1,3 @@
+hungergames_tree.yml:maps/
+balances.yml:money/
+lobby.yml:playerdata/

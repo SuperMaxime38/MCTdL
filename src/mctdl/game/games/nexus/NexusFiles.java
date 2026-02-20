@@ -10,6 +10,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import mctdl.game.Main;
 
 public class NexusFiles {
+	
+	@Deprecated
 	public static boolean fileCheck(Main main) {
 		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "maps");
 		File f = new File(userdata, File.separator + "nexus.yml");

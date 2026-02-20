@@ -24,6 +24,7 @@ public class PlayerData {
 	static HashMap<String, HashMap<String, String>> stats = new HashMap<String, HashMap<String, String>>();
 	static HashMap<UUID, HashMap<Object, Object>> other = new HashMap<UUID, HashMap<Object, Object>>(); // Reset on reload / restart
 	
+	@Deprecated
 	public static boolean fileCheck(Main main) {
 		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "playerdata");
 		File f = new File(userdata, File.separator + "lobby.yml");
@@ -91,16 +92,21 @@ public class PlayerData {
 	public static void updateConfig(Main main) {
 		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + "playerdata"); //A FAIRE
 	    File f = new File(userdata, File.separator + "lobby.yml");
-	    fileCheck(main);
+	    
+	    //fileCheck(main);
+	    FileLoader.loadFile("lobby.yml", "playerdata/");
+	    
 	    FileConfiguration data = YamlConfiguration.loadConfiguration(f);
 	    
 	    data.set("players", null);
+	    data.createSection("players");
 	    for (String uuid : items.keySet()) {
 			HashMap<Integer, String> playerdata = items.get(uuid);
 			data.set("players." + uuid, playerdata);
 		}
 
 	    data.set("stats", null);
+	    data.createSection("stats");
 	    for (String uuid : stats.keySet()) {
 			HashMap<String, String> playerdata = stats.get(uuid);
 			data.set("stats." + uuid, playerdata);
@@ -119,7 +125,7 @@ public class PlayerData {
 		stats.put(playerUUID, statistics);
 	}
 	
-	public static void registerPlayer(Player p) { //Quand joueur se connecte ou sors d'un minijeu (charge ses cosm§tiques)
+	public static void registerPlayer(Player p) { //Quand joueur se connecte ou sors d'un minijeu (charge ses cosmétiques)
 		String uuid = p.getUniqueId().toString();
 		String type = "";
 		if(!getPlayersData().containsKey(uuid)) {
