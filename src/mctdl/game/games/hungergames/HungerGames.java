@@ -15,6 +15,7 @@ import org.bukkit.WorldBorder;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.ThrowableProjectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -38,7 +39,10 @@ public final class HungerGames implements Listener{
 	
 	private List<UUID> alivePlayers;
 	private List<String> aliveTeams;
-	private HashMap<UUID, int[]> playerdatas;
+	private static HashMap<UUID, int[]> playerdatas;
+	
+	private static HashMap<UUID, HashMap<UUID, Double>> damages;
+	
 	private HashMap<String, Location> spawns;
 	private WorldBorder border;
 	private boolean reachedBorderMinValue;
@@ -69,6 +73,8 @@ public final class HungerGames implements Listener{
 		aliveTeams = new ArrayList<String>();
 		playerdatas = new HashMap<UUID, int[]>();
 		spawns = new HashMap<String, Location>();
+		
+		damages = new HashMap<UUID, HashMap<UUID, Double>>();
 		
 		// From config
 		map = new HungerGamesMap(main.getConfig().getString("games.hungergames.map"));
@@ -152,6 +158,9 @@ public final class HungerGames implements Listener{
 			
 			p.getInventory().setItem(8, getTracker());;
 			p.setCompassTarget(map.getCenter());
+			
+			HashMap<UUID, Double> damage = new HashMap<UUID, Double>();
+			damages.put(p.getUniqueId(), damage);
 		}
 		
 		
@@ -297,7 +306,7 @@ public final class HungerGames implements Listener{
 	// ############ LISTENERS ############
 	
 	@EventHandler
-	public static void onPlayerDeath(EntityDamageByEntityEvent e) {
+	public static void onDamage(EntityDamageByEntityEvent e) {
 		if(!(e.getEntity() instanceof Player)) return;
 		if(NPCManager.getNpcByUUID(e.getEntity().getUniqueId().toString()) != null) return; // Not a player
 		
@@ -305,10 +314,41 @@ public final class HungerGames implements Listener{
 		
 		Entity damager = e.getDamager();
 		
-		if(p.getHealth() <= 0) {
-			
+		double damageValue = e.getDamage();
+		
+		damageHandler(p, damager, damageValue);
+		
+	}
+	
+	private static void damageHandler(Player victim, Entity damager, double damageValue) {
+		Player culprit;
+		if(damager instanceof ThrowableProjectile && ((ThrowableProjectile) damager).getShooter() instanceof Player) {
+			culprit = (Player) ((ThrowableProjectile) damager).getShooter();
+		} else if(damager instanceof Player) {
+			culprit = (Player) damager;
 		} else {
+			return; // Player did not cause the damage
+		}
+		
+		if(damages.containsKey(culprit.getUniqueId())) {
+			HashMap<UUID, Double> damageThing = damages.get(culprit.getUniqueId());
+			double newDamage = damageThing.get(victim.getUniqueId()) + damageValue;
+			damageThing.put(victim.getUniqueId(), newDamage);
+			damages.put(culprit.getUniqueId(), damageThing);
 			
+			int[] datas = playerdatas.get(culprit.getUniqueId());
+			datas[3] += damageValue;
+			playerdatas.put(culprit.getUniqueId(), datas);
+			
+			deathHandler(victim, culprit);
+		}
+	}
+	
+	private static void deathHandler(Player victim, Player damager) {
+		if(victim.getHealth() <= 0) {
+			int[] datas = playerdatas.get(damager.getUniqueId());
+			datas[2] += 1; // +1 kill
+			playerdatas.put(damager.getUniqueId(), datas);
 		}
 	}
 }
