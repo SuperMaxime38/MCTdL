@@ -28,6 +28,7 @@ import mctdl.game.dev.ItemGiver;
 import mctdl.game.dev.ItemGiverCompleter;
 import mctdl.game.games.deathswap.DeathSwap;
 import mctdl.game.games.deathswap.DeathSwapCommand;
+import mctdl.game.games.hungergames.HungerGames;
 import mctdl.game.games.lobby.LobbyJump;
 import mctdl.game.games.lobby.items.NuclearRollerSkates;
 import mctdl.game.games.lobby.items.PortalGun;
@@ -156,6 +157,9 @@ public class Main extends JavaPlugin{
 		
 		//Nexus
 		getServer().getPluginManager().registerEvents(new Nexus(this), this);
+		
+		//HungerGames
+		getServer().getPluginManager().registerEvents(new HungerGames(this), this);
 		
 		//Register LISTENERS---------------------------------------------------------
 		getServer().getPluginManager().registerEvents(new Damage(this), this);

@@ -1,1 +1,41 @@
 isGenerated: false
+schemX: 0
+schemY: 0
+schemZ: 0
+world: mapz
+border:
+  min: 16
+  max: 420
+spawns:
+  red:
+    X: 0
+    Y: 0
+    Z: 0
+  blue:
+	X: 0
+	Y: 0
+	Z: 0
+  green:
+	X: 0
+	Y: 0
+	Z: 0
+  yellow:
+	X: 0
+	Y: 0
+	Z: 0
+  purple:
+	X: 0
+	Y: 0
+	Z: 0
+  aqua:
+	X: 0
+	Y: 0
+	Z: 0
+  orange:
+	X: 0
+	Y: 0
+	Z: 0
+  black:
+	X: 0
+	Y: 0
+	Z: 0

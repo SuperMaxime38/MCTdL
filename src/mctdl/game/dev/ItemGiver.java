@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import mctdl.game.games.general_items.VelocityBooster;
+import mctdl.game.games.hungergames.HungerGames;
 import mctdl.game.games.lobby.items.NuclearRollerSkates;
 import mctdl.game.games.lobby.items.PortalGun;
 import mctdl.game.games.lobby.items.PouleZooka;
@@ -139,6 +140,15 @@ public class ItemGiver implements CommandExecutor{
 		case MD_TEAM_PICKAXE:
 			it = Meltdown.getPickaxe();
 			break;
+			
+		// NEXUS
+		case HUNGERGAMES_TRACKER:
+			it = HungerGames.getTracker();
+			break;
+			
+			
+		// HUNGERGAMES
+			
 			
 		//OBJECTS
 		case CANON:
@@ -275,11 +285,10 @@ public class ItemGiver implements CommandExecutor{
 			it.setItemMeta(meta);
 			break;
 		default:
-			it = new ItemStack(Material.AIR);
-			break;
+			return new ItemStack(Material.AIR);
 		}
 		
-		NBTAPI.addNBT(it, "mctdlID", item.toString());
+		if(!NBTAPI.hasNBT(it, "mctdlID")) NBTAPI.addNBT(it, "mctdlID", item.toString());
 		
 		return it;
 	}
@@ -306,6 +315,11 @@ public class ItemGiver implements CommandExecutor{
 		MD_COOLDOWN_PICKAXE,
 		MD_TEAM_PICKAXE,
 		MD_HEATER,
+		
+		// Nexus Items
+		
+		// HungerGames Items
+		HUNGERGAMES_TRACKER,
 		
 		//Objects
 		CANON,

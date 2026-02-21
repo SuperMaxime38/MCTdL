@@ -80,7 +80,7 @@ public class Nexus implements Listener{
 		
 		//Map variable stuff
 		//HashMap<String, Location> spawns = new HashMap<String, Location>();
-		map = new Map(cfg.getString("map"), new Location(Bukkit.getWorld("mapz"), 8, 13, 8), "mapz", null, null, 0, -1, "Nexus");
+		map = new Map(cfg.getString("map"), new Location(Bukkit.getWorld("mapz"), 8, 13, 8), null, null, 0, -1, "Nexus");
 		
 		if(!NexusFiles.isMapGenerated(main)) { //G§n§re la map
 			Bukkit.broadcastMessage("§6Generating §bNexus §6map... §cThis could cause some lag :)");

@@ -38,6 +38,12 @@ public class FileLoader {
 		}
 	}
 	
+	/**
+	 * Load the file, copy it if it does not exist
+	 * @param fileName
+	 * @param filePath
+	 * @return The file in the directory
+	 */
 	public static File loadFile(String fileName, String filePath) {
 		File directory = new File(Bukkit.getServer().getPluginManager().getPlugin("MCTdL").getDataFolder(), File.separator + filePath);
 		
@@ -56,6 +62,15 @@ public class FileLoader {
 		
 	}
 	
+	/**
+	 * If the file does not exist, copy it to the target directory
+	 * 
+	 * @param is the content of the file
+	 * @param fileName the filename
+	 * @param targetDir the directory of the file
+	 * @return the file IF IT exists, the copied file otherwise
+	 * @throws IOException --> if somehow the copy fails it will return null
+	 */
 	private static File copyStreamIfMissing(InputStream is, String fileName, File targetDir) throws IOException {
 
 	    if (!targetDir.exists()) {

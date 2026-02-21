@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -30,26 +29,32 @@ public class Map {
 	
 	private String schem;
 	private Location center;
-	private String world;
-	private HashMap<String, Location> spawns;
+	protected HashMap<String, Location> spawns;
 	private List<Cuboid> doors;
 	private int lowestPoint;
 	private int radius;
 	private String name = "MAP";
+	private boolean isGenerated;
 	
 	public static Map current;
 	
-	public Map() {
-
+	public Map(String schem) {
+		this.schem = schem;
+		
+		
+		
 		current = this;
+		isGenerated = false;
+		spawns = new HashMap<String, Location>();
 	}
 	
-	public Map(String schem, Location center, String world) {
+	public Map(String schem, Location center) {
 		
 		this.schem = schem;
 		this.center = center;
-		this.world = world;
 		
+		
+		isGenerated = false;
 		this.spawns = new HashMap<String, Location>();
 		
 		current = this;
@@ -65,16 +70,17 @@ public class Map {
 	 * @param radius
 	 * @param name
 	 */
-	public Map(String schem, Location center, String world, HashMap<String, Location> spawns, List<Cuboid> doors, int lowestPoint, int radius, String name) {
+	public Map(String schem, Location center, HashMap<String, Location> spawns, List<Cuboid> doors, int lowestPoint, int radius, String name) {
 		
 		this.schem = schem;
 		this.center = center;
-		this.world = world;
 		this.spawns = spawns;
 		this.doors = doors;
 		this.lowestPoint = lowestPoint;
 		this.radius = radius;
 		this.name = name;
+		
+		isGenerated = false;
 		
 		this.spawns = new HashMap<String, Location>();
 		
@@ -96,9 +102,8 @@ public class Map {
 		int Y = center.getBlockY();
 		int Z = center.getBlockZ();
 		
-		Location loc = new Location(Bukkit.getWorld(world), X, Y, Z);
 		
-		com.sk89q.worldedit.world.World world = BukkitAdapter.adapt(loc.getWorld());
+		com.sk89q.worldedit.world.World world = BukkitAdapter.adapt(center.getWorld());
 		File file = FileLoader.loadFile(schem + ".schem", "schematics/");
 		ClipboardFormat format = ClipboardFormats.findByFile(file);
 		
@@ -150,7 +155,7 @@ public class Map {
 //		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/cut");
 		
 		
-		Location loc = new Location(Bukkit.getWorld(world), X1, Y1, Z1);
+		Location loc = new Location(center.getWorld(), X1, Y1, Z1);
 		
 		com.sk89q.worldedit.world.World world = BukkitAdapter.adapt(loc.getWorld());
 		
@@ -183,14 +188,6 @@ public class Map {
 		return center;
 	}
 	
-	public String getWorldname() {
-		return world;
-	}
-	
-	public World getWorld() {
-		return Bukkit.getWorld(world);
-	}
-	
 	public HashMap<String, Location> getSpawns() {
 		return spawns;
 	}
@@ -211,6 +208,14 @@ public class Map {
 		return name;
 	}
 	
+	public World getWorld() {
+		return center.getWorld();
+	}
+	
+	public boolean isGenerated() {
+		return isGenerated;
+	}
+	
 	//Setters
 	public void setSpawn(String team, Location spawn) {
 		this.spawns.put(team, spawn);
@@ -219,4 +224,42 @@ public class Map {
 	public void setSpawns(HashMap<String, Location> spawns) {
 		this.spawns = spawns;
 	}
+	
+	public void setIsGenerated(boolean isGenerated) {
+		this.isGenerated = isGenerated;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setSchem(String schem) {
+		this.schem = schem;
+	}
+
+	public void setCenter(Location center) {
+		this.center = center;
+	}
+
+	public void setDoors(List<Cuboid> doors) {
+		this.doors = doors;
+	}
+
+	public void setLowestPoint(int lowestPoint) {
+		this.lowestPoint = lowestPoint;
+	}
+
+	public void setRadius(int radius) {
+		this.radius = radius;
+	}
+
+	public void setGenerated(boolean isGenerated) {
+		this.isGenerated = isGenerated;
+	}
+	
+	
 }

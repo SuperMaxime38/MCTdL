@@ -309,11 +309,9 @@ public class Meltdown implements Listener {
 	}
 
 	public static void applyMoneyWon() {
-		HashMap<String, Integer> balances = MoneyManager.getRegsPlayer();
 		List<String> compensation = new ArrayList<String>();
 		for (String uuid : playerdata.keySet()) {
 
-			int gold = balances.get(uuid);
 			int meltdown_gold = playerdata.get(uuid).get(2);
 			
 			//Check if NPS for scoring fn
@@ -331,12 +329,11 @@ public class Meltdown implements Listener {
 				} else {
 					meltdown_gold = (int) Math.round(meltdown_gold * 0.9);
 				}
-				if (!compensation.contains(team))
-					compensation.add(team);
+				
+				if(!compensation.contains(team)) compensation.add(team);
 			}
-
-			gold = gold + meltdown_gold;
-			MoneyManager.setPlayerMoney(uuid, gold);
+			
+			MoneyManager.addPlayerMoney(uuid, meltdown_gold);
 			
 			Player p = Bukkit.getPlayer(UUID.fromString(uuid));
 			if(p != null) {
@@ -1077,7 +1074,7 @@ public class Meltdown implements Listener {
 						anotherTeam = true;
 				}
 				if (anotherTeam == false) { // si yen a pas alors c'est fin de game
-					Bukkit.broadcastMessage("§6L'§quipe des " + TeamsManager.getTeamColorByTeam(refTeam)
+					Bukkit.broadcastMessage("§6L'équipe des " + TeamsManager.getTeamColorByTeam(refTeam)
 							+ TeamsManager.getTeamNameByTeam(refTeam) + " §6a gagné !");
 					
 					for(String uuid : playerdata.keySet()) {
