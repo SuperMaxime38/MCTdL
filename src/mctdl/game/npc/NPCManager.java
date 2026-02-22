@@ -60,11 +60,8 @@ public class NPCManager {
 	
 	static List<EntityPlayer> npcss = new ArrayList<>();
 	static List<EntityPlayer> lookPlayer = new ArrayList<>();
-	static Main main;
 	
 	public static void loadHashMap(Main main) {
-		
-		NPCManager.main = main;
 	    
 	    File f = FileLoader.loadFile("npc.yml", "npc/");
 	    
@@ -118,7 +115,7 @@ public class NPCManager {
 				
 			}
 			
-		}.runTaskLater(main, delay);
+		}.runTaskLater(Main.getPlugin(), delay);
 	}
 	
 	public static List<EntityPlayer> getNPCs() {return npcss;}
@@ -208,7 +205,7 @@ public class NPCManager {
 				hideTabNameFor(npc, p);
 			}
 			
-		}.runTaskLater(main, 10);
+		}.runTaskLater(Main.getPlugin(), 10);
 	}
 	
 	public static void destroyNPC(EntityPlayer npc) {

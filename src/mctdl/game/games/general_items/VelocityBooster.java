@@ -20,7 +20,7 @@ public class VelocityBooster implements Listener {
 		ItemStack item = new ItemStack(Material.FIREWORK_ROCKET);
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName("§bVelocity Booster");
-		meta.setLore(Arrays.asList("§7Multiplies your §bvelocity §7by §65 §7!", "However you take §42HP �7 of §cdamage", "RIGHT CLICK to use","","§5CONSUMABLE"));
+		meta.setLore(Arrays.asList("§7Boosts your §bvelocity §7in the direction you're looking at!", "However you take §42HP �7 of §cdamage", "RIGHT CLICK to use","","§5CONSUMABLE"));
 		meta.setUnbreakable(true);
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
@@ -41,8 +41,20 @@ public class VelocityBooster implements Listener {
 		
 		if(!p.getInventory().getItemInMainHand().isSimilar(item)) return;
 		if(e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-			p.setVelocity(p.getVelocity().multiply(5));
+			
+			/*
+			 * Notes:
+			 * La velocité du joueur en X, Z est nulle sauf en cas de saut / qu'un autre évènement modifie cette valeur.
+			 * On ne peut donc pas juste multiplier la velocité...
+			 * Solution de secours: A la place de multiplier sa velocité, on boost celle ci dans la direction du joueur
+			 */
+			
+			
+			p.setVelocity(p.getVelocity().add(p.getLocation().getDirection().multiply(3)));
+			
 			p.getInventory().getItemInMainHand().setAmount(p.getInventory().getItemInMainHand().getAmount()-1);
+			
+			p.damage(2);
 		}
 	}
 

@@ -16,35 +16,10 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 
-import mctdl.game.commands.BaltopCommand;
-import mctdl.game.commands.DummyCommand;
-import mctdl.game.commands.NPCCommand;
-import mctdl.game.commands.PouleZookaCMD;
-import mctdl.game.commands.TDLPacketCommand;
-import mctdl.game.commands.TdLCommand;
-import mctdl.game.commands.TdLTabCompleter;
-import mctdl.game.commands.TestCommand;
-import mctdl.game.dev.ItemGiver;
-import mctdl.game.dev.ItemGiverCompleter;
-import mctdl.game.games.deathswap.DeathSwap;
-import mctdl.game.games.deathswap.DeathSwapCommand;
-import mctdl.game.games.hungergames.HungerGames;
-import mctdl.game.games.lobby.LobbyJump;
-import mctdl.game.games.lobby.items.NuclearRollerSkates;
+import mctdl.game.commands.CommandsRegister;
 import mctdl.game.games.lobby.items.PortalGun;
-import mctdl.game.games.lobby.items.PouleZooka;
-import mctdl.game.games.meltdown.MDCommand;
-import mctdl.game.games.meltdown.Meltdown;
-import mctdl.game.games.nexus.Nexus;
-import mctdl.game.games.nexus.NexusCommand;
-import mctdl.game.listeners.ChunkUnload;
-import mctdl.game.listeners.Damage;
-import mctdl.game.listeners.Interact;
-import mctdl.game.listeners.Join;
-import mctdl.game.listeners.Move;
-import mctdl.game.listeners.ProjectileHit;
+import mctdl.game.listeners.ListenersRegister;
 import mctdl.game.money.MoneyManager;
-import mctdl.game.npc.NPCCommandCompleter;
 import mctdl.game.npc.NPCManager;
 import mctdl.game.scoreboard.ScoreboardManager;
 import mctdl.game.tablist.TabManager;
@@ -52,10 +27,7 @@ import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.FileLoader;
 import mctdl.game.utils.GameVoting;
 import mctdl.game.utils.PlayerData;
-import mctdl.game.utils.Spectate;
 import mctdl.game.utils.Time;
-import mctdl.game.utils.objects.Canon;
-import mctdl.game.utils.objects.riffles.AssaultRiffle;
 
 public class Main extends JavaPlugin{
 	
@@ -142,79 +114,22 @@ public class Main extends JavaPlugin{
 		//Votes
 		GameVoting.getGames();
 		
-		//Register Events------------------------------------------------------------
-		getServer().getPluginManager().registerEvents(new TabManager(this), this);
-		getServer().getPluginManager().registerEvents(new ScoreboardManager(this), this);
-		getServer().getPluginManager().registerEvents(new GameVoting(this), this);
-		
-		//Register Games-------------------------------------------------------------
-		
-		//Meltdown
-		getServer().getPluginManager().registerEvents(new Meltdown(this), this);
-		
-		//DeathSwap
-		getServer().getPluginManager().registerEvents(new DeathSwap(this), this);
-		
-		//Nexus
-		getServer().getPluginManager().registerEvents(new Nexus(this), this);
-		
-		//HungerGames
-		getServer().getPluginManager().registerEvents(new HungerGames(this), this);
-		
-		//Register LISTENERS---------------------------------------------------------
-		getServer().getPluginManager().registerEvents(new Damage(this), this);
-		getServer().getPluginManager().registerEvents(new Join(this), this);
-		getServer().getPluginManager().registerEvents(new Interact(this), this);
-		getServer().getPluginManager().registerEvents(new Move(this), this);
-		getServer().getPluginManager().registerEvents(new Spectate(this), this);
-		getServer().getPluginManager().registerEvents(new ChunkUnload(), this);
-		getServer().getPluginManager().registerEvents(new ProjectileHit(this), this);
+		// Register Listeners
+		ListenersRegister.register(this);
 		
 		
-		//Lobby Games----------------------------------------------------------------
-			// --> Jump
-		getServer().getPluginManager().registerEvents(new LobbyJump(this), this);
-		getCommand("jump").setExecutor(new LobbyJump(this));
-		getServer().getPluginManager().registerEvents(new Canon(this), this);
-			// --> PouleZooka
-		getServer().getPluginManager().registerEvents(new PouleZooka(this), this);
-		    // --> Nuclear Roller Skates
-		getServer().getPluginManager().registerEvents(new NuclearRollerSkates(), this);
-			// --> Portal Gun
-		getServer().getPluginManager().registerEvents(new PortalGun(this), this);
 		PortalGun.displayPortals();
 		
 		//Other-----------------------------------------------------------------------
-		//Commands -->
-		getCommand("mctdl").setExecutor(new TdLCommand(this));
-		getCommand("baltop").setExecutor(new BaltopCommand(this));
-		getCommand("npc").setExecutor(new NPCCommand(this));
-		getCommand("dg").setExecutor(new ItemGiver());
-		getCommand("poulezooka").setExecutor(new PouleZookaCMD());
-		getCommand("dummy").setExecutor(new DummyCommand(this));
-		getCommand("testcmd").setExecutor(new TestCommand(this));
-		getCommand("tdlpacket").setExecutor(new TDLPacketCommand());
 		
-		//meltdown
-		getCommand("meltdown").setExecutor(new MDCommand(this));
 		
-		//deathswap
-		getCommand("deathswap").setExecutor(new DeathSwapCommand(this));
+		// Register Commands
+		CommandsRegister.register(this);
 		
-		//nexus
-		getCommand("nexus").setExecutor(new NexusCommand(this));
-		
-		//TabCompleter -->
-		getCommand("npc").setTabCompleter(new NPCCommandCompleter());
-		getCommand("mctdl").setTabCompleter(new TdLTabCompleter());
-		getCommand("dg").setTabCompleter(new ItemGiverCompleter());
 		
 		String h = header();
 		
 		disableExternalGamesFeatures(this);
-		
-		// Objects
-		getServer().getPluginManager().registerEvents(new AssaultRiffle(this), this);
 		
 		
 		

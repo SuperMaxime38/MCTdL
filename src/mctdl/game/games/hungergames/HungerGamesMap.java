@@ -32,7 +32,7 @@ public class HungerGamesMap extends Map{
 	    minBorderSize = config.getInt("border.min");
 	    maxBorderSize = config.getInt("border.max");
 	    
-	    for(String team : config.getConfigurationSection("teams").getKeys(false)) {
+	    for(String team : config.getConfigurationSection("spawns").getKeys(false)) {
 	    	Location loc = new Location(Bukkit.getWorld(world), config.getInt("spawns." + team + ".X"), config.getInt("spawns." + team + ".Y"), config.getInt("spawns." + team + ".Z"));
 	    	spawns.put(team, loc);
 	    }

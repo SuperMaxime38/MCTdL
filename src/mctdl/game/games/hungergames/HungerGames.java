@@ -19,6 +19,7 @@ import org.bukkit.entity.ThrowableProjectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.CompassMeta;
@@ -31,6 +32,7 @@ import mctdl.game.npc.PlayerAI;
 import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.NBTAPI;
 import mctdl.game.utils.PlayerData;
+import mctdl.game.utils.Spectate;
 import mctdl.game.utils.TimeFormater;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -318,6 +320,16 @@ public final class HungerGames implements Listener{
 		
 		damageHandler(p, damager, damageValue);
 		
+	}
+	
+	@EventHandler
+	public static void onDeath(PlayerDeathEvent e) {
+		
+		if(!playerdatas.containsKey(e.getEntity().getUniqueId())) return;
+		
+		List<String> teamates = TeamsManager.getTeamMembers(TeamsManager.getPlayerTeam(e.getEntity().getUniqueId().toString()));
+		
+		Spectate.setSpectatingGroup(e.getEntity(), teamates);
 	}
 	
 	private static void damageHandler(Player victim, Entity damager, double damageValue) {

@@ -44,7 +44,10 @@ public class ItemGiver implements CommandExecutor{
 				for(CustomItem item : CustomItem.values()) {
 					p.sendMessage("§3" + item);
 				}
+
+				return true;
 			}
+
 		}
 		if(args.length == 2) {
 			if(args[0].equals("add")) {
@@ -54,7 +57,30 @@ public class ItemGiver implements CommandExecutor{
 				} catch(IllegalArgumentException e) {
 					s.sendMessage("§cCet item n'existe pas");
 				}
-				
+
+				return true;
+			}
+		}
+		if(args.length == 3) {
+			if(args[0].equals("add")) {
+				try {
+					CustomItem item = CustomItem.valueOf(args[1].toUpperCase());
+					
+					// If I don't do this try inside the other try (and just add the other catch) the compiler cries so it's ugly but it works
+					try {
+						for(int i = 0; i < Integer.parseInt(args[2]); i++) {
+							addItem(item, p);
+						}
+					} catch(NumberFormatException e2) {
+						s.sendMessage("§cQuantité incorrecte");
+					}
+					
+					
+					
+				} catch(IllegalArgumentException e) {
+					s.sendMessage("§cCet item n'existe pas");
+				}
+				return true;
 			}
 		}
 		
@@ -142,12 +168,12 @@ public class ItemGiver implements CommandExecutor{
 			break;
 			
 		// NEXUS
-		case HUNGERGAMES_TRACKER:
-			it = HungerGames.getTracker();
-			break;
 			
 			
 		// HUNGERGAMES
+		case HUNGERGAMES_TRACKER:
+			it = HungerGames.getTracker();
+			break;
 			
 			
 		//OBJECTS

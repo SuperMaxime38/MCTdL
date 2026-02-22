@@ -37,7 +37,7 @@ public class BaltopCommand implements CommandExecutor{
 		            .collect(Collectors.toList());
 			
 			String output = "§6----------------------------------------------\n"
-				 +"§aLes joueurs les plus riches sont :�f";
+				 +"§aLes joueurs les plus riches sont :§f";
 			int order = 0;
 			if(result.size() >= 10) {
 				for(int i = 0; i < 10; i++) {
@@ -53,7 +53,7 @@ public class BaltopCommand implements CommandExecutor{
 			if(s instanceof Player) {
 				p = (Player) s;
 				order = getClassement().indexOf(p.getUniqueId().toString()) + 1;
-				output = output + "\n \n�f " + order +"- " + TeamsManager.getTeamColor(p.getUniqueId().toString()) + p.getName() + "§f: " + MoneyManager.getPlayerMoney(p.getUniqueId().toString()) + "§6Coins";
+				output = output + "\n \n§f " + order +"- " + TeamsManager.getTeamColor(p.getUniqueId().toString()) + p.getName() + "§f: " + MoneyManager.getPlayerMoney(p.getUniqueId().toString()) + "§6Coins";
 				
 				String team = TeamsManager.getPlayerTeam(p.getUniqueId().toString());
 				if(!team.equals("none")) {
@@ -63,7 +63,7 @@ public class BaltopCommand implements CommandExecutor{
 					//TeamsManager.getTeamColor(p.getName()) + TeamsManager.getTeamName(p.getName())
 				}
 			}
-			output = output + "\n�6----------------------------------------------";
+			output = output + "\n§6----------------------------------------------";
 			s.sendMessage(output);
 		} else if(args.length == 1) {
 		//PLUS TARD PR LE CLASSEMENT DES TEAM ETC...
