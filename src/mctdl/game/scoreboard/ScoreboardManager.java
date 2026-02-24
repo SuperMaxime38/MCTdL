@@ -50,7 +50,7 @@ public class ScoreboardManager implements Listener{
 			@Override
 			public void run() {
 				if(i == -1) {
-					order = BaltopCommand.getClassement().indexOf(uuid) +1; // 0
+					order = BaltopCommand.getPlayerClassement().indexOf(uuid) +1; // 0
 					score = obj.getScore("§3Personnal Rank : §6#" + order);
 					score.setScore(0);
 					old.add(0, "§3Personnal Rank : §6#" + order);
@@ -87,7 +87,7 @@ public class ScoreboardManager implements Listener{
 				old.set(1, "§bTeam Rank : §6#" + order);
 				
 				
-				order = BaltopCommand.getClassement().indexOf(uuid) +1; // 0
+				order = BaltopCommand.getPlayerClassement().indexOf(uuid) +1; // 0
 				board.resetScores(old.get(0));
 				score = obj.getScore("§3Personnal Rank : §6#" + order);
 				score.setScore(0);

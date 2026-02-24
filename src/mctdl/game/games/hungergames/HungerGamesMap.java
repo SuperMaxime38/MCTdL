@@ -1,12 +1,14 @@
 package mctdl.game.games.hungergames;
 
 import java.io.File;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import mctdl.game.commands.BaltopCommand;
 import mctdl.game.utils.FileLoader;
 import mctdl.game.utils.Map;
 
@@ -32,9 +34,11 @@ public class HungerGamesMap extends Map{
 	    minBorderSize = config.getInt("border.min");
 	    maxBorderSize = config.getInt("border.max");
 	    
-	    for(String team : config.getConfigurationSection("spawns").getKeys(false)) {
-	    	Location loc = new Location(Bukkit.getWorld(world), config.getInt("spawns." + team + ".X"), config.getInt("spawns." + team + ".Y"), config.getInt("spawns." + team + ".Z"));
-	    	spawns.put(team, loc);
+	    List<String> teams = BaltopCommand.getTeamClassement();
+	    
+	    for(String placement : config.getConfigurationSection("spawns").getKeys(false)) {
+	    	Location loc = new Location(Bukkit.getWorld(world), config.getInt("spawns." + placement + ".X"), config.getInt("spawns." + placement + ".Y"), config.getInt("spawns." + placement + ".Z"));
+	    	spawns.put(teams.get(Integer.parseInt(placement) - 1), loc);
 	    }
 	}
 	

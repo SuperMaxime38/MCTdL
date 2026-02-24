@@ -9,7 +9,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import mctdl.game.Main;
 import mctdl.game.tablist.TabManager;
-import mctdl.game.teams.TeamsManager;
 import mctdl.game.utils.FileLoader;
 
 public class MoneyManager {

@@ -52,7 +52,7 @@ public class BaltopCommand implements CommandExecutor{
 			}
 			if(s instanceof Player) {
 				p = (Player) s;
-				order = getClassement().indexOf(p.getUniqueId().toString()) + 1;
+				order = getPlayerClassement().indexOf(p.getUniqueId().toString()) + 1;
 				output = output + "\n \n§f " + order +"- " + TeamsManager.getTeamColor(p.getUniqueId().toString()) + p.getName() + "§f: " + MoneyManager.getPlayerMoney(p.getUniqueId().toString()) + "§6Coins";
 				
 				String team = TeamsManager.getPlayerTeam(p.getUniqueId().toString());
@@ -74,7 +74,8 @@ public class BaltopCommand implements CommandExecutor{
 		return false;
 	}
 	
-	public static List<String> getClassement() {
+	
+	public static List<String> getPlayerClassement() {
 		List<String> result = MoneyManager.getRegsPlayer().entrySet().stream()
 	            .sorted(Comparator.comparingLong(Map.Entry<String, Integer>::getValue)
 	                    .reversed()

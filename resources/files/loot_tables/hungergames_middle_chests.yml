@@ -1,0 +1,10 @@
+loots:
+  book_sharpness:
+    weight: 1
+    material: ENCHANTED_BOOK
+    name: "Sharpness I Book"
+    lore:
+      - "Combine this with a sword in an anvil to increase its §cdamages"
+	amount: 1
+    enchantments:
+      sharpness: 1
