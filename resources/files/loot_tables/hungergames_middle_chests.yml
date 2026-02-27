@@ -1,10 +1,115 @@
 loots:
   book_sharpness:
-    weight: 1
+    weight: 2
     material: ENCHANTED_BOOK
     name: "Sharpness I Book"
     lore:
       - "Combine this with a sword in an anvil to increase its §cdamages"
-	amount: 1
+	amount:
+	  min: 1
+      max: 1
     enchantments:
       sharpness: 1
+  book_protection:
+    weight: 4
+    material: ENCHANTED_BOOK
+    name: "Protection I Book"
+    lore:
+      - "Combine this with an armor piece in an anvil to increase your §cdamage §aresistance"
+	amount:
+	  min: 1
+      max: 1
+    enchantments:
+      protection: 1
+  book_knockback:
+    weight: 2
+    material: ENCHANTED_BOOK
+    name: "Knockback I Book"
+    lore:
+      - "Combine this with a sword in an anvil to increase its knockback"
+	amount:
+	  min: 1
+      max: 1
+    enchantments:
+      knockback: 1
+  steaks:
+    weight: 16
+    material: COOKED_BEEF
+    name: "Steak"
+    lore:
+      - "Yummy"
+	amount:
+	  min: 2
+      max: 4
+  cookies:
+    weight: 24
+    material: COOKIES
+    name: "Cookies"
+    lore:
+      - "Delicious"
+	amount:
+	  min: 2
+      max: 6
+  iron_sword:
+    weight: 5
+    material: IRON_SWORD
+    name: "§7Iron Sword"
+    lore:
+      - ""
+	amount:
+	  min: 1
+      max: 1
+  diamond_helmet:
+    weight: 1
+    material: DIAMOND_HELMET
+    name: "§bDiamond Helmet"
+    lore:
+      - ""
+	amount:
+	  min: 1
+      max: 1
+  diamond_boots:
+    weight: 1
+    material: DIAMOND_BOOTS
+    name: "§bDiamond Boots"
+    lore:
+      - ""
+	amount:
+	  min: 1
+      max: 1
+  iron_chestplate:
+    weight: 2
+    material: IRON_CHESTPLATE
+    name: "§7Iron Chestplate"
+    lore:
+      - ""
+	amount:
+	  min: 1
+      max: 1
+  iron_leggings:
+    weight: 2
+    material: IRON_LEGGINGS
+    name: "§7IRON_LEGGINGS"
+    lore:
+      - ""
+	amount:
+	  min: 1
+      max: 1
+  iron_helmet:
+    weight: 3
+    material: IRON_HELMET
+    name: "§7Iron Helmet"
+    lore:
+      - ""
+	amount:
+	  min: 1
+      max: 1
+  iron_boots:
+    weight: 3
+    material: IRON_BOOTS
+    name: "§7Iron Boots"
+    lore:
+      - ""
+	amount:
+	  min: 1
+      max: 1
