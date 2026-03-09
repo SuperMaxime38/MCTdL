@@ -1,6 +1,5 @@
 package mctdl.game.ai_trainer;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.bukkit.scheduler.BukkitRunnable;
@@ -9,18 +8,22 @@ import org.ejml.simple.SimpleMatrix;
 import mctdl.game.Main;
 import mctdl.game.games.meltdown.Meltdown;
 import mctdl.game.games.meltdown.npc.MeltdownNPC;
+import ntdjl.NN;
 import ntdjl.RL;
 import ntdjl.utils.ActivationFunction;
 
 public class TrainingLoop {
 	
-	Main main;
+	private Main main;
 	
-	RL rl;
+	private RL rl;
 	
-	int batches;
+	private int batches;
 
-	boolean isEnabled;
+	private boolean isEnabled;
+	
+	private double mutationProportion = 0.1;
+	private double mutationRate = 0.001;
 	
 	public TrainingLoop(Main main, MCTdLGamemode gamemode, int batches) {
 		this.main = main;
@@ -30,20 +33,33 @@ public class TrainingLoop {
 		switch(gamemode) {
 		case MELTDOWN:
 			
+<<<<<<< Updated upstream
 			int[] structure = {324, 2000, 2100, 2200, 2400, 1600, 1200, 1200, 16}; // reduced size bcs too much for my computer ;-;
+=======
+			int[] structure = {332, 2048, 2100, 2200, 2400, 1600, 1200, 1200, 16}; // reduced size bcs too much for my computer ;-;
+>>>>>>> Stashed changes
 			
-			this.rl = new RL(structure, ActivationFunction.SIGMOID, Meltdown.getNPCs().size());
-			this.rl.setTopClones(20, 8, 4);
-			try {
-				this.rl.loadModel("C:/Users/maxime/Documents/rl+MD"); // Try to load model if it exists
-			} catch (ClassNotFoundException e) {
-			} catch (IOException e) {
-			}
+			aiRepartition(structure);
+			this.rl.loadModel("C:/Users/maxime/Documents/rl+MD"); // Try to load model if it exists
 			
 			meltdownLoop(1);
 			
 			break;
 		}
+	}
+	
+	private void aiRepartition(int[] structure) {
+		int a = 0;
+		int b = 0;
+		int c = 0;
+		
+		for(int i = 0; i < Meltdown.getNPCs().size(); i++) {
+			if(i%3 == 0) a++;
+			else if(i%3 == 1) b++;
+			else c++;
+		}
+
+		this.rl = new RL(structure, ActivationFunction.SIGMOID, mutationProportion, mutationRate, a, b, c);
 	}
 	
 	public void meltdownLoop(int currentBatch) {
@@ -66,8 +82,9 @@ public class TrainingLoop {
 		if(currentBatch%10 == 0) {
 			rl.saveModel("C:/Users/maxime/Documents/rl+MD");
 		}
-		for(MeltdownNPC npc : Meltdown.getNPCs()) {
-			npc.setModel(this.rl.nextAgent());
+		
+		for(int i = 0; i < Meltdown.getNPCs().size(); i++) {
+			Meltdown.getNPCs().get(i).setModel((NN) this.rl.getAgents().toArray()[i]);
 		}
 		
 		Meltdown.enable();
@@ -98,7 +115,11 @@ public class TrainingLoop {
 				for(MeltdownNPC npc : Meltdown.getNPCs()) {
 					List<Integer> pDatas = Meltdown.getRawPlayerDatas(npc.getNPC().getUniqueIDString());
 					
+<<<<<<< Updated upstream
 					if(pDatas.get(0) == 0 || pDatas.get(1) == 1) continue; // S'il est mort ou gelé on s'en fout
+=======
+					if(pDatas.get(0) == 0 || pDatas.get(1) == 1) continue; // S'il est mort ou gel� on s'en fout
+>>>>>>> Stashed changes
 					
 					npc.getEnvironnement().update();
 					SimpleMatrix input = new SimpleMatrix(npc.getEnvironnement().getInputs());

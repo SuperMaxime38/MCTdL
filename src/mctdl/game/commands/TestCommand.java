@@ -48,7 +48,7 @@ public class TestCommand implements CommandExecutor{
 	public boolean onCommand(CommandSender s, Command cmd, String label, String[] args) {
 
 		if(args.length == 0) {
-			
+			s.sendMessage(":)");
 		}
 		if(args.length == 1) {
 			switch(args[0]) {

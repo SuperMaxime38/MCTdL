@@ -778,8 +778,6 @@ public class Meltdown implements Listener {
 		//Block block = npc.getNPC().getBukkitEntity().getTargetBlock(null, 5);
 		Block block = ray.getTargetedBlock(5);
 		
-		System.out.println("Targeted block: " + block.getType() + " at " + block.getX() + " " + block.getY() + " " + block.getZ());
-		
 		if(Environnement.getTransparentBlocks().contains(block.getType())) return;
 		Location loc = block.getLocation().add(0, 1, 0);
 		if(loc.getBlock().getType() != Material.AIR) return;
