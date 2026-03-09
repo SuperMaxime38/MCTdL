@@ -36,7 +36,7 @@ public class Environnement {
 	List<Double> rayDistances, terrain;
 	List<Pair> ennemies, allies;
 	
-	private final int dividingCoef = 100; // plus les donnÈes sont variÈes plus le modËle galËre, on va diviser les distances par ce nombre pour rÈduir cet effet
+	private final int dividingCoef = 100; // plus les donn√©es sont vari√©es plus le mod√®le gal√®re, on va diviser les distances par ce nombre pour r√©duir cet effet
 	
 	
 	private Location meltdownCenter;
@@ -55,7 +55,7 @@ public class Environnement {
 		this.world = player.getBukkitEntity().getWorld();
 		
 		this.view = new AiView(player.getBukkitEntity().getWorld(), Arrays.asList(new Vector(0,0.25,0), new Vector(0,0.75,0)), 8, player, dividingCoef);
-		this.terrainObserver = new TerrainObserver(player, 4);
+		this.terrainObserver = new TerrainObserver(player, 3);
 		
 		this.rayDistances = new ArrayList<Double>();
 		this.terrain = new ArrayList<Double>();
@@ -203,7 +203,7 @@ public class Environnement {
 					
 				}
 				
-			} else { // pis l‡ qu'on y est autant handle direct les allies
+			} else { // pis l√† qu'on y est autant handle direct les allies
 				for(String uuid : TeamsManager.getTeamMembers(team)) {
 					if(!uuid.equals(this.player.getUniqueIDString())) {
 						Player p = Bukkit.getPlayer(UUID.fromString(uuid));
@@ -274,14 +274,14 @@ public class Environnement {
 
 			Location pLoc = new Location(world, this.player.getX(), this.player.getY(), this.player.getZ());
 			
-			if(heaterX==0) { // Pas placÈ
+			if(heaterX==0) { // Pas plac√©
 				if(heaterCD == 0) { //pas de cooldown
 					this.datas[1] = 1;
-				} else { // pas placÈ mais cooldown
+				} else { // pas plac√© mais cooldown
 					this.datas[1] = 0.5f;
 				}
 				
-				//Si pas placÈ distance du heater infinie
+				//Si pas plac√© distance du heater infinie
 				this.datas[2] = -1f;
 				
 			} else {
@@ -337,7 +337,7 @@ public class Environnement {
 	    for (int radius = 1; radius <= maxRadius; radius++) {
 	        for (int x = -radius; x <= radius; x++) {
 	            for (int z = -radius; z <= radius; z++) {
-	                // On ne parcourt que la "coquille" externe (bord du carrÈ)
+	                // On ne parcourt que la "coquille" externe (bord du carr√©)
 	                if (Math.abs(x) != radius && Math.abs(z) != radius) continue;
 	                for (int y = -5; y <= 5; y++) { // limite verticale (-5/+5 autour du joueur)
 	                    Block block = world.getBlockAt(playerX + x, playerY + y, playerZ + z);
@@ -353,7 +353,7 @@ public class Environnement {
 	                }
 	            }
 	        }
-	        // Optionnel : tu peux arrÍter dËs le premier trouvÈ si tu veux juste "le plus proche immÈdiat"
+	        // Optionnel : tu peux arr√™ter d√®s le premier trouv√© si tu veux juste "le plus proche imm√©diat"
 	        if (nearest != null) {
 	            break;
 	        }
