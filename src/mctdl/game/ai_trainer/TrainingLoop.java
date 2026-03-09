@@ -33,11 +33,7 @@ public class TrainingLoop {
 		switch(gamemode) {
 		case MELTDOWN:
 			
-<<<<<<< Updated upstream
-			int[] structure = {324, 2000, 2100, 2200, 2400, 1600, 1200, 1200, 16}; // reduced size bcs too much for my computer ;-;
-=======
-			int[] structure = {332, 2048, 2100, 2200, 2400, 1600, 1200, 1200, 16}; // reduced size bcs too much for my computer ;-;
->>>>>>> Stashed changes
+			int[] structure = {324, 2048, 2100, 2200, 2400, 1600, 1200, 1200, 16}; // reduced size bcs too much for my computer ;-;
 			
 			aiRepartition(structure);
 			this.rl.loadModel("C:/Users/maxime/Documents/rl+MD"); // Try to load model if it exists
@@ -115,11 +111,7 @@ public class TrainingLoop {
 				for(MeltdownNPC npc : Meltdown.getNPCs()) {
 					List<Integer> pDatas = Meltdown.getRawPlayerDatas(npc.getNPC().getUniqueIDString());
 					
-<<<<<<< Updated upstream
 					if(pDatas.get(0) == 0 || pDatas.get(1) == 1) continue; // S'il est mort ou gelé on s'en fout
-=======
-					if(pDatas.get(0) == 0 || pDatas.get(1) == 1) continue; // S'il est mort ou gel� on s'en fout
->>>>>>> Stashed changes
 					
 					npc.getEnvironnement().update();
 					SimpleMatrix input = new SimpleMatrix(npc.getEnvironnement().getInputs());
