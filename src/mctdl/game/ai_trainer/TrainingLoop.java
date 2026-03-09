@@ -30,7 +30,7 @@ public class TrainingLoop {
 		switch(gamemode) {
 		case MELTDOWN:
 			
-			int[] structure = {332, 2000, 2100, 2200, 2400, 1600, 1200, 1200, 16}; // reduced size bcs too much for my computer ;-;
+			int[] structure = {324, 2000, 2100, 2200, 2400, 1600, 1200, 1200, 16}; // reduced size bcs too much for my computer ;-;
 			
 			this.rl = new RL(structure, ActivationFunction.SIGMOID, Meltdown.getNPCs().size());
 			this.rl.setTopClones(20, 8, 4);
@@ -98,7 +98,7 @@ public class TrainingLoop {
 				for(MeltdownNPC npc : Meltdown.getNPCs()) {
 					List<Integer> pDatas = Meltdown.getRawPlayerDatas(npc.getNPC().getUniqueIDString());
 					
-					if(pDatas.get(0) == 0 || pDatas.get(1) == 1) continue; // S'il est mort ou gelé on s'en fout
+					if(pDatas.get(0) == 0 || pDatas.get(1) == 1) continue; // S'il est mort ou gelÃ© on s'en fout
 					
 					npc.getEnvironnement().update();
 					SimpleMatrix input = new SimpleMatrix(npc.getEnvironnement().getInputs());
