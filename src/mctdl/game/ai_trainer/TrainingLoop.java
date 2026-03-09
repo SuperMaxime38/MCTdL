@@ -33,10 +33,11 @@ public class TrainingLoop {
 		switch(gamemode) {
 		case MELTDOWN:
 			
-			int[] structure = {324, 2048, 2100, 2200, 2400, 1600, 1200, 1200, 16}; // reduced size bcs too much for my computer ;-;
+			int[] structure = {332, 2048, 2100, 2200, 2400, 1600, 1200, 1200, 16}; // reduced size bcs too much for my computer ;-;
 			
 			aiRepartition(structure);
 			this.rl.loadModel("C:/Users/maxime/Documents/rl+MD"); // Try to load model if it exists
+			
 			
 			meltdownLoop(1);
 			

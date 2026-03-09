@@ -55,7 +55,7 @@ public class Environnement {
 		this.world = player.getBukkitEntity().getWorld();
 		
 		this.view = new AiView(player.getBukkitEntity().getWorld(), Arrays.asList(new Vector(0,0.25,0), new Vector(0,0.75,0)), 8, player, dividingCoef);
-		this.terrainObserver = new TerrainObserver(player, 3);
+		this.terrainObserver = new TerrainObserver(player, 4);
 		
 		this.rayDistances = new ArrayList<Double>();
 		this.terrain = new ArrayList<Double>();
@@ -92,7 +92,7 @@ public class Environnement {
 //		System.out.println("DATA LENGHT : " + datas.length);
 		
 		this.current_inputs = new float[size+1];
-		//System.out.println("Inputs size: " + inputs.length + " | size: " + size);
+		// System.out.println("Inputs size: " + current_inputs + " | size: " + size);
 		
 		int i = 0;
 		for(double rayDistance : rayDistances) {

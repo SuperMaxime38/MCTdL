@@ -30,14 +30,33 @@ public class TerrainObserver {
 				int X = x + (int) player.getX();
 				int Z = z + (int) player.getZ();
 				int Y = (int) player.getY() - 1;
-				int Y2 = Y-1;
 				Block b = world.getBlockAt(X, Y, Z);
-				Block b2 = world.getBlockAt(X, Y2, Z);
-				
+				Block b2 = world.getBlockAt(X, Y-1, Z);
+
 				//System.out.println("loc: " + X + ", " + (player.getY()-1) + ", " + Z + " type: " + b.getType());
+
+				if(Environnement.getTransparentBlocks().contains(b.getType())) {
+					if(Environnement.getTransparentBlocks().contains(b2.getType())) {
+						blocks.add(0.5);
+					} else {
+						blocks.add(0.0);
+					}
+				} else {
+					blocks.add(1.0);
+				}
+			}
+		}
+		
+		for(int x = -radius/2; x < radius/2; x++) {
+			for(int z = -radius/2; z < radius/2; z++) {
+				int X = x + (int) player.getX();
+				int Z = z + (int) player.getZ();
+				int Y = (int) player.getY() - 2;
+				Block b = world.getBlockAt(X, Y, Z);
+				Block b2 = world.getBlockAt(X, Y-1, Z);
 				
 				if(Environnement.getTransparentBlocks().contains(b.getType())) {
-					if(Environnement.getTransparentBlocks().contains(b.getType())) {
+					if(Environnement.getTransparentBlocks().contains(b2.getType())) {
 						blocks.add(0.5);
 					} else {
 						blocks.add(0.0);
